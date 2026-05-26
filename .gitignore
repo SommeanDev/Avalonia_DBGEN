@@ -1,0 +1,48 @@
+# Build output
+bin/
+obj/
+publish/
+artifacts/
+
+# .NET local tooling and package cache
+.dotnet/
+.nuget/
+*.nupkg
+*.snupkg
+
+# Rider / JetBrains
+.idea/
+*.sln.DotSettings.user
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Avalonia / XAML generated caches
+Avalonia.Designer.HostApp/
+
+# Logs and diagnostics
+*.log
+logs/
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Test results and coverage
+TestResults/
+coverage/
+coverage.xml
+coverage.cobertura.xml
+*.trx
+
+# Temporary files
+*.tmp
+*.temp
+*.cache

@@ -1,0 +1,696 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:AvaloniaTestApp.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:conv="clr-namespace:AvaloniaTestApp.Converters"
+        xmlns:models="clr-namespace:AvaloniaTestApp.Models"
+        xmlns:views="clr-namespace:AvaloniaTestApp.Views"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+        x:Class="AvaloniaTestApp.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="SimpleToDoList"
+        WindowState="Maximized" WindowStartupLocation="CenterScreen"
+        Padding="4">
+
+    <Window.Styles>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="Height" Value="50" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+    </Window.Styles>
+
+    <Window.Resources>
+        <conv:IntToBoolConverter x:Key="IntToBoolConverter" />
+    </Window.Resources>
+
+    <SplitView IsPaneOpen="{Binding IsPaneOpen}"
+               DisplayMode="CompactInline"
+               OpenPaneLength="200"
+               CompactPaneLength="50"
+               Background="#1e1e1e">
+
+        <SplitView.Pane>
+            <Grid RowDefinitions="Auto, *" HorizontalAlignment="Stretch">
+                <Button Grid.Row="0"
+                        Command="{Binding TogglePane}"
+                        Background="Transparent"
+                        Foreground="White"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Padding="10,0">
+                    <Grid ColumnDefinitions="30, *" Height="50">
+                        <material:MaterialIcon Grid.Column="0" Kind="Menu" Foreground="Teal" IconSize="24" />
+                        <TextBlock Grid.Column="1" Text="Menu"
+                                   VerticalAlignment="Center"
+                                   Margin="15,0,0,0"
+                                   IsVisible="{Binding IsPaneOpen}" />
+                    </Grid>
+                </Button>
+
+                <ListBox Grid.Row="1" Background="Transparent" Foreground="White" SelectedIndex="{Binding SelectedTabIndex}">
+                    <ListBoxItem>
+                        <Grid ColumnDefinitions="Auto, *">
+                            <material:MaterialIcon Grid.Column="0" Kind="DatabaseOutline" Foreground="Teal" IconSize="30"/>
+                            <TextBlock Grid.Column="1" Text="Database"
+                                       VerticalAlignment="Center"
+                                       Margin="15,0,0,0"
+                                       IsVisible="{Binding IsPaneOpen}"
+                                       FontFamily="Monospace" />
+                        </Grid>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Grid ColumnDefinitions="Auto, *">
+                            <material:MaterialIcon Grid.Column="0" Kind="FileDocument" Foreground="Teal" IconSize="30"/>
+                            <TextBlock Grid.Column="1" Text="Script Generator"
+                                       VerticalAlignment="Center"
+                                       Margin="15,0,0,0"
+                                       IsVisible="{Binding IsPaneOpen}"
+                                       FontFamily="Monospace" />
+                        </Grid>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Grid ColumnDefinitions="Auto, *">
+                            <material:MaterialIcon Grid.Column="0" Kind="WindowOpen" Foreground="Teal" IconSize="30"/>
+                            <TextBlock Grid.Column="1" Text="View Generator"
+                                       VerticalAlignment="Center"
+                                       Margin="15,0,0,0"
+                                       IsVisible="{Binding IsPaneOpen}"
+                                       FontFamily="Monospace" />
+                        </Grid>
+                    </ListBoxItem>
+                </ListBox>
+            </Grid>
+        </SplitView.Pane>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- Main content: Panel lets multiple children overlap.            -->
+        <!-- IsVisible on each child acts as the tab switch.                -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <Panel Margin="20">
+
+            <!-- ══ TAB 0 · Database Config ══════════════════════════════ -->
+            <StackPanel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=0}"
+                        Spacing="20" Margin="10">
+
+                <!-- Header -->
+                <StackPanel Spacing="4">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <material:MaterialIcon Kind="Database" Foreground="#1D9E75" Width="18" Height="18" VerticalAlignment="Center"/>
+                        <TextBlock Text="DATABASE CONFIG"
+                                   Foreground="#1D9E75"
+                                   FontFamily="Monospace"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   LetterSpacing="2"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Text="PostgreSQL Connection"
+                               Foreground="White"
+                               FontSize="22"
+                               FontWeight="Medium"/>
+                    <TextBlock Text="Enter your credentials to connect to a database instance."
+                               Foreground="#888780"
+                               FontSize="13"/>
+                </StackPanel>
+
+                <!-- Form Card -->
+                <Border Background="#1e1e1e"
+                        BorderThickness="0.5"
+                        BorderBrush="#3e3e42"
+                        CornerRadius="12"
+                        Padding="20">
+                    <StackPanel Spacing="0">
+
+                        <!-- Host + Port -->
+                        <Grid ColumnDefinitions="*, 12, 100" Margin="0,0,0,14">
+                            <StackPanel Grid.Column="0" Spacing="6">
+                                <TextBlock Text="Host" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                                <TextBox Text="{Binding Host}"
+                                         PlaceholderText="localhost"
+                                         Background="#252526"
+                                         BorderBrush="#3e3e42"
+                                         BorderThickness="0.5"
+                                         CornerRadius="8"
+                                         Foreground="White"
+                                         Padding="12,0"
+                                         VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Spacing="6">
+                                <TextBlock Text="Port" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                                <TextBox Text="{Binding Port}"
+                                         Background="#252526"
+                                         BorderBrush="#3e3e42"
+                                         BorderThickness="0.5"
+                                         CornerRadius="8"
+                                         Foreground="White"
+                                         Padding="12,0"
+                                         VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Database Name -->
+                        <StackPanel Spacing="6" Margin="0,0,0,14">
+                            <TextBlock Text="Database Name" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBox Text="{Binding DatabaseName}"
+                                     PlaceholderText="postgres"
+                                     Background="#252526"
+                                     BorderBrush="#3e3e42"
+                                     BorderThickness="0.5"
+                                     CornerRadius="8"
+                                     Foreground="White"
+                                     Padding="12,0"
+                                     VerticalContentAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Username + Password -->
+                        <Grid ColumnDefinitions="*, 12, *">
+                            <StackPanel Grid.Column="0" Spacing="6">
+                                <TextBlock Text="Username" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                                <TextBox Text="{Binding Username}"
+                                         PlaceholderText="postgres"
+                                         Background="#252526"
+                                         BorderBrush="#3e3e42"
+                                         BorderThickness="0.5"
+                                         CornerRadius="8"
+                                         Foreground="White"
+                                         Padding="12,0"
+                                         VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Spacing="6">
+                                <TextBlock Text="Password" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                                <TextBox Text="{Binding Password}"
+                                         PasswordChar="●"
+                                         PlaceholderText="••••••••"
+                                         Background="#252526"
+                                         BorderBrush="#3e3e42"
+                                         BorderThickness="0.5"
+                                         CornerRadius="8"
+                                         Foreground="White"
+                                         Padding="12,0"
+                                         VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Divider -->
+                        <Border Height="0.5" Background="#3e3e42" Margin="0,18,0,14"/>
+
+                        <!-- Status + Actions -->
+                        <Grid ColumnDefinitions="*, Auto">
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal"
+                                        Spacing="8"
+                                        VerticalAlignment="Center">
+                                <Ellipse Width="7" Height="7" VerticalAlignment="Center">
+                                    <Ellipse.Fill>
+                                        <SolidColorBrush Color="{Binding ConnectionStatusColor}"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="{Binding ConnectionStatusText}"
+                                           Foreground="#888780"
+                                           FontSize="12"
+                                           FontFamily="Monospace"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                <Button Command="{Binding TestConnectionCommand}"
+                                        Background="Transparent"
+                                        BorderBrush="#3e3e42"
+                                        BorderThickness="0.5"
+                                        CornerRadius="8"
+                                        Foreground="#888780"
+                                        Padding="14,8">
+                                    <StackPanel Orientation="Horizontal" Spacing="7">
+                                        <material:MaterialIcon Kind="Plug" Width="14" Height="14" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Test connection" FontSize="13" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding SaveCredentialsCommand}"
+                                        Background="#1D9E75"
+                                        BorderThickness="0"
+                                        CornerRadius="8"
+                                        Foreground="White"
+                                        Padding="14,8">
+                                    <StackPanel Orientation="Horizontal" Spacing="7">
+                                        <material:MaterialIcon Kind="ContentSave" Width="14" Height="14" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Save" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Margin="10 0" IsVisible="{Binding ConnectionSuccess}">
+                    <Grid ColumnDefinitions="Auto, 12, *, 12, Auto, 12, Auto, 12, Auto" VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="Select Schema"
+                                   Foreground="#1D9E75"
+                                   FontSize="12"
+                                   FontFamily="Monospace"
+                                   FontWeight="Medium"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox Grid.Column="2"
+                                  ItemsSource="{Binding Schemas}"
+                                  SelectedItem="{Binding SelectedSchema}"
+                                  HorizontalAlignment="Stretch"
+                                  Background="#252526"
+                                  BorderBrush="#3e3e42"
+                                  BorderThickness="0.5"
+                                  CornerRadius="8"
+                                  Foreground="White">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" Foreground="White" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBlock Grid.Column="4" Text="Context Col"
+                                   Foreground="#1D9E75" FontSize="12"
+                                   FontFamily="Monospace" FontWeight="Medium"
+                                   VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="6"
+                                 Text="{Binding ContextCol}"
+                                 PlaceholderText="branch_mst_id"
+                                 Width="160"
+                                 Background="#252526"
+                                 BorderBrush="#3e3e42"
+                                 BorderThickness="0.5"
+                                 CornerRadius="8"
+                                 Foreground="White"
+                                 Padding="12,0"
+                                 VerticalContentAlignment="Center"/>
+                        <Button Grid.Column="8"
+                                Command="{Binding LoadTablesCommand}"
+                                Background="#1D9E75"
+                                BorderThickness="0"
+                                CornerRadius="8"
+                                Foreground="White"
+                                Padding="14,8">
+                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                <material:MaterialIcon Kind="Table" Width="14" Height="14" VerticalAlignment="Center"/>
+                                <TextBlock Text="Load Tables &amp; Views" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+
+                <TextBlock Text="credentials are stored locally · never transmitted"
+                           Foreground="#5F5E5A"
+                           FontFamily="Monospace"
+                           FontSize="11"
+                           HorizontalAlignment="Right"/>
+
+            </StackPanel>
+
+            <!-- ══ TAB 1 · Script Generator ══════════════════════════════ -->
+            <Grid IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=1}"
+                  ColumnDefinitions="380, 16, *">
+
+                <Border Grid.Column="0"
+                        Background="#1e1e1e"
+                        BorderThickness="0.5"
+                        BorderBrush="#3e3e42"
+                        CornerRadius="12"
+                        Padding="20">
+                    <Grid RowDefinitions="Auto, *, Auto">
+
+                        <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,18">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <material:MaterialIcon Kind="CodeBraces" Foreground="#1D9E75" Width="18" Height="18" VerticalAlignment="Center"/>
+                                <TextBlock Text="GENERATOR"
+                                           Foreground="#1D9E75"
+                                           FontFamily="Monospace"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"
+                                           LetterSpacing="2"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock Text="Script Generator"
+                                       Foreground="White"
+                                       FontSize="22"
+                                       FontWeight="Medium"/>
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel Spacing="14">
+
+                                <Grid ColumnDefinitions="*, 12, *">
+                                    <StackPanel Grid.Column="0" Spacing="6">
+                                        <TextBlock Text="Type" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                                        <ComboBox ItemsSource="{Binding ScriptTypes}"
+                                                  SelectedItem="{Binding SelectedScriptType}"
+                                                  HorizontalAlignment="Stretch"
+                                                  Background="#252526"
+                                                  BorderBrush="#3e3e42"
+                                                  BorderThickness="0.5"
+                                                  CornerRadius="8"
+                                                  Foreground="White">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" Foreground="White"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Spacing="6">
+                                        <TextBlock Text="Template" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                                        <ComboBox ItemsSource="{Binding Templates}"
+                                                  SelectedItem="{Binding SelectedTemplate}"
+                                                  HorizontalAlignment="Stretch"
+                                                  Background="#252526"
+                                                  BorderBrush="#3e3e42"
+                                                  BorderThickness="0.5"
+                                                  CornerRadius="8"
+                                                  Foreground="White">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" Foreground="White"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
+
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Procedure Name" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                                    <TextBox Text="{Binding ProcedureName}"
+                                             PlaceholderText="usp_Order_Save"
+                                             Background="#252526"
+                                             BorderBrush="#1D9E75"
+                                             BorderThickness="0.5"
+                                             CornerRadius="8"
+                                             Foreground="White"
+                                             Padding="12,0"
+                                             VerticalContentAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="Master Table" Foreground="#1D9E75" FontSize="12"
+                                               FontFamily="Monospace" FontWeight="Medium"/>
+                                    <AutoCompleteBox x:Name="TableSearchBox"
+                                                     MinHeight="36"
+                                                     ItemsSource="{Binding DatabaseObjects}"
+                                                     SelectedItem="{Binding SelectedScriptTable}"
+                                                     PlaceholderText="Search tables..."
+                                                     HorizontalAlignment="Stretch"
+                                                     Background="#252526"
+                                                     BorderBrush="#3e3e42"
+                                                     BorderThickness="0.5"
+                                                     CornerRadius="8"
+                                                     Foreground="White"
+                                                     Padding="12,8">
+                                        <AutoCompleteBox.ItemTemplate>
+                                            <DataTemplate x:DataType="models:DatabaseObject">
+                                                <TextBlock Text="{Binding Name}" Foreground="White" Padding="0,8"/>
+                                            </DataTemplate>
+                                        </AutoCompleteBox.ItemTemplate>
+                                    </AutoCompleteBox>
+                                </StackPanel>
+
+                                <StackPanel Spacing="6"
+                                            IsVisible="{Binding TemplateRequiresLineTable}">
+                                    <TextBlock Text="Line Table" Foreground="#1D9E75" FontSize="12"
+                                               FontFamily="Monospace" FontWeight="Medium"/>
+                                    <AutoCompleteBox MinHeight="36"
+                                                     ItemsSource="{Binding DatabaseObjects}"
+                                                     SelectedItem="{Binding SelectedLineTable}"
+                                                     PlaceholderText="Search line table..."
+                                                     HorizontalAlignment="Stretch"
+                                                     Background="#252526"
+                                                     BorderBrush="#3e3e42"
+                                                     BorderThickness="0.5"
+                                                     CornerRadius="8"
+                                                     Foreground="White"
+                                                     Padding="12,8">
+                                        <AutoCompleteBox.ItemTemplate>
+                                            <DataTemplate x:DataType="models:DatabaseObject">
+                                                <TextBlock Text="{Binding Name}" Foreground="White" Padding="0,8"/>
+                                            </DataTemplate>
+                                        </AutoCompleteBox.ItemTemplate>
+                                    </AutoCompleteBox>
+                                </StackPanel>
+
+                                <Border Height="0.5" Background="#3e3e42" Margin="0,4,0,0"/>
+
+                                <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
+                                    <TextBlock Grid.Column="0"
+                                               Text="COLUMNS"
+                                               Foreground="#1D9E75"
+                                               FontSize="11"
+                                               FontFamily="Monospace"
+                                               FontWeight="SemiBold"
+                                               LetterSpacing="2"
+                                               VerticalAlignment="Center"/>
+                                    <Button Grid.Column="1"
+                                            Command="{Binding AddColumnCommand}"
+                                            Background="Transparent"
+                                            BorderBrush="#3e3e42"
+                                            BorderThickness="0.5"
+                                            CornerRadius="8"
+                                            Foreground="#1D9E75"
+                                            Padding="10,4">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <material:MaterialIcon Kind="Plus" Width="12" Height="12" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Add" FontSize="12" FontFamily="Monospace" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+
+                                <ItemsControl ItemsSource="{Binding Columns}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#252526"
+                                                    BorderBrush="#3e3e42"
+                                                    BorderThickness="0.5"
+                                                    CornerRadius="8"
+                                                    Padding="10,8"
+                                                    Margin="0,0,0,6">
+                                                <Grid RowDefinitions="Auto, 6, Auto">
+                                                    <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto">
+                                                        <CheckBox Grid.Column="0"
+                                                                  IsChecked="{Binding UseColumn}"
+                                                                  Content="USE"
+                                                                  Foreground="#888780"
+                                                                  FontSize="11"
+                                                                  FontFamily="Monospace"
+                                                                  Margin="0,0,8,0"/>
+                                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding ColumnName}"
+                                                                       Foreground="White"
+                                                                       FontFamily="Monospace"
+                                                                       FontSize="13"
+                                                                       VerticalAlignment="Center"/>
+                                                            <Border Background="#1a3a2a" CornerRadius="4" Padding="6,2">
+                                                                <TextBlock Text="{Binding DataType}"
+                                                                           Foreground="#1D9E75"
+                                                                           FontFamily="Monospace"
+                                                                           FontSize="11"/>
+                                                            </Border>
+                                                        </StackPanel>
+                                                        <Button Grid.Column="2"
+                                                                Command="{Binding $parent[ItemsControl].DataContext.RemoveColumnCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Foreground="#5F5E5A"
+                                                                Padding="4"
+                                                                Width="22" Height="22">
+                                                            <material:MaterialIcon Kind="Close" Width="12" Height="12"/>
+                                                        </Button>
+                                                    </Grid>
+                                                    <Grid Grid.Row="2" ColumnDefinitions="Auto, Auto, Auto, Auto, *, Auto">
+                                                        <CheckBox Grid.Column="0" IsChecked="{Binding IsNull}"
+                                                                  Content="NULL" Foreground="#888780"
+                                                                  FontSize="10" FontFamily="Monospace" Margin="0,0,6,0"/>
+                                                        <CheckBox Grid.Column="1" IsChecked="{Binding IsPK}"
+                                                                  Content="PK" Foreground="#888780"
+                                                                  FontSize="10" FontFamily="Monospace" Margin="0,0,6,0"/>
+                                                        <CheckBox Grid.Column="2" IsChecked="{Binding IsID}"
+                                                                  Content="ID" Foreground="#888780"
+                                                                  FontSize="10" FontFamily="Monospace" Margin="0,0,6,0"/>
+                                                        <CheckBox Grid.Column="3" IsChecked="{Binding IsArray}"
+                                                                  Content="ARRAY" Foreground="#888780"
+                                                                  FontSize="10" FontFamily="Monospace" Margin="0,0,10,0"/>
+                                                        <TextBox Grid.Column="5"
+                                                                 Text="{Binding DefaultValue}"
+                                                                 PlaceholderText="Default"
+                                                                 Background="#1e1e1e"
+                                                                 BorderBrush="#3e3e42"
+                                                                 BorderThickness="0.5"
+                                                                 CornerRadius="6"
+                                                                 Foreground="#888780"
+                                                                 FontSize="11"
+                                                                 FontFamily="Monospace"
+                                                                 Padding="8,0"
+                                                                 Width="90"
+                                                                 Height="26"
+                                                                 VerticalContentAlignment="Center"/>
+                                                    </Grid>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <Grid Grid.Row="2" Margin="0,14,0,0">
+                            <Button Command="{Binding GenerateSqlCommand}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    Background="#1D9E75"
+                                    BorderThickness="0"
+                                    CornerRadius="8"
+                                    Foreground="White"
+                                    Padding="14,10">
+                                <StackPanel Orientation="Horizontal" Spacing="7">
+                                    <material:MaterialIcon Kind="CodeBraces" Width="14" Height="14" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Generate SQL" FontSize="13" FontWeight="Medium" FontFamily="Monospace" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="2"
+                        Background="#1e1e1e"
+                        BorderThickness="0.5"
+                        BorderBrush="#3e3e42"
+                        CornerRadius="12"
+                        Padding="0"
+                        ClipToBounds="True">
+                    <Grid RowDefinitions="Auto, *">
+                        <Grid Grid.Row="0"
+                              ColumnDefinitions="Auto, Auto, *, Auto"
+                              Background="#161616"
+                              Height="44">
+                            <Border Grid.Column="0"
+                                    BorderBrush="#1D9E75"
+                                    BorderThickness="0,0,0,2">
+                                <Button Command="{Binding ShowGeneratedSqlCommand}"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Foreground="White"
+                                        Padding="16,0"
+                                        Height="44">
+                                    <TextBlock Text="Generated SQL" FontFamily="Monospace" FontSize="13" VerticalAlignment="Center"/>
+                                </Button>
+                            </Border>
+                            <Button Grid.Column="1"
+                                    Command="{Binding ShowTemplateEditorCommand}"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Foreground="#888780"
+                                    Padding="16,0"
+                                    Height="44">
+                                <TextBlock Text="Template Editor" FontFamily="Monospace" FontSize="13" VerticalAlignment="Center"/>
+                            </Button>
+                            <Button Grid.Column="3"
+                                    Command="{Binding CopySqlCommand}"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Foreground="#888780"
+                                    Padding="12,0"
+                                    Height="44"
+                                    ToolTip.Tip="Copy to clipboard">
+                                <material:MaterialIcon Kind="ContentCopy" Width="16" Height="16"/>
+                            </Button>
+                        </Grid>
+                        <Border Grid.Row="0" Height="0.5" Background="#3e3e42" VerticalAlignment="Bottom"/>
+                        <Panel Grid.Row="1">
+                            <TextBox IsVisible="{Binding ShowGeneratedSql}"
+                                     Text="{Binding GeneratedSql}"
+                                     IsReadOnly="True"
+                                     AcceptsReturn="True"
+                                     TextWrapping="NoWrap"
+                                     FontFamily="Consolas,Courier New,Monospace"
+                                     FontSize="13"
+                                     Foreground="#D4D4D4"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Padding="20,16"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                     CaretBrush="#1D9E75"/>
+
+                            <Grid IsVisible="{Binding ShowTemplateEditor}"
+                                  RowDefinitions="*, Auto">
+                                <TextBox Grid.Row="0"
+                                         Text="{Binding TemplateContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         AcceptsReturn="True"
+                                         TextWrapping="NoWrap"
+                                         FontFamily="Consolas,Courier New,Monospace"
+                                         FontSize="13"
+                                         Foreground="#D4D4D4"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Padding="20,16"
+                                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                         CaretBrush="#1D9E75"/>
+                                <Grid Grid.Row="1"
+                                      ColumnDefinitions="*, Auto, 8, Auto"
+                                      Background="#161616"
+                                      MinHeight="42"
+                                      Margin="0,0,0,0">
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding TemplateStatusText}"
+                                               Foreground="#888780"
+                                               FontSize="11"
+                                               FontFamily="Monospace"
+                                               VerticalAlignment="Center"
+                                               Margin="16,0"/>
+                                    <Button Grid.Column="1"
+                                            Command="{Binding ReloadTemplateCommand}"
+                                            Background="Transparent"
+                                            BorderBrush="#3e3e42"
+                                            BorderThickness="0.5"
+                                            CornerRadius="6"
+                                            Foreground="#888780"
+                                            Padding="10,5"
+                                            VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <material:MaterialIcon Kind="Refresh" Width="13" Height="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Reload" FontSize="12" FontFamily="Monospace" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Grid.Column="3"
+                                            Command="{Binding SaveTemplateCommand}"
+                                            Background="#1D9E75"
+                                            BorderThickness="0"
+                                            CornerRadius="6"
+                                            Foreground="White"
+                                            Padding="10,5"
+                                            Margin="0,0,12,0"
+                                            VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <material:MaterialIcon Kind="ContentSave" Width="13" Height="13" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Save" FontSize="12" FontFamily="Monospace" FontWeight="Medium" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Panel>
+                    </Grid>
+                </Border>
+
+            </Grid>
+
+            <!-- ══ TAB 2 · View Builder ══════════════════════════════════ -->
+            <!-- IsVisible must bind on MainWindowViewModel (this DataContext),  -->
+            <!-- so we wrap the UserControl in a Panel that owns the visibility. -->
+            <Panel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=2}">
+                <views:ViewBuilderView DataContext="{Binding ViewBuilder}"/>
+            </Panel>
+
+        </Panel>
+
+    </SplitView>
+</Window>

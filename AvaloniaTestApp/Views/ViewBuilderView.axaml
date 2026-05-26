@@ -1,0 +1,1023 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AvaloniaTestApp.ViewModels"
+             xmlns:models="using:AvaloniaTestApp.Models"
+             xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="AvaloniaTestApp.Views.ViewBuilderView"
+             x:DataType="vm:ViewBuilderViewModel">
+
+    <Grid RowDefinitions="Auto, *, Auto">
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- ROW 0 · Toolbar                                                -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0"
+                Background="#161616"
+                BorderBrush="#3e3e42"
+                BorderThickness="0,0,0,0.5"
+                Padding="16,10">
+            <Grid ColumnDefinitions="Auto, 16, Auto, 16, Auto, 8, Auto, 8, Auto, 8, Auto, 8, Auto">
+
+                <TextBlock Grid.Column="0"
+                           Text="View name"
+                           Foreground="#888780"
+                           FontFamily="Monospace"
+                           FontSize="11"
+                           VerticalAlignment="Center"/>
+
+                <TextBox Grid.Column="2"
+                         Text="{Binding ViewName}"
+                         Width="180"
+                         Background="#252526"
+                         BorderBrush="#3e3e42"
+                         BorderThickness="0.5"
+                         CornerRadius="6"
+                         Foreground="White"
+                         FontFamily="Monospace"
+                         FontSize="13"
+                         Padding="10,0"
+                         Height="32"
+                         VerticalContentAlignment="Center"/>
+
+                <AutoCompleteBox Grid.Column="4"
+                                 ItemsSource="{Binding AvailableTables}"
+                                 SelectedItem="{Binding SelectedTableToAdd}"
+                                 Width="220"
+                                 MinHeight="32"
+                                 Background="#252526"
+                                 BorderBrush="#3e3e42"
+                                 BorderThickness="0.5"
+                                 CornerRadius="6"
+                                 Foreground="White"
+                                 PlaceholderText="Search tables...">
+                    <AutoCompleteBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:DatabaseObject">
+                            <TextBlock Text="{Binding Name}"
+                                       Foreground="White"
+                                       FontFamily="Monospace"
+                                       FontSize="12"
+                                       Padding="0,8"/>
+                        </DataTemplate>
+                    </AutoCompleteBox.ItemTemplate>
+                </AutoCompleteBox>
+
+                <Button Grid.Column="6"
+                        Command="{Binding AddTableCommand}"
+                        Background="#1D9E75"
+                        BorderThickness="0"
+                        CornerRadius="6"
+                        Foreground="White"
+                        Height="32"
+                        Padding="14,0">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <material:MaterialIcon Kind="Plus" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="Add Table" FontSize="12" FontFamily="Monospace" FontWeight="Medium" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="8"
+                        Command="{Binding AddCteNodeCommand}"
+                        Background="#252526"
+                        BorderBrush="#3e3e42"
+                        BorderThickness="0.5"
+                        CornerRadius="6"
+                        Foreground="#D4D4D4"
+                        Height="32"
+                        Padding="14,0">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <material:MaterialIcon Kind="SourceBranch" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="Add CTE" FontSize="12" FontFamily="Monospace" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="10"
+                        Command="{Binding GenerateSqlCommand}"
+                        Background="#252526"
+                        BorderBrush="#3e3e42"
+                        BorderThickness="0.5"
+                        CornerRadius="6"
+                        Foreground="White"
+                        Height="32"
+                        Padding="14,0">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <material:MaterialIcon Kind="CodeBraces" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="Generate SQL" FontSize="12" FontFamily="Monospace" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="12"
+                        Command="{Binding CopySqlCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="#888780"
+                        Height="32"
+                        Width="32"
+                        Padding="0"
+                        ToolTip.Tip="Copy SQL to clipboard">
+                    <material:MaterialIcon Kind="ContentCopy" Width="15" Height="15"/>
+                </Button>
+
+            </Grid>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- ROW 1 · Canvas + Sidebar                                       -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <Grid Grid.Row="1" ColumnDefinitions="*, 1, 300">
+
+            <!-- Canvas area -->
+            <Grid Grid.Column="0">
+
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              Background="#141414">
+                    <Canvas x:Name="TableCanvas"
+                            MinWidth="2000"
+                            MinHeight="1200">
+                        <ItemsControl x:Name="TablesItemsControl"
+                                      ItemsSource="{Binding Tables}"
+                                      Width="2000"
+                                      Height="1200">
+                            <ItemsControl.Styles>
+                                <Style Selector="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{ReflectionBinding X}"/>
+                                    <Setter Property="Canvas.Top" Value="{ReflectionBinding Y}"/>
+                                </Style>
+                            </ItemsControl.Styles>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:ViewBuilderTable">
+                                    <Border Width="240"
+                                            Background="#1e1e1e"
+                                            BorderBrush="#3e3e42"
+                                            BorderThickness="0.5"
+                                            CornerRadius="10"
+                                            ClipToBounds="True"
+                                            Tag="{Binding}"
+                                            Cursor="SizeAll">
+                                        <Grid RowDefinitions="Auto, *">
+
+                                            <!-- Header -->
+                                            <Grid Grid.Row="0"
+                                                  ColumnDefinitions="Auto, *, Auto"
+                                                  Background="#252526"
+                                                  Height="40">
+                                                <material:MaterialIcon Grid.Column="0"
+                                                                       Kind="Table"
+                                                                       Foreground="#1D9E75"
+                                                                       Width="14" Height="14"
+                                                                       Margin="12,0,6,0"
+                                                                       VerticalAlignment="Center"/>
+                                                <StackPanel Grid.Column="1"
+                                                            Orientation="Vertical"
+                                                            VerticalAlignment="Center"
+                                                            Spacing="1">
+                                                    <TextBlock Text="{Binding TableName}"
+                                                               Foreground="White"
+                                                               FontFamily="Monospace"
+                                                               FontSize="12"
+                                                               FontWeight="Medium"/>
+                                                    <TextBlock Text="{Binding Alias}"
+                                                               Foreground="#1D9E75"
+                                                               FontFamily="Monospace"
+                                                               FontSize="10"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="2"
+                                                        Command="{Binding $parent[ItemsControl].DataContext.RemoveTableCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Foreground="#5F5E5A"
+                                                        Width="32" Height="32"
+                                                        Padding="0"
+                                                        Cursor="Arrow">
+                                                    <material:MaterialIcon Kind="Close" Width="12" Height="12"/>
+                                                </Button>
+                                            </Grid>
+
+                                            <!-- Columns -->
+                                            <ScrollViewer Grid.Row="1"
+                                                          MaxHeight="340"
+                                                          VerticalScrollBarVisibility="Auto"
+                                                          HorizontalScrollBarVisibility="Disabled"
+                                                          Cursor="Arrow">
+                                                <ItemsControl ItemsSource="{Binding Columns}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="models:ViewColumn">
+                                                            <Grid ColumnDefinitions="Auto, Auto, *, Auto"
+                                                                  Height="28">
+                                                                <CheckBox Grid.Column="0"
+                                                                          IsChecked="{Binding IsSelected}"
+                                                                          Width="28"
+                                                                          Margin="6,0,0,0"
+                                                                          VerticalAlignment="Center"
+                                                                          Cursor="Arrow"/>
+                                                                <Panel Grid.Column="1"
+                                                                       Width="16"
+                                                                       Margin="2,0,4,0"
+                                                                       VerticalAlignment="Center">
+                                                                    <material:MaterialIcon Kind="Key"
+                                                                               Foreground="#EF9F27"
+                                                                               Width="12" Height="12"
+                                                                               IsVisible="{Binding IsPrimaryKey}"/>
+                                                                    <material:MaterialIcon Kind="LinkVariant"
+                                                                               Foreground="#888780"
+                                                                               Width="12" Height="12"
+                                                                               IsVisible="{Binding IsForeignKey}"/>
+                                                                </Panel>
+                                                                <TextBlock Grid.Column="2"
+                                                                           Text="{Binding ColumnName}"
+                                                                           Foreground="#D4D4D4"
+                                                                           FontFamily="Monospace"
+                                                                           FontSize="12"
+                                                                           VerticalAlignment="Center"
+                                                                           TextTrimming="CharacterEllipsis"/>
+                                                                <Border Grid.Column="3"
+                                                                        Background="#1a2a20"
+                                                                        CornerRadius="3"
+                                                                        Padding="5,2"
+                                                                        Margin="4,0,8,0"
+                                                                        VerticalAlignment="Center">
+                                                                    <TextBlock Text="{Binding DataType}"
+                                                                               Foreground="#1D9E75"
+                                                                               FontFamily="Monospace"
+                                                                               FontSize="10"/>
+                                                                </Border>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </ScrollViewer>
+
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <ItemsControl x:Name="CteItemsControl"
+                                      ItemsSource="{Binding CteNodes}"
+                                      Width="2000"
+                                      Height="1200">
+                            <ItemsControl.Styles>
+                                <Style Selector="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{ReflectionBinding X}"/>
+                                    <Setter Property="Canvas.Top" Value="{ReflectionBinding Y}"/>
+                                </Style>
+                            </ItemsControl.Styles>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:CteNode">
+                                    <Border Width="280"
+                                            Background="#1e1e1e"
+                                            BorderBrush="#1D9E75"
+                                            BorderThickness="0.5"
+                                            CornerRadius="10"
+                                            ClipToBounds="True"
+                                            Tag="{Binding}"
+                                            Cursor="SizeAll">
+                                        <Grid RowDefinitions="Auto, *">
+                                            <Grid Grid.Row="0"
+                                                  ColumnDefinitions="Auto, *, Auto"
+                                                  Background="#252526"
+                                                  Height="40">
+                                                <material:MaterialIcon Grid.Column="0"
+                                                                       Kind="SourceBranch"
+                                                                       Foreground="#1D9E75"
+                                                                       Width="14" Height="14"
+                                                                       Margin="12,0,6,0"
+                                                                       VerticalAlignment="Center"/>
+                                                <StackPanel Grid.Column="1"
+                                                            Orientation="Vertical"
+                                                            VerticalAlignment="Center"
+                                                            Spacing="1">
+                                                    <TextBox Text="{Binding Name}"
+                                                             Background="Transparent"
+                                                             BorderThickness="0"
+                                                             Foreground="White"
+                                                             FontFamily="Monospace"
+                                                             FontSize="12"
+                                                             FontWeight="Medium"
+                                                             Padding="0"
+                                                             Cursor="Arrow"/>
+                                                    <ComboBox ItemsSource="{Binding AvailableSourceTables}"
+                                                              SelectedItem="{Binding SourceTableAlias}"
+                                                              Background="Transparent"
+                                                              BorderThickness="0"
+                                                              Foreground="#1D9E75"
+                                                              FontFamily="Monospace"
+                                                              FontSize="10"
+                                                              MinHeight="16"
+                                                              Padding="0"
+                                                              Cursor="Arrow"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="2"
+                                                        Command="{Binding $parent[ItemsControl].DataContext.RemoveCteNodeCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Foreground="#5F5E5A"
+                                                        Width="32" Height="32"
+                                                        Padding="0"
+                                                        Cursor="Arrow">
+                                                    <material:MaterialIcon Kind="Close" Width="12" Height="12"/>
+                                                </Button>
+                                            </Grid>
+
+                                            <ScrollViewer Grid.Row="1"
+                                                          MaxHeight="420"
+                                                          VerticalScrollBarVisibility="Auto"
+                                                          HorizontalScrollBarVisibility="Disabled"
+                                                          Cursor="Arrow">
+                                                <StackPanel Spacing="10" Margin="0,8,0,10">
+                                                    <TextBlock Text="PROJECT"
+                                                               Foreground="#5F5E5A"
+                                                               FontFamily="Monospace"
+                                                               FontSize="10"
+                                                               Margin="12,0,0,0"/>
+                                                    <ItemsControl ItemsSource="{Binding OutputColumns}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate x:DataType="models:ViewColumn">
+                                                                <Grid ColumnDefinitions="Auto, Auto, *, Auto"
+                                                                      Height="28">
+                                                                    <CheckBox Grid.Column="0"
+                                                                              IsChecked="{Binding IsSelected}"
+                                                                              Width="28"
+                                                                              Margin="6,0,0,0"
+                                                                              VerticalAlignment="Center"
+                                                                              Cursor="Arrow"/>
+                                                                    <Panel Grid.Column="1"
+                                                                           Width="16"
+                                                                           Margin="2,0,4,0"
+                                                                           VerticalAlignment="Center">
+                                                                        <material:MaterialIcon Kind="Key"
+                                                                                   Foreground="#EF9F27"
+                                                                                   Width="12" Height="12"
+                                                                                   IsVisible="{Binding IsPrimaryKey}"/>
+                                                                        <material:MaterialIcon Kind="LinkVariant"
+                                                                                   Foreground="#888780"
+                                                                                   Width="12" Height="12"
+                                                                                   IsVisible="{Binding IsForeignKey}"/>
+                                                                    </Panel>
+                                                                    <TextBlock Grid.Column="2"
+                                                                               Text="{Binding ColumnName}"
+                                                                               Foreground="#D4D4D4"
+                                                                               FontFamily="Monospace"
+                                                                               FontSize="12"
+                                                                               VerticalAlignment="Center"
+                                                                               TextTrimming="CharacterEllipsis"/>
+                                                                    <Border Grid.Column="3"
+                                                                            Background="#1a2a20"
+                                                                            CornerRadius="3"
+                                                                            Padding="5,2"
+                                                                            Margin="4,0,8,0"
+                                                                            VerticalAlignment="Center">
+                                                                        <TextBlock Text="{Binding DataType}"
+                                                                                   Foreground="#1D9E75"
+                                                                                   FontFamily="Monospace"
+                                                                                   FontSize="10"/>
+                                                                    </Border>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+
+                                                    <Grid ColumnDefinitions="*, Auto" Margin="12,4,12,0">
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="FILTERS"
+                                                                   Foreground="#5F5E5A"
+                                                                   FontFamily="Monospace"
+                                                                   FontSize="10"
+                                                                   VerticalAlignment="Center"/>
+                                                        <Button Grid.Column="1"
+                                                                Command="{Binding $parent[ItemsControl].DataContext.AddCteConditionCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Background="Transparent"
+                                                                BorderBrush="#3e3e42"
+                                                                BorderThickness="0.5"
+                                                                CornerRadius="6"
+                                                                Foreground="#1D9E75"
+                                                                Padding="7,3"
+                                                                Cursor="Arrow">
+                                                            <material:MaterialIcon Kind="Plus" Width="12" Height="12"/>
+                                                        </Button>
+                                                    </Grid>
+
+                                                    <ItemsControl ItemsSource="{Binding Conditions}" Margin="12,0">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate x:DataType="models:WhereCondition">
+                                                                <StackPanel Spacing="6" Margin="0,0,0,8">
+                                                                    <ComboBox ItemsSource="{Binding AvailableColumns}"
+                                                                              SelectedItem="{Binding SelectedColumn}"
+                                                                              Height="30"
+                                                                              Background="#252526"
+                                                                              BorderBrush="#3e3e42"
+                                                                              BorderThickness="0.5"
+                                                                              CornerRadius="6"
+                                                                              Foreground="White"
+                                                                              FontFamily="Monospace"
+                                                                              FontSize="12"/>
+                                                                    <Grid ColumnDefinitions="92, 8, *">
+                                                                        <ComboBox Grid.Column="0"
+                                                                                  ItemsSource="{x:Static models:WhereCondition.Operators}"
+                                                                                  SelectedItem="{Binding Operator}"
+                                                                                  Height="30"
+                                                                                  Background="#252526"
+                                                                                  BorderBrush="#3e3e42"
+                                                                                  BorderThickness="0.5"
+                                                                                  CornerRadius="6"
+                                                                                  Foreground="White"
+                                                                                  FontFamily="Monospace"
+                                                                                  FontSize="12"/>
+                                                                        <TextBox Grid.Column="2"
+                                                                                 Text="{Binding Value}"
+                                                                                 Height="30"
+                                                                                 PlaceholderText="value"
+                                                                                 Background="#252526"
+                                                                                 BorderBrush="#3e3e42"
+                                                                                 BorderThickness="0.5"
+                                                                                 CornerRadius="6"
+                                                                                 Foreground="White"
+                                                                                 FontFamily="Monospace"
+                                                                                 FontSize="12"
+                                                                                 Padding="10,0"
+                                                                                 VerticalContentAlignment="Center"/>
+                                                                    </Grid>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </StackPanel>
+                                            </ScrollViewer>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Canvas>
+                </ScrollViewer>
+
+                <!-- SQL overlay -->
+                <Border IsVisible="{Binding IsSqlPanelOpen}"
+                        Background="#1e1e1e"
+                        BorderBrush="#3e3e42"
+                        BorderThickness="0.5,0,0,0"
+                        HorizontalAlignment="Right"
+                        Width="520">
+                    <Grid RowDefinitions="Auto, *">
+                        <Grid Grid.Row="0"
+                              ColumnDefinitions="*, Auto"
+                              Background="#161616"
+                              Height="44">
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal"
+                                        Spacing="8"
+                                        Margin="16,0"
+                                        VerticalAlignment="Center">
+                                <material:MaterialIcon Kind="CodeBraces" Foreground="#1D9E75" Width="15" Height="15"/>
+                                <TextBlock Text="GENERATED SQL"
+                                           Foreground="#1D9E75"
+                                           FontFamily="Monospace"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"
+                                           LetterSpacing="2"/>
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Command="{Binding CloseSqlPanelCommand}"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Foreground="#888780"
+                                    Width="44" Height="44"
+                                    Padding="0">
+                                <material:MaterialIcon Kind="Close" Width="16" Height="16"/>
+                            </Button>
+                        </Grid>
+                        <TextBox Grid.Row="1"
+                                 Text="{Binding GeneratedSql}"
+                                 IsReadOnly="True"
+                                 AcceptsReturn="True"
+                                 TextWrapping="NoWrap"
+                                 FontFamily="Consolas,Courier New,Monospace"
+                                 FontSize="13"
+                                 Foreground="#D4D4D4"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Padding="20,16"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                 CaretBrush="#1D9E75"/>
+                    </Grid>
+                </Border>
+
+            </Grid>
+
+            <Border Grid.Column="1" Background="#3e3e42"/>
+
+            <!-- Join sidebar -->
+            <Border Grid.Column="2" Background="#1a1a1a">
+                <Grid RowDefinitions="Auto, *, Auto, *">
+                    <Border Grid.Row="0"
+                            Background="#161616"
+                            BorderBrush="#3e3e42"
+                            BorderThickness="0,0,0,0.5"
+                            Height="44">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8"
+                                    Margin="14,0"
+                                    VerticalAlignment="Center">
+                            <material:MaterialIcon Kind="VectorLink" Foreground="#1D9E75" Width="14" Height="14"/>
+                            <TextBlock Text="JOIN CONDITIONS"
+                                       Foreground="#1D9E75"
+                                       FontFamily="Monospace"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       LetterSpacing="2"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding JoinConditions}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:JoinCondition">
+                                    <Border BorderBrush="#3e3e42"
+                                            BorderThickness="0,0,0,0.5"
+                                            Padding="14,14">
+                                        <StackPanel Spacing="10">
+
+                                            <TextBlock Text="{Binding Label}"
+                                                       Foreground="#888780"
+                                                       FontFamily="Monospace"
+                                                       FontSize="11"
+                                                       FontWeight="Medium"/>
+
+                                            <ComboBox ItemsSource="{x:Static models:JoinCondition.JoinTypes}"
+                                                      SelectedItem="{Binding JoinType}"
+                                                      HorizontalAlignment="Stretch"
+                                                      Height="30"
+                                                      Background="#252526"
+                                                      BorderBrush="#3e3e42"
+                                                      BorderThickness="0.5"
+                                                      CornerRadius="6"
+                                                      Foreground="White"
+                                                      FontFamily="Monospace"
+                                                      FontSize="12">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}" Foreground="White" FontFamily="Monospace" FontSize="12"/>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{Binding LeftTableAlias, StringFormat='{}{0}  ·  column'}"
+                                                           Foreground="#5F5E5A"
+                                                           FontFamily="Monospace"
+                                                           FontSize="10"/>
+                                                <ComboBox ItemsSource="{Binding LeftColumns}"
+                                                          SelectedItem="{Binding LeftColumn}"
+                                                          HorizontalAlignment="Stretch"
+                                                          Height="30"
+                                                          Background="#252526"
+                                                          BorderBrush="#3e3e42"
+                                                          BorderThickness="0.5"
+                                                          CornerRadius="6"
+                                                          Foreground="White"
+                                                          FontFamily="Monospace"
+                                                          FontSize="12">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding}" Foreground="White" FontFamily="Monospace" FontSize="12"/>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                            </StackPanel>
+
+                                            <TextBlock Text="="
+                                                       Foreground="#5F5E5A"
+                                                       FontFamily="Monospace"
+                                                       FontSize="14"
+                                                       HorizontalAlignment="Center"/>
+
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{Binding RightTableAlias, StringFormat='{}{0}  ·  column'}"
+                                                           Foreground="#5F5E5A"
+                                                           FontFamily="Monospace"
+                                                           FontSize="10"/>
+                                                <ComboBox ItemsSource="{Binding RightColumns}"
+                                                          SelectedItem="{Binding RightColumn}"
+                                                          HorizontalAlignment="Stretch"
+                                                          Height="30"
+                                                          Background="#252526"
+                                                          BorderBrush="#3e3e42"
+                                                          BorderThickness="0.5"
+                                                          CornerRadius="6"
+                                                          Foreground="White"
+                                                          FontFamily="Monospace"
+                                                          FontSize="12">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding}" Foreground="White" FontFamily="Monospace" FontSize="12"/>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                            </StackPanel>
+
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <Border Grid.Row="2"
+                            IsVisible="False"
+                            Background="#161616"
+                            BorderBrush="#3e3e42"
+                            BorderThickness="0,0.5,0,0.5"
+                            Height="44">
+                        <Grid ColumnDefinitions="*, Auto"
+                              Margin="14,0">
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal"
+                                        Spacing="8"
+                                        VerticalAlignment="Center">
+                                <material:MaterialIcon Kind="SourceBranch" Foreground="#1D9E75" Width="14" Height="14"/>
+                                <TextBlock Text="CTE NODES"
+                                           Foreground="#1D9E75"
+                                           FontFamily="Monospace"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"
+                                           LetterSpacing="2"/>
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Command="{Binding AddCteNodeCommand}"
+                                    Background="Transparent"
+                                    BorderBrush="#3e3e42"
+                                    BorderThickness="0.5"
+                                    CornerRadius="6"
+                                    Foreground="#1D9E75"
+                                    Padding="8,4"
+                                    VerticalAlignment="Center">
+                                <material:MaterialIcon Kind="Plus" Width="13" Height="13"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="3" IsVisible="False" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding CteNodes}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:CteNode">
+                                    <Border BorderBrush="#3e3e42"
+                                            BorderThickness="0,0,0,0.5"
+                                            Padding="14,14">
+                                        <StackPanel Spacing="10">
+
+                                            <Grid ColumnDefinitions="*, Auto">
+                                                <TextBlock Grid.Column="0"
+                                                           Text="CTE NODE"
+                                                           Foreground="#888780"
+                                                           FontFamily="Monospace"
+                                                           FontSize="11"
+                                                           FontWeight="Medium"
+                                                           VerticalAlignment="Center"/>
+                                                <Button Grid.Column="1"
+                                                        Command="{Binding $parent[ItemsControl].DataContext.RemoveCteNodeCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Foreground="#5F5E5A"
+                                                        Width="24"
+                                                        Height="24"
+                                                        Padding="0">
+                                                    <material:MaterialIcon Kind="Close" Width="12" Height="12"/>
+                                                </Button>
+                                            </Grid>
+
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="name"
+                                                           Foreground="#5F5E5A"
+                                                           FontFamily="Monospace"
+                                                           FontSize="10"/>
+                                                <TextBox Text="{Binding Name}"
+                                                         Height="30"
+                                                         Background="#252526"
+                                                         BorderBrush="#3e3e42"
+                                                         BorderThickness="0.5"
+                                                         CornerRadius="6"
+                                                         Foreground="White"
+                                                         FontFamily="Monospace"
+                                                         FontSize="12"
+                                                         Padding="10,0"
+                                                         VerticalContentAlignment="Center"/>
+                                            </StackPanel>
+
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="source alias"
+                                                           Foreground="#5F5E5A"
+                                                           FontFamily="Monospace"
+                                                           FontSize="10"/>
+                                                <ComboBox ItemsSource="{Binding AvailableSourceTables}"
+                                                          SelectedItem="{Binding SourceTableAlias}"
+                                                          Height="30"
+                                                          Background="#252526"
+                                                          BorderBrush="#3e3e42"
+                                                          BorderThickness="0.5"
+                                                          CornerRadius="6"
+                                                          Foreground="White"
+                                                          FontFamily="Monospace"
+                                                          FontSize="12"/>
+                                            </StackPanel>
+
+                                            <StackPanel Spacing="6">
+                                                <TextBlock Text="projected columns"
+                                                           Foreground="#5F5E5A"
+                                                           FontFamily="Monospace"
+                                                           FontSize="10"/>
+                                                <Border Background="#202020"
+                                                        BorderBrush="#3e3e42"
+                                                        BorderThickness="0.5"
+                                                        CornerRadius="6"
+                                                        MaxHeight="180"
+                                                        ClipToBounds="True">
+                                                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                                                  HorizontalScrollBarVisibility="Disabled">
+                                                        <ItemsControl ItemsSource="{Binding OutputColumns}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate x:DataType="models:ViewColumn">
+                                                                    <Grid ColumnDefinitions="Auto, Auto, *, Auto"
+                                                                          Height="28">
+                                                                        <CheckBox Grid.Column="0"
+                                                                                  IsChecked="{Binding IsSelected}"
+                                                                                  Width="28"
+                                                                                  Margin="6,0,0,0"
+                                                                                  VerticalAlignment="Center"/>
+                                                                        <Panel Grid.Column="1"
+                                                                               Width="16"
+                                                                               Margin="2,0,4,0"
+                                                                               VerticalAlignment="Center">
+                                                                            <material:MaterialIcon Kind="Key"
+                                                                                       Foreground="#EF9F27"
+                                                                                       Width="12" Height="12"
+                                                                                       IsVisible="{Binding IsPrimaryKey}"/>
+                                                                            <material:MaterialIcon Kind="LinkVariant"
+                                                                                       Foreground="#888780"
+                                                                                       Width="12" Height="12"
+                                                                                       IsVisible="{Binding IsForeignKey}"/>
+                                                                        </Panel>
+                                                                        <TextBlock Grid.Column="2"
+                                                                                   Text="{Binding ColumnName}"
+                                                                                   Foreground="#D4D4D4"
+                                                                                   FontFamily="Monospace"
+                                                                                   FontSize="12"
+                                                                                   VerticalAlignment="Center"
+                                                                                   TextTrimming="CharacterEllipsis"/>
+                                                                        <Border Grid.Column="3"
+                                                                                Background="#1a2a20"
+                                                                                CornerRadius="3"
+                                                                                Padding="5,2"
+                                                                                Margin="4,0,8,0"
+                                                                                VerticalAlignment="Center">
+                                                                            <TextBlock Text="{Binding DataType}"
+                                                                                       Foreground="#1D9E75"
+                                                                                       FontFamily="Monospace"
+                                                                                       FontSize="10"/>
+                                                                        </Border>
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </ScrollViewer>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <Grid ColumnDefinitions="*, Auto">
+                                                <TextBlock Grid.Column="0"
+                                                           Text="filters"
+                                                           Foreground="#5F5E5A"
+                                                           FontFamily="Monospace"
+                                                           FontSize="10"
+                                                           VerticalAlignment="Center"/>
+                                                <Button Grid.Column="1"
+                                                        Command="{Binding $parent[ItemsControl].DataContext.AddCteConditionCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent"
+                                                        BorderBrush="#3e3e42"
+                                                        BorderThickness="0.5"
+                                                        CornerRadius="6"
+                                                        Foreground="#1D9E75"
+                                                        Padding="7,3">
+                                                    <material:MaterialIcon Kind="Plus" Width="12" Height="12"/>
+                                                </Button>
+                                            </Grid>
+
+                                            <ItemsControl ItemsSource="{Binding Conditions}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="models:WhereCondition">
+                                                        <StackPanel Spacing="6" Margin="0,0,0,8">
+                                                            <ComboBox ItemsSource="{Binding AvailableColumns}"
+                                                                      SelectedItem="{Binding SelectedColumn}"
+                                                                      Height="30"
+                                                                      Background="#252526"
+                                                                      BorderBrush="#3e3e42"
+                                                                      BorderThickness="0.5"
+                                                                      CornerRadius="6"
+                                                                      Foreground="White"
+                                                                      FontFamily="Monospace"
+                                                                      FontSize="12"/>
+                                                            <Grid ColumnDefinitions="92, 8, *">
+                                                                <ComboBox Grid.Column="0"
+                                                                          ItemsSource="{x:Static models:WhereCondition.Operators}"
+                                                                          SelectedItem="{Binding Operator}"
+                                                                          Height="30"
+                                                                          Background="#252526"
+                                                                          BorderBrush="#3e3e42"
+                                                                          BorderThickness="0.5"
+                                                                          CornerRadius="6"
+                                                                          Foreground="White"
+                                                                          FontFamily="Monospace"
+                                                                          FontSize="12"/>
+                                                                <TextBox Grid.Column="2"
+                                                                         Text="{Binding Value}"
+                                                                         Height="30"
+                                                                         PlaceholderText="value"
+                                                                         Background="#252526"
+                                                                         BorderBrush="#3e3e42"
+                                                                         BorderThickness="0.5"
+                                                                         CornerRadius="6"
+                                                                         Foreground="White"
+                                                                         FontFamily="Monospace"
+                                                                         FontSize="12"
+                                                                         Padding="10,0"
+                                                                         VerticalContentAlignment="Center"/>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <Border Grid.Row="2"
+                            Background="#161616"
+                            BorderBrush="#3e3e42"
+                            BorderThickness="0,0.5,0,0.5"
+                            Height="44">
+                        <Grid ColumnDefinitions="*, Auto"
+                              Margin="14,0">
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal"
+                                        Spacing="8"
+                                        VerticalAlignment="Center">
+                                <material:MaterialIcon Kind="FilterVariant" Foreground="#1D9E75" Width="14" Height="14"/>
+                                <TextBlock Text="WHERE CONDITIONS"
+                                           Foreground="#1D9E75"
+                                           FontFamily="Monospace"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"
+                                           LetterSpacing="2"/>
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Command="{Binding AddWhereConditionCommand}"
+                                    Background="Transparent"
+                                    BorderBrush="#3e3e42"
+                                    BorderThickness="0.5"
+                                    CornerRadius="6"
+                                    Foreground="#1D9E75"
+                                    Padding="8,4"
+                                    VerticalAlignment="Center">
+                                <material:MaterialIcon Kind="Plus" Width="13" Height="13"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding WhereConditions}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:WhereCondition">
+                                    <Border BorderBrush="#3e3e42"
+                                            BorderThickness="0,0,0,0.5"
+                                            Padding="14,14">
+                                        <StackPanel Spacing="10">
+
+                                            <Grid ColumnDefinitions="*, Auto">
+                                                <TextBlock Grid.Column="0"
+                                                           Text="CONDITION NODE"
+                                                           Foreground="#888780"
+                                                           FontFamily="Monospace"
+                                                           FontSize="11"
+                                                           FontWeight="Medium"
+                                                           VerticalAlignment="Center"/>
+                                                <Button Grid.Column="1"
+                                                        Command="{Binding $parent[ItemsControl].DataContext.RemoveWhereConditionCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Foreground="#5F5E5A"
+                                                        Width="24"
+                                                        Height="24"
+                                                        Padding="0">
+                                                    <material:MaterialIcon Kind="Close" Width="12" Height="12"/>
+                                                </Button>
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="72, 8, *">
+                                                <ComboBox Grid.Column="0"
+                                                          ItemsSource="{x:Static models:WhereCondition.LogicalOperators}"
+                                                          SelectedItem="{Binding LogicalOperator}"
+                                                          Height="30"
+                                                          Background="#252526"
+                                                          BorderBrush="#3e3e42"
+                                                          BorderThickness="0.5"
+                                                          CornerRadius="6"
+                                                          Foreground="White"
+                                                          FontFamily="Monospace"
+                                                          FontSize="12"/>
+                                                <ComboBox Grid.Column="2"
+                                                          ItemsSource="{Binding AvailableColumns}"
+                                                          SelectedItem="{Binding SelectedColumn}"
+                                                          Height="30"
+                                                          Background="#252526"
+                                                          BorderBrush="#3e3e42"
+                                                          BorderThickness="0.5"
+                                                          CornerRadius="6"
+                                                          Foreground="White"
+                                                          FontFamily="Monospace"
+                                                          FontSize="12">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding}" Foreground="White" FontFamily="Monospace" FontSize="12"/>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="110, 8, *">
+                                                <ComboBox Grid.Column="0"
+                                                          ItemsSource="{x:Static models:WhereCondition.Operators}"
+                                                          SelectedItem="{Binding Operator}"
+                                                          Height="30"
+                                                          Background="#252526"
+                                                          BorderBrush="#3e3e42"
+                                                          BorderThickness="0.5"
+                                                          CornerRadius="6"
+                                                          Foreground="White"
+                                                          FontFamily="Monospace"
+                                                          FontSize="12"/>
+                                                <TextBox Grid.Column="2"
+                                                         Text="{Binding Value}"
+                                                         Height="30"
+                                                         PlaceholderText="value"
+                                                         Background="#252526"
+                                                         BorderBrush="#3e3e42"
+                                                         BorderThickness="0.5"
+                                                         CornerRadius="6"
+                                                         Foreground="White"
+                                                         FontFamily="Monospace"
+                                                         FontSize="12"
+                                                         Padding="10,0"
+                                                         VerticalContentAlignment="Center"/>
+                                            </Grid>
+
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                </Grid>
+            </Border>
+
+        </Grid>
+
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <!-- ROW 2 · Status bar                                             -->
+        <!-- ══════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="2"
+                Background="#161616"
+                BorderBrush="#3e3e42"
+                BorderThickness="0,0.5,0,0"
+                Height="28"
+                Padding="16,0">
+            <TextBlock Text="{Binding StatusText}"
+                       Foreground="#5F5E5A"
+                       FontFamily="Monospace"
+                       FontSize="11"
+                       VerticalAlignment="Center"/>
+        </Border>
+
+    </Grid>
+</UserControl>
