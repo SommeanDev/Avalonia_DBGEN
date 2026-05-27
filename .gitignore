@@ -3,12 +3,16 @@ bin/
 obj/
 publish/
 artifacts/
+releases/
 
 # .NET local tooling and package cache
 .dotnet/
 .nuget/
 *.nupkg
 *.snupkg
+*.zip
+*.msi
+*.exe
 
 # Rider / JetBrains
 .idea/
@@ -29,6 +33,12 @@ Avalonia.Designer.HostApp/
 # Logs and diagnostics
 *.log
 logs/
+
+# Local configuration / secrets
+.env
+.env.*
+*.local.json
+appsettings.Development.json
 
 # OS files
 Thumbs.db

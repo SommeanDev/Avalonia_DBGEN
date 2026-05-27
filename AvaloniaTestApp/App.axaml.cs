@@ -39,7 +39,7 @@ public partial class App : Application
         try
         {
             var mgr = new UpdateManager(new GithubSource(
-                "https://github.com/YOUR_USERNAME/YOUR_REPO",
+                "https://github.com/SommeanDev/Avalonia_DBGEN",
                 null, // null = public repo, no token needed
                 false // false = use latest stable release, not pre-release
             ));
