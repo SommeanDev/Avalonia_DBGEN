@@ -23,12 +23,16 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            // Load settings first — this calls ApplySettings() which calls ApplyTheme()
+            _ = AppSettingsViewModel.Current.LoadAsync();
+
             desktop.MainWindow = new MainWindow
             {
                 DataContext = new MainWindowViewModel(),
             };
 
-            _ = CheckForUpdatesAsync();
+            if (AppSettingsViewModel.Current.AutoCheckUpdates)
+                _ = CheckForUpdatesAsync();
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -59,5 +63,32 @@ public partial class App : Application
         {
             // Never crash the app over a failed update check
         }
+    }
+    
+    // public static void ApplyTheme(string theme)
+    // {
+    //     var themeVariant = theme switch
+    //     {
+    //         "Light"          => Avalonia.Styling.ThemeVariant.Light,
+    //         "Dark"           => Avalonia.Styling.ThemeVariant.Dark,
+    //         _                => Avalonia.Styling.ThemeVariant.Default  // System Default
+    //     };
+    //
+    //     if (Current is not null)
+    //         Current.RequestedThemeVariant = themeVariant;
+    // }
+    
+    public static void ApplyTheme(string theme)
+    {
+        // Always force dark — UI is hardcoded dark, light/system breaks it
+        if (Current is not null)
+            Current.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
+    }
+    
+    public static void ApplyFontSettings(string fontFamily, int fontSize)
+    {
+        if (Current is null) return;
+        Current.Resources["AppFontFamily"] = new Avalonia.Media.FontFamily(fontFamily);
+        Current.Resources["AppFontSize"]   = (double)fontSize;
     }
 }

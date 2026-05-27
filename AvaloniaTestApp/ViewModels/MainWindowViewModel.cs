@@ -41,6 +41,8 @@ public partial class MainWindowViewModel : ReactiveObject
     }
     
     public ViewBuilderViewModel ViewBuilder { get; } = new();
+    public AppSettingsViewModel AppSettings { get; } = AppSettingsViewModel.Current;
+
     // =================== DB ==================
     
     // Properties
@@ -549,6 +551,19 @@ public partial class MainWindowViewModel : ReactiveObject
                 Columns);
 
         ShowGeneratedSql = true;
+        
+        // ── AutoSave ──
+        if (AppSettingsViewModel.Current.AutoSaveEnabled)
+        {
+            var savePath = AppSettingsViewModel.Current.QuerySavePath;
+            if (!string.IsNullOrWhiteSpace(savePath))
+            {
+                var fileName = $"{ProcedureName}_{DateTime.Now:yyyyMMdd_HHmmss}.sql";
+                var fullPath = Path.Combine(savePath, fileName);
+                try { File.WriteAllText(fullPath, GeneratedSql); }
+                catch { /* silent — don't interrupt generation */ }
+            }
+        }
     }
     
     private async Task FetchColumnsForSelectedTableAsync(string tableName)

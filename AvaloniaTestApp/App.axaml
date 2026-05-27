@@ -3,6 +3,7 @@
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              x:Class="AvaloniaTestApp.App"
              xmlns:local="using:AvaloniaTestApp"
+             xmlns:converters="clr-namespace:AvaloniaTestApp.Converters"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -14,4 +15,11 @@
         <FluentTheme />
         <materialIcons:MaterialIconStyles />
     </Application.Styles>
+             
+    <Application.Resources>
+        <converters:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
+        <FontFamily x:Key="AppFontFamily">Cascadia Code</FontFamily>
+        <x:Double   x:Key="AppFontSize">13</x:Double>
+    </Application.Resources>
+             
 </Application>

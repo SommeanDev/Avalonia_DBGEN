@@ -12,6 +12,7 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="SimpleToDoList"
+        RequestedThemeVariant="Dark"
         WindowState="Maximized" WindowStartupLocation="CenterScreen"
         Padding="4">
 
@@ -20,6 +21,20 @@
             <Setter Property="Padding" Value="10,0" />
             <Setter Property="Height" Value="50" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+        
+        <!-- Force sidebar items to stay dark regardless of system theme -->
+        <Style Selector="ListBoxItem /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2d2d2d"/>
+        </Style>
+        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2a2a2a"/>
+        </Style>
+        <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2d2d2d"/>
         </Style>
     </Window.Styles>
 
@@ -76,6 +91,17 @@
                         <Grid ColumnDefinitions="Auto, *">
                             <material:MaterialIcon Grid.Column="0" Kind="WindowOpen" Foreground="Teal" IconSize="30"/>
                             <TextBlock Grid.Column="1" Text="View Generator"
+                                       VerticalAlignment="Center"
+                                       Margin="15,0,0,0"
+                                       IsVisible="{Binding IsPaneOpen}"
+                                       FontFamily="Monospace" />
+                        </Grid>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Grid ColumnDefinitions="Auto, *">
+                            <material:MaterialIcon Grid.Column="0" Kind="Cog" Foreground="Teal" IconSize="30"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="Settings"
                                        VerticalAlignment="Center"
                                        Margin="15,0,0,0"
                                        IsVisible="{Binding IsPaneOpen}"
@@ -610,8 +636,8 @@
                                      IsReadOnly="True"
                                      AcceptsReturn="True"
                                      TextWrapping="NoWrap"
-                                     FontFamily="Consolas,Courier New,Monospace"
-                                     FontSize="13"
+                                     FontFamily="{DynamicResource AppFontFamily}"
+                                     FontSize="{DynamicResource AppFontSize}"
                                      Foreground="#D4D4D4"
                                      Background="Transparent"
                                      BorderThickness="0"
@@ -626,8 +652,8 @@
                                          Text="{Binding TemplateContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                          AcceptsReturn="True"
                                          TextWrapping="NoWrap"
-                                         FontFamily="Consolas,Courier New,Monospace"
-                                         FontSize="13"
+                                         FontFamily="{DynamicResource AppFontFamily}"
+                                         FontSize="{DynamicResource AppFontSize}"
                                          Foreground="#D4D4D4"
                                          Background="Transparent"
                                          BorderThickness="0"
@@ -688,6 +714,13 @@
             <!-- so we wrap the UserControl in a Panel that owns the visibility. -->
             <Panel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=2}">
                 <views:ViewBuilderView DataContext="{Binding ViewBuilder}"/>
+            </Panel>
+            
+            <!-- ══ TAB 3 · Settings ══════════════════════════════════ -->
+            <!-- IsVisible must bind on MainWindowViewModel (this DataContext),  -->
+            <!-- so we wrap the UserControl in a Panel that owns the visibility. -->
+            <Panel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=3}">
+                <views:AppSettingsView DataContext="{Binding AppSettings}"/>
             </Panel>
 
         </Panel>
