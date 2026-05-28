@@ -88,7 +88,7 @@ BEGIN
         END IF;
 
     ELSIF pi_opflag = 'M' THEN
-        DISCARD TEMP;
+        DROP TABLE IF EXISTS pg_temp.g_{{table_name}};
 
         CREATE TEMP TABLE g_{{table_name}} AS
         SELECT * FROM {{schema}}.{{table_name}} WHERE 1 = 2;
@@ -143,7 +143,7 @@ BEGIN
                        k.primary_key_name, t.data_type
                 FROM information_schema.columns t
                 INNER JOIN table_key_master k ON t.table_name = k.table_name
-                WHERE t.table_schema = current_schema()
+                WHERE t.table_schema = '{{schema}}'
                   AND t.table_name = '{{table_name}}'
                   AND t.column_name IN (
                       SELECT c.field_name
@@ -154,14 +154,24 @@ BEGIN
                   )
             ) LOOP
                 IF cnt.data_type NOT IN ('bytea', 'text') THEN
-                    EXECUTE 'SELECT ' || cnt.column_name || '::character varying FROM '
-                            || cnt.temp_table
-                            || ' WHERE {{pk_col}} = ' || pi_{{pk_col}}
-                            INTO lv_newval;
-                    EXECUTE 'SELECT ' || cnt.column_name || '::character varying FROM '
-                            || cnt.table_name
-                            || ' WHERE {{pk_col}} = ' || pi_{{pk_col}}
-                            INTO lv_oldval;
+                    EXECUTE format(
+                        'SELECT %I::character varying FROM %I WHERE %I = $1',
+                        cnt.column_name,
+                        cnt.temp_table,
+                        '{{pk_col}}'
+                    )
+                    INTO lv_newval
+                    USING pi_{{pk_col}};
+
+                    EXECUTE format(
+                        'SELECT %I::character varying FROM %I.%I WHERE %I = $1',
+                        cnt.column_name,
+                        '{{schema}}',
+                        cnt.table_name,
+                        '{{pk_col}}'
+                    )
+                    INTO lv_oldval
+                    USING pi_{{pk_col}};
 
                     IF COALESCE(TRIM(lv_newval), ' ') <> COALESCE(TRIM(lv_oldval), ' ') THEN
                         INSERT INTO modification_log (

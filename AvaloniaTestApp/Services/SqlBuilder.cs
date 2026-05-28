@@ -45,6 +45,14 @@ public static class SqlBuilder
         return $"    IN    {name,-40} {type}[]";
     }
 
+    private static string JoinWithTrailingComma(IEnumerable<string> lines)
+    {
+        var materialized = lines.ToList();
+        return materialized.Count == 0
+            ? string.Empty
+            : string.Join(",\n", materialized) + ",";
+    }
+
     public static Dictionary<string, string> BuildValues(
         string schema,
         string table,
@@ -79,16 +87,17 @@ public static class SqlBuilder
                                            && !AuditColumns.Contains(c.ColumnName)
                                            && c.ColumnName != contextCol).ToList();
 
-        result["business_parameters"] = string.Join(",\n", businessCols.Select(c => SqlParameter(c)));
-        result["insert_business_columns"] = string.Join(",\n", 
-            businessCols.Select(c => $"            {c.ColumnName}")) + ",";
+        result["business_parameters"] = JoinWithTrailingComma(businessCols.Select(c => SqlParameter(c)));
+        result["insert_business_columns"] = JoinWithTrailingComma(
+            businessCols.Select(c => $"            {c.ColumnName}"));
 
-        result["insert_business_values"] = string.Join(",\n", 
-            businessCols.Select(c => $"            pi_{c.ColumnName}")) + ",";
+        result["insert_business_values"] = JoinWithTrailingComma(
+            businessCols.Select(c => $"            pi_{c.ColumnName}"));
 
         result["temp_business_columns"] = result["insert_business_columns"];
         result["temp_business_values"]  = result["insert_business_values"];
-        result["update_business_assignments"] = string.Join(",\n", businessCols.Select(c => $"            {c.ColumnName} = pi_{c.ColumnName},"));
+        result["update_business_assignments"] = JoinWithTrailingComma(
+            businessCols.Select(c => $"            {c.ColumnName} = pi_{c.ColumnName}"));
         return result;
     }
 
