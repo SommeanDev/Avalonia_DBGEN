@@ -45,6 +45,9 @@ public static class SqlBuilder
         return $"    IN    {name,-40} {type}[]";
     }
 
+    private static string SqlArrayTemplateParameter(ColumnViewModel col)
+        => col.IsArray ? SqlArrayParameter(col) : SqlParameter(col);
+
     private static string JoinWithTrailingComma(IEnumerable<string> lines)
     {
         var materialized = lines.ToList();
@@ -98,6 +101,27 @@ public static class SqlBuilder
         result["temp_business_values"]  = result["insert_business_values"];
         result["update_business_assignments"] = JoinWithTrailingComma(
             businessCols.Select(c => $"            {c.ColumnName} = pi_{c.ColumnName}"));
+
+        var arrayBusinessCols = businessCols.Where(c => c.IsArray).ToList();
+
+        result["array_business_parameters"] = JoinWithTrailingComma(
+            businessCols.Select(SqlArrayTemplateParameter));
+        result["insert_array_business_columns"] = JoinWithTrailingComma(
+            businessCols.Select(c => $"            {c.ColumnName}"));
+        result["insert_array_business_values"] = JoinWithTrailingComma(
+            businessCols.Select(c => c.IsArray
+                ? $"    t.{c.ColumnName}"
+                : $"    pi_{c.ColumnName}"));
+        result["temp_array_business_columns"] = result["insert_array_business_columns"];
+        result["temp_array_business_values"] = result["insert_array_business_values"];
+        result["unnest_array_params"] = string.Join(",\n",
+            arrayBusinessCols.Select(c => $"            pi_{c.ColumnName}"));
+        result["unnest_alias_columns"] = string.Join(",\n",
+            arrayBusinessCols.Select(c => $"            {c.ColumnName}"));
+        result["update_array_assignments"] = JoinWithTrailingComma(
+            businessCols.Select(c => $"    {c.ColumnName} = rec.{c.ColumnName}"));
+        result["rec_business_values"] = JoinWithTrailingComma(
+            businessCols.Select(c => $"                    rec.{c.ColumnName}"));
         return result;
     }
 

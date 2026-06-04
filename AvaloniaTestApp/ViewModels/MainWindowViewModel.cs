@@ -125,7 +125,11 @@ public partial class MainWindowViewModel : ReactiveObject
         
         
         // ======================= TAB 2 - Script Gen ===========================
-        AddColumnCommand = ReactiveCommand.Create(() => Columns.Add(new ColumnViewModel()));
+        AddColumnCommand = ReactiveCommand.Create(() => Columns.Add(new ColumnViewModel
+        {
+            UseColumn = true,
+            IsArray = IsArrayTemplateSelected
+        }));
 
         RemoveColumnCommand = ReactiveCommand.Create<ColumnViewModel>(col => Columns.Remove(col));
 
@@ -374,6 +378,7 @@ public partial class MainWindowViewModel : ReactiveObject
         {
             this.RaiseAndSetIfChanged(ref _selectedTemplate, value);
             LoadSelectedTemplate();
+            ApplyArrayTemplateDefaults();
         }
     }
 
@@ -417,6 +422,18 @@ public partial class MainWindowViewModel : ReactiveObject
     public bool TemplateRequiresLineTable
         => TemplateContent.Contains("{{lineTable}}", StringComparison.OrdinalIgnoreCase)
            || TemplateContent.Contains("{{line_", StringComparison.OrdinalIgnoreCase);
+
+    private bool IsArrayTemplateSelected
+        => SelectedTemplate.Contains("array", StringComparison.OrdinalIgnoreCase)
+           || TemplateContent.Contains("{{array_business_parameters}}", StringComparison.OrdinalIgnoreCase);
+
+    private void ApplyArrayTemplateDefaults()
+    {
+        if (!IsArrayTemplateSelected) return;
+
+        foreach (var column in Columns)
+            column.IsArray = true;
+    }
 
     private string _templateStatusText = "";
     public string TemplateStatusText { get => _templateStatusText; set => this.RaiseAndSetIfChanged(ref _templateStatusText, value); }
@@ -592,7 +609,7 @@ public partial class MainWindowViewModel : ReactiveObject
                     IsNull       = col.IsNull,
                     IsPK         = col.IsPK,
                     IsID         = col.IsID,
-                    IsArray      = col.IsArray,
+                    IsArray      = IsArrayTemplateSelected || col.IsArray,
                     DefaultValue = col.DefaultValue ?? string.Empty
                 });
             }
