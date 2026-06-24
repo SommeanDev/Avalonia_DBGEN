@@ -1,0 +1,144 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+# Only run one release at a time — cancel any in-progress run for the same branch.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Build & Publish
+    runs-on: windows-latest  # Velopack Windows packaging requires a Windows host
+
+    permissions:
+      contents: write  # needed to create GitHub Releases and upload assets
+
+    steps:
+
+      # ── 1. Checkout ───────────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history so 'git describe' and tag listing work
+
+      # ── 2. Setup .NET ─────────────────────────────────────────────────────────
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # ── 3. Determine next version (auto-increment patch) ──────────────────────
+      #    Reads the latest GitHub Release tag (e.g. v1.0.3) and bumps the patch.
+      #    Falls back to 1.0.0 if no releases exist yet.
+      - name: Compute next version
+        id: version
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Fetch the latest release tag from the GitHub API
+          $latestTag = gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>$null
+
+          if ([string]::IsNullOrWhiteSpace($latestTag)) {
+            # No releases yet — start at 1.0.0
+            $next = "1.0.0"
+          } else {
+            # Strip leading 'v' if present, then split and bump patch
+            $clean = $latestTag.TrimStart('v')
+            $parts = $clean -split '\.'
+            $major = [int]$parts[0]
+            $minor = if ($parts.Count -gt 1) { [int]$parts[1] } else { 0 }
+            $patch = if ($parts.Count -gt 2) { [int]$parts[2] } else { 0 }
+            $next = "$major.$minor.$($patch + 1)"
+          }
+
+          Write-Host "Next version: $next"
+          echo "VERSION=$next" >> $env:GITHUB_OUTPUT
+          echo "TAG=v$next"    >> $env:GITHUB_OUTPUT
+
+      # ── 4. Install Velopack CLI ───────────────────────────────────────────────
+      - name: Install vpk CLI
+        shell: pwsh
+        run: dotnet tool install -g vpk
+
+      # ── 5. Publish app (self-contained, win-x64) ──────────────────────────────
+      - name: Publish
+        shell: pwsh
+        run: |
+          dotnet publish AvaloniaTestApp/AvaloniaTestApp.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=false `
+            --output ./publish-output
+
+      # ── 6. Download previous release nupkgs for delta generation ─────────────
+      #    vpk needs the previous full nupkg in the output directory to generate
+      #    a delta package. We fetch it from the latest GitHub Release.
+      - name: Download previous release assets (for delta)
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          New-Item -ItemType Directory -Force -Path ./releases-output | Out-Null
+
+          $latestTag = gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>$null
+          if (-not [string]::IsNullOrWhiteSpace($latestTag)) {
+            Write-Host "Downloading assets from $latestTag for delta packaging..."
+            gh release download $latestTag --dir ./releases-output --pattern "*.nupkg" 2>$null
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "No nupkg assets found in previous release — delta will be skipped."
+            }
+          } else {
+            Write-Host "No previous release found — skipping delta download."
+          }
+
+      # ── 7. Pack with Velopack ─────────────────────────────────────────────────
+      - name: Pack with Velopack
+        shell: pwsh
+        run: |
+          vpk pack `
+            --packId        AvaloniaTestApp `
+            --packVersion   ${{ steps.version.outputs.VERSION }} `
+            --packDir       ./publish-output `
+            --outputDir     ./releases-output `
+            --mainExe       AvaloniaTestApp.exe `
+            --icon          AvaloniaTestApp/Assets/avalonia-logo.ico
+
+      # ── 8. Create GitHub Release and upload artifacts ─────────────────────────
+      - name: Create GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $version = "${{ steps.version.outputs.VERSION }}"
+          $tag     = "${{ steps.version.outputs.TAG }}"
+
+          # Build release notes from commits since last tag
+          $lastTag = gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>$null
+          if ([string]::IsNullOrWhiteSpace($lastTag)) {
+            $notes = "Initial release."
+          } else {
+            $notes = git log "$lastTag..HEAD" --pretty=format:"- %s" | Out-String
+            if ([string]::IsNullOrWhiteSpace($notes)) { $notes = "Maintenance update." }
+          }
+
+          # Create the release
+          gh release create $tag `
+            --title "v$version" `
+            --notes $notes
+
+          # Upload all artifacts produced by vpk
+          $artifacts = Get-ChildItem ./releases-output -File | Where-Object {
+            $_.Extension -in '.exe', '.zip', '.nupkg' -or $_.Name -in 'RELEASES', 'releases.win.json', 'assets.win.json'
+          }
+
+          foreach ($file in $artifacts) {
+            Write-Host "Uploading: $($file.Name)"
+            gh release upload $tag $file.FullName
+          }

@@ -14,6 +14,7 @@
     <Application.Styles>
         <FluentTheme />
         <materialIcons:MaterialIconStyles />
+        <StyleInclude Source="avares://AvaloniaTestApp/Styles/AppStyles.axaml"/>
     </Application.Styles>
              
     <Application.Resources>

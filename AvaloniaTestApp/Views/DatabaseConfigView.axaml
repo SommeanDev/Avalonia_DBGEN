@@ -1,0 +1,226 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:AvaloniaTestApp.ViewModels"
+             xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+             x:Class="AvaloniaTestApp.Views.DatabaseConfigView"
+             x:DataType="vm:MainWindowViewModel">
+
+    <StackPanel Spacing="20" Margin="10">
+
+        <!-- ── Page Header ── -->
+        <StackPanel Spacing="4">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <material:MaterialIcon Kind="Database" Foreground="#1D9E75" Width="18" Height="18" VerticalAlignment="Center"/>
+                <TextBlock Text="DATABASE CONFIG"
+                           Foreground="#1D9E75"
+                           FontFamily="Monospace"
+                           FontSize="11"
+                           FontWeight="SemiBold"
+                           LetterSpacing="2"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+            <TextBlock Text="PostgreSQL Connection"
+                       Foreground="White"
+                       FontSize="22"
+                       FontWeight="Medium"/>
+            <TextBlock Text="Enter your credentials to connect to a database instance."
+                       Foreground="#888780"
+                       FontSize="13"/>
+        </StackPanel>
+
+        <!-- ── Credentials Card ── -->
+        <Border Background="#1e1e1e"
+                BorderThickness="0.5"
+                BorderBrush="#3e3e42"
+                CornerRadius="12"
+                Padding="20">
+            <StackPanel Spacing="0">
+
+                <!-- Host + Port -->
+                <Grid ColumnDefinitions="*, 12, 100" Margin="0,0,0,14">
+                    <StackPanel Grid.Column="0" Spacing="6">
+                        <TextBlock Text="Host" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                        <TextBox Text="{Binding Host}"
+                                 PlaceholderText="localhost"
+                                 Background="#252526"
+                                 BorderBrush="#3e3e42"
+                                 BorderThickness="0.5"
+                                 CornerRadius="8"
+                                 Foreground="White"
+                                 Padding="12,0"
+                                 VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="6">
+                        <TextBlock Text="Port" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                        <TextBox Text="{Binding Port}"
+                                 Background="#252526"
+                                 BorderBrush="#3e3e42"
+                                 BorderThickness="0.5"
+                                 CornerRadius="8"
+                                 Foreground="White"
+                                 Padding="12,0"
+                                 VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Database Name -->
+                <StackPanel Spacing="6" Margin="0,0,0,14">
+                    <TextBlock Text="Database Name" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                    <TextBox Text="{Binding DatabaseName}"
+                             PlaceholderText="postgres"
+                             Background="#252526"
+                             BorderBrush="#3e3e42"
+                             BorderThickness="0.5"
+                             CornerRadius="8"
+                             Foreground="White"
+                             Padding="12,0"
+                             VerticalContentAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Username + Password -->
+                <Grid ColumnDefinitions="*, 12, *">
+                    <StackPanel Grid.Column="0" Spacing="6">
+                        <TextBlock Text="Username" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                        <TextBox Text="{Binding Username}"
+                                 PlaceholderText="postgres"
+                                 Background="#252526"
+                                 BorderBrush="#3e3e42"
+                                 BorderThickness="0.5"
+                                 CornerRadius="8"
+                                 Foreground="White"
+                                 Padding="12,0"
+                                 VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="6">
+                        <TextBlock Text="Password" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                        <TextBox Text="{Binding Password}"
+                                 PasswordChar="●"
+                                 PlaceholderText="••••••••"
+                                 Background="#252526"
+                                 BorderBrush="#3e3e42"
+                                 BorderThickness="0.5"
+                                 CornerRadius="8"
+                                 Foreground="White"
+                                 Padding="12,0"
+                                 VerticalContentAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Divider -->
+                <Border Height="0.5" Background="#3e3e42" Margin="0,18,0,14"/>
+
+                <!-- Status + Actions -->
+                <Grid ColumnDefinitions="*, Auto">
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal"
+                                Spacing="8"
+                                VerticalAlignment="Center">
+                        <Ellipse Width="7" Height="7" VerticalAlignment="Center">
+                            <Ellipse.Fill>
+                                <SolidColorBrush Color="{Binding ConnectionStatusColor}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <TextBlock Text="{Binding ConnectionStatusText}"
+                                   Foreground="#888780"
+                                   FontSize="12"
+                                   FontFamily="Monospace"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                        <Button Command="{Binding TestConnectionCommand}"
+                                Background="Transparent"
+                                BorderBrush="#3e3e42"
+                                BorderThickness="0.5"
+                                CornerRadius="8"
+                                Foreground="#888780"
+                                Padding="14,8">
+                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                <material:MaterialIcon Kind="Plug" Width="14" Height="14" VerticalAlignment="Center"/>
+                                <TextBlock Text="Test connection" FontSize="13" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding SaveCredentialsCommand}"
+                                Background="#1D9E75"
+                                BorderThickness="0"
+                                CornerRadius="8"
+                                Foreground="White"
+                                Padding="14,8">
+                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                <material:MaterialIcon Kind="ContentSave" Width="14" Height="14" VerticalAlignment="Center"/>
+                                <TextBlock Text="Save" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+            </StackPanel>
+        </Border>
+
+        <!-- ── Schema + Context Col row (visible after connection) ── -->
+        <StackPanel Margin="10 0" IsVisible="{Binding ConnectionSuccess}">
+            <Grid ColumnDefinitions="Auto, 12, *, 12, Auto, 12, Auto, 12, Auto" VerticalAlignment="Center">
+                <TextBlock Grid.Column="0"
+                           Text="Select Schema"
+                           Foreground="#1D9E75"
+                           FontSize="12"
+                           FontFamily="Monospace"
+                           FontWeight="Medium"
+                           VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="2"
+                          ItemsSource="{Binding Schemas}"
+                          SelectedItem="{Binding SelectedSchema}"
+                          HorizontalAlignment="Stretch"
+                          Background="#252526"
+                          BorderBrush="#3e3e42"
+                          BorderThickness="0.5"
+                          CornerRadius="8"
+                          Foreground="White">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Foreground="White" VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Grid.Column="4" Text="Context Col"
+                           Foreground="#1D9E75" FontSize="12"
+                           FontFamily="Monospace" FontWeight="Medium"
+                           VerticalAlignment="Center"/>
+                <TextBox Grid.Column="6"
+                         Text="{Binding ContextCol}"
+                         PlaceholderText="branch_mst_id"
+                         Width="160"
+                         Background="#252526"
+                         BorderBrush="#3e3e42"
+                         BorderThickness="0.5"
+                         CornerRadius="8"
+                         Foreground="White"
+                         Padding="12,0"
+                         VerticalContentAlignment="Center"/>
+                <Button Grid.Column="8"
+                        Command="{Binding LoadTablesCommand}"
+                        Background="#1D9E75"
+                        BorderThickness="0"
+                        CornerRadius="8"
+                        Foreground="White"
+                        Padding="14,8">
+                    <StackPanel Orientation="Horizontal" Spacing="7">
+                        <material:MaterialIcon Kind="Table" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="Load Tables &amp; Views" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </StackPanel>
+
+        <!-- ── Footer note ── -->
+        <TextBlock Text="credentials are stored locally · never transmitted"
+                   Foreground="#5F5E5A"
+                   FontFamily="Monospace"
+                   FontSize="11"
+                   HorizontalAlignment="Right"/>
+
+    </StackPanel>
+
+</UserControl>
