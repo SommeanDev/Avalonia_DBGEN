@@ -87,7 +87,7 @@
                         <StackPanel Spacing="6">
                             <TextBlock Text="Procedure Name" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
                             <TextBox Text="{Binding ProcedureName}"
-                                     PlaceholderText="usp_Order_Save"
+                                     Watermark="usp_Order_Save"
                                      Background="#252526"
                                      BorderBrush="#1D9E75"
                                      BorderThickness="0.5"
@@ -105,7 +105,7 @@
                                              MinHeight="36"
                                              ItemsSource="{Binding DatabaseObjects}"
                                              SelectedItem="{Binding SelectedScriptTable}"
-                                             PlaceholderText="Search tables..."
+                                             Watermark="Search tables..."
                                              HorizontalAlignment="Stretch"
                                              Background="#252526"
                                              BorderBrush="#3e3e42"
@@ -129,7 +129,7 @@
                             <AutoCompleteBox MinHeight="36"
                                              ItemsSource="{Binding DatabaseObjects}"
                                              SelectedItem="{Binding SelectedLineTable}"
-                                             PlaceholderText="Search line table..."
+                                             Watermark="Search line table..."
                                              HorizontalAlignment="Stretch"
                                              Background="#252526"
                                              BorderBrush="#3e3e42"
@@ -221,9 +221,12 @@
                       ColumnDefinitions="Auto, Auto, *, Auto"
                       Background="#161616"
                       Height="44">
-                    <Border Grid.Column="0"
-                            BorderBrush="#1D9E75"
-                            BorderThickness="0,0,0,2">
+                    <Border Grid.Column="0">
+                        <Grid>
+                            <Border Height="2"
+                                    Background="#1D9E75"
+                                    VerticalAlignment="Bottom"
+                                    IsVisible="{Binding ShowGeneratedSql}"/>
                         <Button Command="{Binding ShowGeneratedSqlCommand}"
                                 Background="Transparent"
                                 BorderThickness="0"
@@ -232,16 +235,24 @@
                                 Height="44">
                             <TextBlock Text="Generated SQL" FontFamily="Monospace" FontSize="13" VerticalAlignment="Center"/>
                         </Button>
+                        </Grid>
                     </Border>
-                    <Button Grid.Column="1"
-                            Command="{Binding ShowTemplateEditorCommand}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Foreground="#888780"
-                            Padding="16,0"
-                            Height="44">
-                        <TextBlock Text="Template Editor" FontFamily="Monospace" FontSize="13" VerticalAlignment="Center"/>
-                    </Button>
+                    <Border Grid.Column="1">
+                        <Grid>
+                            <Border Height="2"
+                                    Background="#1D9E75"
+                                    VerticalAlignment="Bottom"
+                                    IsVisible="{Binding ShowTemplateEditor}"/>
+                            <Button Command="{Binding ShowTemplateEditorCommand}"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Foreground="#D4D4D4"
+                                    Padding="16,0"
+                                    Height="44">
+                                <TextBlock Text="Template Editor" FontFamily="Monospace" FontSize="13" VerticalAlignment="Center"/>
+                            </Button>
+                        </Grid>
+                    </Border>
                     <Button Grid.Column="3"
                             Command="{Binding CopySqlCommand}"
                             Background="Transparent"

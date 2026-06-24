@@ -42,6 +42,7 @@ public partial class MainWindowViewModel : ReactiveObject
     
     public ViewBuilderViewModel ViewBuilder { get; } = new();
     public AppSettingsViewModel AppSettings { get; } = AppSettingsViewModel.Current;
+    public SqlEditorViewModel SqlEditor { get; }
 
     // =================== DB ==================
     
@@ -167,6 +168,18 @@ public partial class MainWindowViewModel : ReactiveObject
 
         LoadTemplates();
         LoadSelectedTemplate();
+        
+        SqlEditor = new SqlEditorViewModel
+        {
+            GetCurrentConfig = () => new DatabaseConfig
+            {
+                Host = Host,
+                Port = Port,
+                DatabaseName = DatabaseName,
+                Username = Username,
+                Password = Password
+            }
+        };
 
         _ = LoadCredentialsAsync();
     }

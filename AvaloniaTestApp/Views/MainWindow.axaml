@@ -38,7 +38,7 @@
                         HorizontalContentAlignment="Left"
                         Padding="10,0">
                     <Grid ColumnDefinitions="30, *" Height="50">
-                        <material:MaterialIcon Grid.Column="0" Kind="Menu" Foreground="Teal" IconSize="24" />
+                        <material:MaterialIcon Grid.Column="0" Kind="Menu" Foreground="Teal" Width="24" Height="24" />
                         <TextBlock Grid.Column="1" Text="Menu"
                                    VerticalAlignment="Center"
                                    Margin="15,0,0,0"
@@ -50,7 +50,7 @@
                 <ListBox Grid.Row="1" Background="Transparent" Foreground="White" SelectedIndex="{Binding SelectedTabIndex}">
                     <ListBoxItem>
                         <Grid ColumnDefinitions="Auto, *">
-                            <material:MaterialIcon Grid.Column="0" Kind="DatabaseOutline" Foreground="Teal" IconSize="30"/>
+                            <material:MaterialIcon Grid.Column="0" Kind="DatabaseOutline" Foreground="Teal" Width="30" Height="30"/>
                             <TextBlock Grid.Column="1" Text="Database"
                                        VerticalAlignment="Center" Margin="15,0,0,0"
                                        IsVisible="{Binding IsPaneOpen}" FontFamily="Monospace"/>
@@ -58,7 +58,7 @@
                     </ListBoxItem>
                     <ListBoxItem>
                         <Grid ColumnDefinitions="Auto, *">
-                            <material:MaterialIcon Grid.Column="0" Kind="FileDocument" Foreground="Teal" IconSize="30"/>
+                            <material:MaterialIcon Grid.Column="0" Kind="FileDocument" Foreground="Teal" Width="30" Height="30"/>
                             <TextBlock Grid.Column="1" Text="Script Generator"
                                        VerticalAlignment="Center" Margin="15,0,0,0"
                                        IsVisible="{Binding IsPaneOpen}" FontFamily="Monospace"/>
@@ -66,7 +66,7 @@
                     </ListBoxItem>
                     <ListBoxItem>
                         <Grid ColumnDefinitions="Auto, *">
-                            <material:MaterialIcon Grid.Column="0" Kind="WindowOpen" Foreground="Teal" IconSize="30"/>
+                            <material:MaterialIcon Grid.Column="0" Kind="WindowOpen" Foreground="Teal" Width="30" Height="30"/>
                             <TextBlock Grid.Column="1" Text="View Generator"
                                        VerticalAlignment="Center" Margin="15,0,0,0"
                                        IsVisible="{Binding IsPaneOpen}" FontFamily="Monospace"/>
@@ -74,8 +74,16 @@
                     </ListBoxItem>
                     <ListBoxItem>
                         <Grid ColumnDefinitions="Auto, *">
-                            <material:MaterialIcon Grid.Column="0" Kind="Cog" Foreground="Teal" IconSize="30"/>
+                            <material:MaterialIcon Grid.Column="0" Kind="Cog" Foreground="Teal" Width="30" Height="30"/>
                             <TextBlock Grid.Column="1" Text="Settings"
+                                       VerticalAlignment="Center" Margin="15,0,0,0"
+                                       IsVisible="{Binding IsPaneOpen}" FontFamily="Monospace"/>
+                        </Grid>
+                    </ListBoxItem>
+                    <ListBoxItem>
+                        <Grid ColumnDefinitions="Auto, *">
+                            <material:MaterialIcon Grid.Column="0" Kind="DatabaseCogOutline" Foreground="Teal" Width="30" Height="30"/>
+                            <TextBlock Grid.Column="1" Text="SQL Editor"
                                        VerticalAlignment="Center" Margin="15,0,0,0"
                                        IsVisible="{Binding IsPaneOpen}" FontFamily="Monospace"/>
                         </Grid>
@@ -106,6 +114,11 @@
             <!-- TAB 3 · Settings -->
             <Panel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=3}">
                 <views:AppSettingsView DataContext="{Binding AppSettings}"/>
+            </Panel>
+
+            <!-- TAB 4 · SQL Editor -->
+            <Panel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=4}">
+                <views:SqlEditorView DataContext="{Binding SqlEditor}"/>
             </Panel>
 
         </Panel>

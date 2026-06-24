@@ -49,7 +49,7 @@
                                  BorderThickness="0.5"
                                  CornerRadius="6"
                                  Foreground="White"
-                                 PlaceholderText="Search tables...">
+                                 Watermark="Search tables...">
                     <AutoCompleteBox.ItemTemplate>
                         <DataTemplate x:DataType="models:DatabaseObject">
                             <TextBlock Text="{Binding Name}"
@@ -440,7 +440,7 @@
                                                                         <TextBox Grid.Column="2"
                                                                                  Text="{Binding Value}"
                                                                                  Height="30"
-                                                                                 PlaceholderText="value"
+                                                                                 Watermark="value"
                                                                                  Background="#252526"
                                                                                  BorderBrush="#3e3e42"
                                                                                  BorderThickness="0.5"
@@ -847,7 +847,7 @@
                                                                 <TextBox Grid.Column="2"
                                                                          Text="{Binding Value}"
                                                                          Height="30"
-                                                                         PlaceholderText="value"
+                                                                         Watermark="value"
                                                                          Background="#252526"
                                                                          BorderBrush="#3e3e42"
                                                                          BorderThickness="0.5"
@@ -979,7 +979,7 @@
                                                 <TextBox Grid.Column="2"
                                                          Text="{Binding Value}"
                                                          Height="30"
-                                                         PlaceholderText="value"
+                                                         Watermark="value"
                                                          Background="#252526"
                                                          BorderBrush="#3e3e42"
                                                          BorderThickness="0.5"

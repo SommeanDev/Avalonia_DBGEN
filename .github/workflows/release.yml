@@ -75,6 +75,9 @@ jobs:
             --runtime win-x64 `
             --self-contained true `
             -p:PublishSingleFile=false `
+            -p:Version=${{ steps.version.outputs.VERSION }} `
+            -p:AssemblyVersion=${{ steps.version.outputs.VERSION }} `
+            -p:FileVersion=${{ steps.version.outputs.VERSION }} `
             --output ./publish-output
 
       # ── 6. Download previous release nupkgs for delta generation ─────────────

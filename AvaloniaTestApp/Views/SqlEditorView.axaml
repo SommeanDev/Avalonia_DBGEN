@@ -1,0 +1,325 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:AvaloniaTestApp.ViewModels"
+             xmlns:models="using:AvaloniaTestApp.Models"
+             xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:dg="using:Avalonia.Controls"
+             xmlns:ae="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="800"
+             x:Class="AvaloniaTestApp.Views.SqlEditorView"
+             x:DataType="vm:SqlEditorViewModel">
+
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="F5" Command="{Binding ExecuteQueryCommand}"/>
+    </UserControl.KeyBindings>
+
+    <Grid ColumnDefinitions="280, 16, *">
+
+        <!-- ══════════════════════════════════════════════════════════
+             LEFT PANEL — Safety toggles & actions
+             ══════════════════════════════════════════════════════════ -->
+        <Border Grid.Column="0"
+                Background="#1e1e1e"
+                BorderThickness="0.5"
+                BorderBrush="#3e3e42"
+                CornerRadius="12"
+                Padding="20">
+            <Grid RowDefinitions="Auto, *, Auto">
+
+                <!-- Header -->
+                <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,18">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <material:MaterialIcon Kind="DatabaseCogOutline" Foreground="#1D9E75" Width="18" Height="18" VerticalAlignment="Center"/>
+                        <TextBlock Text="SQL EDITOR"
+                                   Foreground="#1D9E75"
+                                   FontFamily="Monospace"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   LetterSpacing="2"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Text="Query Console"
+                               Foreground="White"
+                               FontSize="22"
+                               FontWeight="Medium"/>
+                </StackPanel>
+
+                <!-- Safety toggles + status -->
+                <StackPanel Grid.Row="1" Spacing="14">
+
+                    <TextBlock Text="SAFETY SWITCHES"
+                               Foreground="#1D9E75"
+                               FontSize="11"
+                               FontFamily="Monospace"
+                               FontWeight="SemiBold"
+                               LetterSpacing="2"/>
+
+                    <!-- Allow DROP -->
+                    <Border Background="#252526"
+                            BorderBrush="#3e3e42"
+                            BorderThickness="0.5"
+                            CornerRadius="8"
+                            Padding="12,10">
+                        <Grid ColumnDefinitions="Auto, *, Auto">
+                            <material:MaterialIcon Grid.Column="0"
+                                                    Kind="AlertOctagonOutline"
+                                                    Foreground="#E24B4A"
+                                                    Width="16" Height="16"
+                                                    VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="Allow DROP"
+                                       Foreground="White"
+                                       FontFamily="Monospace"
+                                       FontSize="13"
+                                       Margin="10,0,0,0"
+                                       VerticalAlignment="Center"/>
+                            <ToggleSwitch Grid.Column="2"
+                                          IsChecked="{Binding AllowDrop}"
+                                          OnContent=""
+                                          OffContent=""/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Allow DELETE -->
+                    <Border Background="#252526"
+                            BorderThickness="0.5"
+                            BorderBrush="#3e3e42"
+                            CornerRadius="8"
+                            Padding="12,10">
+                        <Grid ColumnDefinitions="Auto, *, Auto">
+                            <material:MaterialIcon Grid.Column="0"
+                                                    Kind="AlertOutline"
+                                                    Foreground="#EF9F27"
+                                                    Width="16" Height="16"
+                                                    VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="Allow DELETE"
+                                       Foreground="White"
+                                       FontFamily="Monospace"
+                                       FontSize="13"
+                                       Margin="10,0,0,0"
+                                       VerticalAlignment="Center"/>
+                            <ToggleSwitch Grid.Column="2"
+                                          IsChecked="{Binding AllowDelete}"
+                                          OnContent=""
+                                          OffContent=""/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Allow TRUNCATE -->
+                    <Border Background="#252526"
+                            BorderThickness="0.5"
+                            BorderBrush="#3e3e42"
+                            CornerRadius="8"
+                            Padding="12,10">
+                        <Grid ColumnDefinitions="Auto, *, Auto">
+                            <material:MaterialIcon Grid.Column="0"
+                                                    Kind="AlertOutline"
+                                                    Foreground="#EF9F27"
+                                                    Width="16" Height="16"
+                                                    VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="Allow TRUNCATE"
+                                       Foreground="White"
+                                       FontFamily="Monospace"
+                                       FontSize="13"
+                                       Margin="10,0,0,0"
+                                       VerticalAlignment="Center"/>
+                            <ToggleSwitch Grid.Column="2"
+                                          IsChecked="{Binding AllowTruncate}"
+                                          OnContent=""
+                                          OffContent=""/>
+                        </Grid>
+                    </Border>
+
+                    <Border Height="0.5" Background="#3e3e42" Margin="0,6,0,0"/>
+
+                    <!-- Status -->
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="STATUS"
+                                   Foreground="#1D9E75"
+                                   FontSize="11"
+                                   FontFamily="Monospace"
+                                   FontWeight="SemiBold"
+                                   LetterSpacing="2"/>
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   Foreground="{Binding StatusColor, Converter={StaticResource ColorToBrushConverter}}"
+                                   FontFamily="Monospace"
+                                   FontSize="12"
+                                   TextWrapping="Wrap"/>
+                        <StackPanel Orientation="Horizontal" Spacing="14" IsVisible="{Binding ExecutionTime, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                            <TextBlock Text="{Binding ExecutionTime}" Foreground="#888780" FontFamily="Monospace" FontSize="11"/>
+                            <TextBlock Text="{Binding RowCountText}" Foreground="#888780" FontFamily="Monospace" FontSize="11"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <!-- Action buttons -->
+                <StackPanel Grid.Row="2" Spacing="10" Margin="0,14,0,0">
+                    <Button Command="{Binding ExecuteQueryCommand}"
+                            IsEnabled="{Binding !IsExecuting}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Background="#1D9E75"
+                            BorderThickness="0"
+                            CornerRadius="8"
+                            Foreground="White"
+                            Padding="14,10">
+                        <StackPanel Orientation="Horizontal" Spacing="7">
+                            <material:MaterialIcon Kind="Play" Width="14" Height="14" VerticalAlignment="Center"/>
+                            <TextBlock Text="Execute Query (F5)" FontSize="13" FontWeight="Medium" FontFamily="Monospace" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding ClearQueryCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Background="Transparent"
+                            BorderBrush="#3e3e42"
+                            BorderThickness="0.5"
+                            CornerRadius="8"
+                            Foreground="#D4D4D4"
+                            Padding="14,10">
+                        <StackPanel Orientation="Horizontal" Spacing="7">
+                            <material:MaterialIcon Kind="Broom" Width="14" Height="14" VerticalAlignment="Center"/>
+                            <TextBlock Text="Clear Query" FontSize="13" FontFamily="Monospace" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+            </Grid>
+        </Border>
+
+        <!-- ══════════════════════════════════════════════════════════
+             RIGHT PANEL — Query editor (top) / Results grid (bottom)
+             ══════════════════════════════════════════════════════════ -->
+        <Grid Grid.Column="2" RowDefinitions="*, 16, *">
+
+            <!-- Query editor -->
+            <Border Grid.Row="0"
+                    Background="#1e1e1e"
+                    BorderThickness="0.5"
+                    BorderBrush="#3e3e42"
+                    CornerRadius="12"
+                    Padding="0"
+                    ClipToBounds="True">
+                <Grid RowDefinitions="Auto, *">
+                    <Grid Grid.Row="0"
+                          ColumnDefinitions="*, Auto"
+                          Background="#161616"
+                          Height="44">
+                        <TextBlock Grid.Column="0"
+                                   Text="Query"
+                                   Foreground="White"
+                                   FontFamily="Monospace"
+                                   FontSize="13"
+                                   VerticalAlignment="Center"
+                                   Margin="16,0"/>
+                    </Grid>
+                    <Border Grid.Row="0" Height="0.5" Background="#3e3e42" VerticalAlignment="Bottom"/>
+
+                    <!-- Note: AvaloniaEdit's Text/Document are not directly bindable in XAML —
+                         SqlEditorView.axaml.cs wires TextChanged <-> SqlQuery manually.
+                         SyntaxHighlighting="SQL" resolves by name against AvaloniaEdit's
+                         HighlightingManager; if "SQL" isn't registered in this version it
+                         silently falls back to plain text (no crash) — see EnsureSqlHighlighting()
+                         in the code-behind for the actual custom-definition fallback used here. -->
+                    <ae:TextEditor Grid.Row="1"
+                                   Name="SqlTextEditor"
+                                   ShowLineNumbers="True"
+                                   FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+                                   FontSize="13.5"
+                                   Background="Transparent"
+                                   Foreground="#D4D4D4"
+                                   Padding="8,12"/>
+                </Grid>
+            </Border>
+
+            <!-- Results grid -->
+            <Border Grid.Row="2"
+                    Background="#1e1e1e"
+                    BorderThickness="0.5"
+                    BorderBrush="#3e3e42"
+                    CornerRadius="12"
+                    Padding="0"
+                    ClipToBounds="True">
+                <Grid RowDefinitions="Auto, *">
+                    <Grid Grid.Row="0"
+                          ColumnDefinitions="*, Auto"
+                          Background="#161616"
+                          Height="44">
+                        <TextBlock Grid.Column="0"
+                                   Text="Results"
+                                   Foreground="White"
+                                   FontFamily="Monospace"
+                                   FontSize="13"
+                                   VerticalAlignment="Center"
+                                   Margin="16,0"/>
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding RowCountText}"
+                                   Foreground="#888780"
+                                   FontFamily="Monospace"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,16,0"/>
+                    </Grid>
+                    <Border Grid.Row="0" Height="0.5" Background="#3e3e42" VerticalAlignment="Bottom"/>
+
+                    <Panel Grid.Row="1">
+                        <dg:DataGrid Name="ResultGrid"
+                                     IsReadOnly="True"
+                                     GridLinesVisibility="All"
+                                     HeadersVisibility="Column"
+                                     Background="Transparent"
+                                     Foreground="#D4D4D4"
+                                     BorderThickness="0"
+                                     FontFamily="{DynamicResource AppFontFamily}"
+                                     FontSize="{DynamicResource AppFontSize}"/>
+
+                        <!-- Blocked-statement breakdown (toggled from code-behind: shown only when
+                             the grid has no columns to display, e.g. all-blocked or DML-only batches) -->
+                        <ScrollViewer Name="StatementBreakdownPanel"
+                                      IsVisible="False"
+                                      Padding="16">
+                            <ItemsControl ItemsSource="{Binding StatementResults}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="models:SqlStatementResult">
+                                        <Border Background="#252526"
+                                                BorderThickness="0.5"
+                                                BorderBrush="#3e3e42"
+                                                CornerRadius="8"
+                                                Padding="12,8"
+                                                Margin="0,0,0,8">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{Binding Statement}"
+                                                           Foreground="#D4D4D4"
+                                                           FontFamily="Monospace"
+                                                           FontSize="12"
+                                                           TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding Message}"
+                                                           FontFamily="Monospace"
+                                                           FontSize="11.5"
+                                                           TextWrapping="Wrap">
+                                                    <TextBlock.Styles>
+                                                        <Style Selector="TextBlock">
+                                                            <Setter Property="Foreground" Value="#888780"/>
+                                                        </Style>
+                                                    </TextBlock.Styles>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Panel>
+                </Grid>
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>

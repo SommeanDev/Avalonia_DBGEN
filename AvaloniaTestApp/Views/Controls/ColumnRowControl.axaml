@@ -78,7 +78,7 @@
                           FontSize="10" FontFamily="Monospace" Margin="0,0,10,0"/>
                 <TextBox Grid.Column="5"
                          Text="{Binding DefaultValue}"
-                         PlaceholderText="Default"
+                         Watermark="Default"
                          Background="#1e1e1e"
                          BorderBrush="#3e3e42"
                          BorderThickness="0.5"

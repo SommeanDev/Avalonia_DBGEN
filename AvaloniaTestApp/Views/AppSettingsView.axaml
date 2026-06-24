@@ -195,7 +195,7 @@
                             <Grid ColumnDefinitions="*, Auto">
                                 <TextBox Grid.Column="0"
                                          Text="{Binding ExportFolderPath}"
-                                         PlaceholderText="e.g. C:\Exports"
+                                         Watermark="e.g. C:\Exports"
                                          IsReadOnly="True"
                                          Background="#252526"
                                          BorderBrush="#3e3e42"
@@ -225,7 +225,7 @@
                             <Grid ColumnDefinitions="*, Auto">
                                 <TextBox Grid.Column="0"
                                          Text="{Binding QuerySavePath}"
-                                         PlaceholderText="e.g. C:\Queries"
+                                         Watermark="e.g. C:\Queries"
                                          IsReadOnly="True"
                                          Background="#252526"
                                          BorderBrush="#3e3e42"

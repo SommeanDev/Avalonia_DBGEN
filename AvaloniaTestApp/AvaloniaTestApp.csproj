@@ -8,24 +8,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**"/>
+        <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.0.2"/>
-        <PackageReference Include="Avalonia.Desktop" Version="12.0.2"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.2"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.2"/>
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.9"/>
+        <PackageReference Include="Avalonia" Version="11.3.8" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.8" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.8" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.8" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.8" />
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.8" />
+        <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.1.0" />
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1"/>
-        <PackageReference Include="Material.Icons.Avalonia" Version="3.0.3-nightly.0.2"/>
-        <PackageReference Include="Npgsql" Version="8.0.5"/>
-        <PackageReference Include="Velopack" Version="0.0.878"/>
-        <!-- ReactiveUI removed — Avalonia.ReactiveUI 12.0.2 pulls the correct version -->
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
+        <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0" /> <!-- Downgraded to match v11 -->
+        <PackageReference Include="Npgsql" Version="8.0.5" />
+        <PackageReference Include="Velopack" Version="0.0.915" />
     </ItemGroup>
 
     <ItemGroup>

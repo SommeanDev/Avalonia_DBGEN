@@ -1,12 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AvaloniaTestApp.ViewModels;
 using Npgsql;
 
 namespace AvaloniaTestApp.Models;
+
+/// <summary>
+/// Result of executing a single statement within a SQL Editor batch.
+/// </summary>
+public class SqlStatementResult
+{
+    public string Statement { get; set; } = string.Empty;
+    public bool Success { get; set; }
+    public bool Blocked { get; set; }
+    public List<string> Columns { get; set; } = new();
+    public List<object[]> Rows { get; set; } = new();
+    public int RowsAffected { get; set; }
+    public string Message { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Aggregate result for a full SQL Editor batch (one or more ';'-separated statements).
+/// </summary>
+public class SqlBatchResult
+{
+    public bool Success { get; set; }
+    public List<SqlStatementResult> Statements { get; set; } = new();
+    public string Message { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Convenience accessor: columns/rows from the last statement that actually returned rows.
+    /// Used by the SQL Editor grid, which displays only the final result set.
+    /// </summary>
+    public SqlStatementResult? LastResultSet
+    {
+        get
+        {
+            for (int i = Statements.Count - 1; i >= 0; i--)
+            {
+                if (Statements[i].Columns.Count > 0)
+                    return Statements[i];
+            }
+            return Statements.Count > 0 ? Statements[^1] : null;
+        }
+    }
+}
 
 public class DatabaseRepository
 {
@@ -163,5 +205,230 @@ public class DatabaseRepository
             });
         }
         return columns;
+    }
+
+    // ===================== SQL Editor =====================
+
+    /// <summary>
+    /// Splits a raw multi-statement SQL string on top-level ';' separators, ignoring
+    /// semicolons that appear inside single-quoted strings, double-quoted identifiers,
+    /// line comments ('--') or block comments ('/* */'). Empty/whitespace-only
+    /// statements are dropped.
+    /// </summary>
+    public static List<string> SplitStatements(string sql)
+    {
+        var statements = new List<string>();
+        if (string.IsNullOrWhiteSpace(sql)) return statements;
+
+        var current = new StringBuilder();
+        bool inSingleQuote = false;
+        bool inDoubleQuote = false;
+        bool inLineComment = false;
+        bool inBlockComment = false;
+
+        for (int i = 0; i < sql.Length; i++)
+        {
+            char c = sql[i];
+            char next = i + 1 < sql.Length ? sql[i + 1] : '\0';
+
+            if (inLineComment)
+            {
+                current.Append(c);
+                if (c == '\n') inLineComment = false;
+                continue;
+            }
+
+            if (inBlockComment)
+            {
+                current.Append(c);
+                if (c == '*' && next == '/')
+                {
+                    current.Append(next);
+                    i++;
+                    inBlockComment = false;
+                }
+                continue;
+            }
+
+            if (inSingleQuote)
+            {
+                current.Append(c);
+                // Handle doubled '' escape inside a single-quoted string
+                if (c == '\'')
+                {
+                    if (next == '\'') { current.Append(next); i++; }
+                    else inSingleQuote = false;
+                }
+                continue;
+            }
+
+            if (inDoubleQuote)
+            {
+                current.Append(c);
+                if (c == '"')
+                {
+                    if (next == '"') { current.Append(next); i++; }
+                    else inDoubleQuote = false;
+                }
+                continue;
+            }
+
+            // Not inside any quote/comment — check for entry points
+            if (c == '-' && next == '-')
+            {
+                inLineComment = true;
+                current.Append(c);
+                continue;
+            }
+            if (c == '/' && next == '*')
+            {
+                inBlockComment = true;
+                current.Append(c);
+                continue;
+            }
+            if (c == '\'')
+            {
+                inSingleQuote = true;
+                current.Append(c);
+                continue;
+            }
+            if (c == '"')
+            {
+                inDoubleQuote = true;
+                current.Append(c);
+                continue;
+            }
+            if (c == ';')
+            {
+                var stmt = current.ToString().Trim();
+                if (!string.IsNullOrWhiteSpace(stmt)) statements.Add(stmt);
+                current.Clear();
+                continue;
+            }
+
+            current.Append(c);
+        }
+
+        var tail = current.ToString().Trim();
+        if (!string.IsNullOrWhiteSpace(tail)) statements.Add(tail);
+
+        return statements;
+    }
+
+    /// <summary>
+    /// Executes a (possibly multi-statement) SQL batch inside a single transaction.
+    /// Statements are checked individually against the safety toggles before any
+    /// of them run; if any statement is blocked, nothing in the batch is executed.
+    /// On any execution error, the whole transaction is rolled back.
+    /// </summary>
+    public async Task<SqlBatchResult> ExecuteQueryAsync(
+        string sql,
+        bool allowDrop,
+        bool allowDelete,
+        bool allowTruncate)
+    {
+        var statements = SplitStatements(sql);
+        var batch = new SqlBatchResult();
+
+        if (statements.Count == 0)
+        {
+            batch.Success = false;
+            batch.Message = "No statement to execute.";
+            return batch;
+        }
+
+        // ---- Safety pre-check: validate every statement before running any of them ----
+        foreach (var stmt in statements)
+        {
+            var (blocked, reason) = SqlSafetyCheck.CheckStatement(stmt, allowDrop, allowDelete, allowTruncate);
+            if (blocked)
+            {
+                batch.Statements.Add(new SqlStatementResult
+                {
+                    Statement = stmt,
+                    Success = false,
+                    Blocked = true,
+                    Message = reason
+                });
+            }
+        }
+
+        if (batch.Statements.Count > 0)
+        {
+            batch.Success = false;
+            batch.Message = $"Execution blocked: {batch.Statements.Count} statement(s) failed the safety check. " +
+                             "Enable the relevant toggle(s) to proceed.";
+            return batch;
+        }
+
+        // ---- All statements passed the safety check — execute inside a transaction ----
+        try
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            await conn.OpenAsync();
+            using var tx = await conn.BeginTransactionAsync();
+
+            try
+            {
+                foreach (var stmt in statements)
+                {
+                    var result = new SqlStatementResult { Statement = stmt };
+
+                    using var cmd = new NpgsqlCommand(stmt, conn, tx);
+                    using var reader = await cmd.ExecuteReaderAsync();
+
+                    if (reader.FieldCount > 0)
+                    {
+                        for (int i = 0; i < reader.FieldCount; i++)
+                            result.Columns.Add(reader.GetName(i));
+
+                        while (await reader.ReadAsync())
+                        {
+                            var row = new object[reader.FieldCount];
+                            reader.GetValues(row);
+                            for (int i = 0; i < row.Length; i++)
+                                if (row[i] == DBNull.Value) row[i] = "NULL";
+                            result.Rows.Add(row);
+                        }
+
+                        result.Success = true;
+                        result.Message = $"{result.Rows.Count} row(s) returned.";
+                    }
+                    else
+                    {
+                        await reader.CloseAsync();
+                        result.RowsAffected = reader.RecordsAffected;
+                        result.Success = true;
+                        result.Message = $"{Math.Max(reader.RecordsAffected, 0)} row(s) affected.";
+                    }
+
+                    batch.Statements.Add(result);
+                }
+
+                await tx.CommitAsync();
+                batch.Success = true;
+                batch.Message = statements.Count == 1
+                    ? "Query executed successfully."
+                    : $"{statements.Count} statements executed successfully.";
+            }
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+                batch.Success = false;
+                batch.Message = $"Error: {ex.Message} — transaction rolled back, no changes were committed.";
+                batch.Statements.Add(new SqlStatementResult
+                {
+                    Success = false,
+                    Message = ex.Message
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            batch.Success = false;
+            batch.Message = $"Connection error: {ex.Message}";
+        }
+
+        return batch;
     }
 }

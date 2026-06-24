@@ -44,7 +44,7 @@
                     <StackPanel Grid.Column="0" Spacing="6">
                         <TextBlock Text="Host" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
                         <TextBox Text="{Binding Host}"
-                                 PlaceholderText="localhost"
+                                 Watermark="localhost"
                                  Background="#252526"
                                  BorderBrush="#3e3e42"
                                  BorderThickness="0.5"
@@ -70,7 +70,7 @@
                 <StackPanel Spacing="6" Margin="0,0,0,14">
                     <TextBlock Text="Database Name" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
                     <TextBox Text="{Binding DatabaseName}"
-                             PlaceholderText="postgres"
+                             Watermark="postgres"
                              Background="#252526"
                              BorderBrush="#3e3e42"
                              BorderThickness="0.5"
@@ -85,7 +85,7 @@
                     <StackPanel Grid.Column="0" Spacing="6">
                         <TextBlock Text="Username" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
                         <TextBox Text="{Binding Username}"
-                                 PlaceholderText="postgres"
+                                 Watermark="postgres"
                                  Background="#252526"
                                  BorderBrush="#3e3e42"
                                  BorderThickness="0.5"
@@ -98,7 +98,7 @@
                         <TextBlock Text="Password" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
                         <TextBox Text="{Binding Password}"
                                  PasswordChar="●"
-                                 PlaceholderText="••••••••"
+                                 Watermark="••••••••"
                                  Background="#252526"
                                  BorderBrush="#3e3e42"
                                  BorderThickness="0.5"
@@ -190,7 +190,7 @@
                            VerticalAlignment="Center"/>
                 <TextBox Grid.Column="6"
                          Text="{Binding ContextCol}"
-                         PlaceholderText="branch_mst_id"
+                         Watermark="branch_mst_id"
                          Width="160"
                          Background="#252526"
                          BorderBrush="#3e3e42"

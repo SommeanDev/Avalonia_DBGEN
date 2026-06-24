@@ -5,7 +5,7 @@
              xmlns:local="using:AvaloniaTestApp"
              xmlns:converters="clr-namespace:AvaloniaTestApp.Converters"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -14,6 +14,10 @@
     <Application.Styles>
         <FluentTheme />
         <materialIcons:MaterialIconStyles />
+        <!-- Required for the DataGrid used to render SQL Editor query results -->
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+        <!-- Required for the AvaloniaEdit TextEditor used by the SQL Editor -->
+        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml"/>
         <StyleInclude Source="avares://AvaloniaTestApp/Styles/AppStyles.axaml"/>
     </Application.Styles>
              

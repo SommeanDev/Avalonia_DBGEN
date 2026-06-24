@@ -166,27 +166,25 @@ public class AppSettingsViewModel : ReactiveObject
     public AppSettingsViewModel()
     {
         SaveCommand = ReactiveCommand.CreateFromTask(
-            async () => await SaveAsync(),
-            outputScheduler: Avalonia.ReactiveUI.AvaloniaScheduler.Instance);
+            async () => await SaveAsync());  // ← remove outputScheduler
 
         ResetCommand = ReactiveCommand.Create(
             ResetToDefaults);
 
         CheckForUpdatesCommand = ReactiveCommand.CreateFromTask(
-            async () => await CheckForUpdatesAsync(),
-            outputScheduler: Avalonia.ReactiveUI.AvaloniaScheduler.Instance);
-        
+            async () => await CheckForUpdatesAsync());  // ← remove outputScheduler
+
         BrowseExportFolderCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             var folder = await PickFolderAsync();
             if (folder is not null) ExportFolderPath = folder;
-        }, outputScheduler: Avalonia.ReactiveUI.AvaloniaScheduler.Instance);
+        });  // ← remove outputScheduler
 
         BrowseQuerySavePathCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             var folder = await PickFolderAsync();
             if (folder is not null) QuerySavePath = folder;
-        }, outputScheduler: Avalonia.ReactiveUI.AvaloniaScheduler.Instance);
+        });  // ← remove outputScheduler
 
         _ = LoadAsync();
     }
@@ -229,21 +227,25 @@ public class AppSettingsViewModel : ReactiveObject
 
     public async Task LoadAsync()
     {
+        AppSettingsSnapshot? snapshot = null;
+
         await Task.Run(() =>
         {
             try
             {
                 if (!File.Exists(SettingsFilePath)) return;
-
-                string json     = File.ReadAllText(SettingsFilePath);
-                var    snapshot = JsonSerializer.Deserialize<AppSettingsSnapshot>(json);
-                if (snapshot is null) return;
-
-                FromSnapshot(snapshot);
-                ApplySettings();
+                string json = File.ReadAllText(SettingsFilePath);
+                snapshot = JsonSerializer.Deserialize<AppSettingsSnapshot>(json);
             }
-            catch { /* silent fail — first run or corrupted */ }
+            catch { /* silent fail */ }
         });
+
+        // Now back on UI thread — safe to update properties and apply theme
+        if (snapshot is not null)
+        {
+            FromSnapshot(snapshot);
+            ApplySettings();
+        }
     }
 
     private void ResetToDefaults()
@@ -278,14 +280,22 @@ public class AppSettingsViewModel : ReactiveObject
 
             if (!mgr.IsInstalled)
             {
-                UpdateStatusMessage = "Not installed via Velopack (dev mode)";
+                UpdateStatusMessage = "Not installed via Velopack";
                 return;
             }
 
             var update = await mgr.CheckForUpdatesAsync();
-            UpdateStatusMessage = update is null
-                ? "Already up to date"
-                : $"Update available: {update.TargetFullRelease.Version}";
+            if (update is null)
+            {
+                UpdateStatusMessage = "Already up to date";
+                return;
+            }
+
+            UpdateStatusMessage = $"Downloading update {update.TargetFullRelease.Version}...";
+            await mgr.DownloadUpdatesAsync(update);
+
+            UpdateStatusMessage = "Update ready. Restarting...";
+            mgr.ApplyUpdatesAndRestart(update);
         }
         catch (Exception ex)
         {
