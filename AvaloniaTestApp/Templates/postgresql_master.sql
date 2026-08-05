@@ -5,9 +5,9 @@
 -- PK     : {{pk_col}} {{pk_type}}
 -- ============================================================
 
--- DROP PROCEDURE {{schema}}.pr_{{table_name}}(...);
+-- DROP PROCEDURE pr_{{table_name}}(...);
 
-CREATE OR REPLACE PROCEDURE {{schema}}.pr_{{table_name}}(
+CREATE OR REPLACE PROCEDURE pr_{{table_name}}(
     INOUT pi_{{pk_col}} {{pk_type}},
     IN    pi_opflag character varying,
     IN    pi_operation_date date,
@@ -41,7 +41,7 @@ BEGIN
     IF pi_opflag = 'N' THEN
         lv_{{pk_col}} := fn_getnextval('{{table_name}}');
 
-        INSERT INTO {{schema}}.{{table_name}} (
+        INSERT INTO {{table_name}} (
             {{pk_col}},
             server_sys_date,
             operation_date,
@@ -88,10 +88,10 @@ BEGIN
         END IF;
 
     ELSIF pi_opflag = 'M' THEN
-        DROP TABLE IF EXISTS pg_temp.g_{{table_name}};
+        DROP TABLE IF EXISTS g_{{table_name}};
 
         CREATE TEMP TABLE g_{{table_name}} AS
-        SELECT * FROM {{schema}}.{{table_name}} WHERE 1 = 2;
+        SELECT * FROM {{table_name}} WHERE 1 = 2;
 
         INSERT INTO g_{{table_name}} (
             {{pk_col}},
@@ -143,7 +143,7 @@ BEGIN
                        k.primary_key_name, t.data_type
                 FROM information_schema.columns t
                 INNER JOIN table_key_master k ON t.table_name = k.table_name
-                WHERE t.table_schema = '{{schema}}'
+                WHERE t.table_schema = current_schema
                   AND t.table_name = '{{table_name}}'
                   AND t.column_name IN (
                       SELECT c.field_name
@@ -154,24 +154,11 @@ BEGIN
                   )
             ) LOOP
                 IF cnt.data_type NOT IN ('bytea', 'text') THEN
-                    EXECUTE format(
-                        'SELECT %I::character varying FROM %I WHERE %I = $1',
-                        cnt.column_name,
-                        cnt.temp_table,
-                        '{{pk_col}}'
-                    )
-                    INTO lv_newval
-                    USING pi_{{pk_col}};
+                    EXECUTE 'SELECT ' || cnt.column_name || '::character varying FROM ' || cnt.temp_table ||
+        ' WHERE {{pk_col}} = ' || pi_{{pk_col}} INTO lv_newval;
 
-                    EXECUTE format(
-                        'SELECT %I::character varying FROM %I.%I WHERE %I = $1',
-                        cnt.column_name,
-                        '{{schema}}',
-                        cnt.table_name,
-                        '{{pk_col}}'
-                    )
-                    INTO lv_oldval
-                    USING pi_{{pk_col}};
+                    EXECUTE 'SELECT ' || cnt.column_name || '::character varying FROM ' || cnt.table_name ||
+        ' WHERE {{pk_col}} = ' || pi_{{pk_col}} INTO lv_oldval;
 
                     IF COALESCE(TRIM(lv_newval), ' ') <> COALESCE(TRIM(lv_oldval), ' ') THEN
                         INSERT INTO modification_log (
@@ -202,7 +189,7 @@ BEGIN
             END IF;
         END IF;
 
-        UPDATE {{schema}}.{{table_name}}
+        UPDATE {{table_name}}
         SET
 {{update_business_assignments}}
             operation_id = lv_opid,
@@ -220,7 +207,7 @@ BEGIN
         child_flag := fn_child_record_found('{{table_name}}', pi_{{pk_col}}::integer);
 
         IF child_flag = 'N' THEN
-            UPDATE {{schema}}.{{table_name}}
+            UPDATE {{table_name}}
             SET operation_id = lv_opid,
                 operation_date = lv_opdate,
                 active_flag = 'N',

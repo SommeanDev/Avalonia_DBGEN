@@ -1,13 +1,13 @@
 ﻿-- ============================================================
 -- ARRAY PROCEDURE
--- Schema : {{schema}}
+-- Schema : 
 -- Table  : {{table_name}}
 -- PK     : {{pk_col}} {{pk_type}}[]   (array)
 -- ============================================================
 
--- DROP PROCEDURE {{schema}}.pr_{{table_name}}_array(...);
+-- DROP PROCEDURE pr_{{table_name}}_array(...);
 
-CREATE OR REPLACE PROCEDURE {{schema}}.pr_{{table_name}}_array(
+CREATE OR REPLACE PROCEDURE pr_{{table_name}}_array(
     INOUT pio_{{pk_col}}          {{pk_type}}[],
     IN    pi_opflag               character varying,
     IN    pi_operation_date       timestamp without time zone,
@@ -44,7 +44,7 @@ BEGIN
     -- --------------------------------------------------------
     IF pi_opflag = 'N' THEN
 
-        INSERT INTO {{schema}}.{{table_name}} (
+        INSERT INTO {{table_name}} (
             {{pk_col}},
             server_sys_date,
             operation_date,
@@ -101,7 +101,7 @@ END IF;
         DISCARD TEMP;
 
         CREATE TEMP TABLE g_{{table_name}} AS
-SELECT * FROM {{schema}}.{{table_name}} WHERE 1 = 2;
+SELECT * FROM {{table_name}} WHERE 1 = 2;
 
 INSERT INTO g_{{table_name}} (
     {{pk_col}},
@@ -160,7 +160,7 @@ FOR rec IN (SELECT * FROM g_{{table_name}})
                            k.primary_key_name, t.data_type
                     FROM information_schema.columns t
                     INNER JOIN table_key_master k ON t.table_name = k.table_name
-                    WHERE t.table_schema = '{{schema}}'
+                    WHERE t.table_schema = current_schema
                       AND t.table_name = '{{table_name}}'
                       AND t.column_name IN (
                           SELECT c.field_name
@@ -173,15 +173,11 @@ FOR rec IN (SELECT * FROM g_{{table_name}})
                 LOOP
                     IF cnt.data_type NOT IN ('bytea', 'text') THEN
 
-                        EXECUTE format(
-                            'SELECT %I::character varying FROM %I WHERE %I = $1',
-                            cnt.column_name, cnt.temp_table, '{{pk_col}}'
-                        ) INTO lv_newval USING rec.record_id;
+                        EXECUTE 'SELECT ' || cnt.column_name || '::character varying FROM ' || cnt.temp_table ||
+                            ' WHERE {{pk_col}} = ' || rec.record_id INTO lv_newval;
 
-EXECUTE format(
-        'SELECT %I::character varying FROM %I.%I WHERE %I = $1',
-        cnt.column_name, '{{schema}}', cnt.table_name, '{{pk_col}}'
-        ) INTO lv_oldval USING rec.record_id;
+                        EXECUTE 'SELECT ' || cnt.column_name || '::character varying FROM ' || cnt.table_name ||
+                            ' WHERE {{pk_col}} = ' || rec.record_id INTO lv_oldval;
 
 IF COALESCE(TRIM(lv_newval), ' ') <> COALESCE(TRIM(lv_oldval), ' ') THEN
                             INSERT INTO modification_log (
@@ -212,7 +208,7 @@ IF COALESCE(lv_cnt, 0) <= 0 THEN
                     RETURN;
 END IF;
 
-UPDATE {{schema}}.{{table_name}}
+UPDATE {{table_name}}
 SET
     {{update_array_assignments}}
     operation_id        = lv_opid,
@@ -227,7 +223,7 @@ SET
             ELSIF COALESCE(rec.record_id, 0) = 0 THEN
 
                 -- New row within a Modify call (record_id = 0 means insert)
-                INSERT INTO {{schema}}.{{table_name}} (
+                INSERT INTO {{table_name}} (
                     {{pk_col}},
                     server_sys_date,
                     operation_date,
@@ -275,7 +271,7 @@ END LOOP;
 
             FOR i IN 1..array_length(pio_{{pk_col}}, 1)
             LOOP
-UPDATE {{schema}}.{{table_name}}
+UPDATE {{table_name}}
 SET operation_id    = lv_opid,
     operation_date  = lv_opdate,
     active_flag     = 'N',

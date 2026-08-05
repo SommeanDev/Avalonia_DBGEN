@@ -10,169 +10,138 @@
              x:Class="AvaloniaTestApp.Views.ScriptGeneratorView"
              x:DataType="vm:MainWindowViewModel">
 
-    <Grid ColumnDefinitions="380, 16, *">
+    <Grid ColumnDefinitions="400, 24, *">
 
-        <!-- ══════════════════════════════════════════════════════════
-             LEFT PANEL — Inputs
-             ══════════════════════════════════════════════════════════ -->
         <Border Grid.Column="0"
-                Background="#1e1e1e"
-                BorderThickness="0.5"
-                BorderBrush="#3e3e42"
-                CornerRadius="12"
-                Padding="20">
+                Background="#090d15"
+                BorderThickness="1"
+                BorderBrush="{StaticResource BorderDark}"
+                Padding="24">
             <Grid RowDefinitions="Auto, *, Auto">
 
-                <!-- Header -->
-                <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,18">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <material:MaterialIcon Kind="CodeBraces" Foreground="#1D9E75" Width="18" Height="18" VerticalAlignment="Center"/>
-                        <TextBlock Text="GENERATOR"
-                                   Foreground="#1D9E75"
-                                   FontFamily="Monospace"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"
-                                   LetterSpacing="2"
-                                   VerticalAlignment="Center"/>
+                <StackPanel Grid.Row="0" Spacing="6" Margin="0,0,0,20">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <material:MaterialIcon Kind="CodeBraces" Foreground="{StaticResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="GENERATOR" Classes="TechHeader" VerticalAlignment="Center"/>
                     </StackPanel>
+                    
                     <TextBlock Text="Script Generator"
-                               Foreground="White"
-                               FontSize="22"
-                               FontWeight="Medium"/>
+                               Foreground="{StaticResource TextBright}"
+                               FontSize="24"
+                               FontWeight="SemiBold"/>
                 </StackPanel>
 
-                <!-- Scrollable inputs -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Spacing="14">
+                    <StackPanel Spacing="16" Margin="0,0,4,0">
 
-                        <!-- Type + Template -->
-                        <Grid ColumnDefinitions="*, 12, *">
+                        <Grid ColumnDefinitions="*, 16, *">
                             <StackPanel Grid.Column="0" Spacing="6">
-                                <TextBlock Text="Type" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                                <TextBlock Text="Type" Classes="TechHeader"/>
                                 <ComboBox ItemsSource="{Binding ScriptTypes}"
                                           SelectedItem="{Binding SelectedScriptType}"
                                           HorizontalAlignment="Stretch"
-                                          Background="#252526"
-                                          BorderBrush="#3e3e42"
-                                          BorderThickness="0.5"
-                                          CornerRadius="8"
-                                          Foreground="White">
+                                          Background="#070b12"
+                                          BorderBrush="{StaticResource BorderDark}"
+                                          BorderThickness="1"
+                                          CornerRadius="0"
+                                          Foreground="{StaticResource TextMain}"
+                                          Height="38">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding}" Foreground="White"/>
+                                            <TextBlock Text="{Binding}" Foreground="{StaticResource TextMain}"/>
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Grid.Column="2" Spacing="6">
-                                <TextBlock Text="Template" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                                <TextBlock Text="Template" Classes="TechHeader"/>
                                 <ComboBox ItemsSource="{Binding Templates}"
                                           SelectedItem="{Binding SelectedTemplate}"
                                           HorizontalAlignment="Stretch"
-                                          Background="#252526"
-                                          BorderBrush="#3e3e42"
-                                          BorderThickness="0.5"
-                                          CornerRadius="8"
-                                          Foreground="White">
+                                          Background="#070b12"
+                                          BorderBrush="{StaticResource BorderDark}"
+                                          BorderThickness="1"
+                                          CornerRadius="0"
+                                          Foreground="{StaticResource TextMain}"
+                                          Height="38">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding}" Foreground="White"/>
+                                            <TextBlock Text="{Binding}" Foreground="{StaticResource TextMain}"/>
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
                             </StackPanel>
                         </Grid>
 
-                        <!-- Procedure Name -->
                         <StackPanel Spacing="6">
-                            <TextBlock Text="Procedure Name" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="Procedure Name" Classes="TechHeader"/>
                             <TextBox Text="{Binding ProcedureName}"
                                      Watermark="usp_Order_Save"
-                                     Background="#252526"
-                                     BorderBrush="#1D9E75"
-                                     BorderThickness="0.5"
-                                     CornerRadius="8"
-                                     Foreground="White"
-                                     Padding="12,0"
-                                     VerticalContentAlignment="Center"/>
+                                     Classes="CyberInput"/>
                         </StackPanel>
 
-                        <!-- Master Table -->
                         <StackPanel Spacing="6">
-                            <TextBlock Text="Master Table" Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="Master Table" Classes="TechHeader"/>
                             <AutoCompleteBox x:Name="TableSearchBox"
-                                             MinHeight="36"
+                                             MinHeight="38"
                                              ItemsSource="{Binding DatabaseObjects}"
                                              SelectedItem="{Binding SelectedScriptTable}"
                                              Watermark="Search tables..."
                                              HorizontalAlignment="Stretch"
-                                             Background="#252526"
-                                             BorderBrush="#3e3e42"
-                                             BorderThickness="0.5"
-                                             CornerRadius="8"
-                                             Foreground="White"
+                                             Background="#070b12"
+                                             BorderBrush="{StaticResource BorderDark}"
+                                             BorderThickness="1"
+                                             CornerRadius="0"
+                                             Foreground="{StaticResource TextMain}"
                                              Padding="12,8">
                                 <AutoCompleteBox.ItemTemplate>
                                     <DataTemplate x:DataType="models:DatabaseObject">
-                                        <TextBlock Text="{Binding Name}" Foreground="White" Padding="0,8"/>
+                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextMain}" Padding="0,6"/>
                                     </DataTemplate>
                                 </AutoCompleteBox.ItemTemplate>
                             </AutoCompleteBox>
                         </StackPanel>
 
-                        <!-- Line Table (only shown when template requires it) -->
-                        <StackPanel Spacing="6"
-                                    IsVisible="{Binding TemplateRequiresLineTable}">
-                            <TextBlock Text="Line Table" Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
-                            <AutoCompleteBox MinHeight="36"
+                        <StackPanel Spacing="6" IsVisible="{Binding TemplateRequiresLineTable}">
+                            <TextBlock Text="Line Table" Classes="TechHeader"/>
+                            <AutoCompleteBox MinHeight="38"
                                              ItemsSource="{Binding DatabaseObjects}"
                                              SelectedItem="{Binding SelectedLineTable}"
                                              Watermark="Search line table..."
                                              HorizontalAlignment="Stretch"
-                                             Background="#252526"
-                                             BorderBrush="#3e3e42"
-                                             BorderThickness="0.5"
-                                             CornerRadius="8"
-                                             Foreground="White"
+                                             Background="#070b12"
+                                             BorderBrush="{StaticResource BorderDark}"
+                                             BorderThickness="1"
+                                             CornerRadius="0"
+                                             Foreground="{StaticResource TextMain}"
                                              Padding="12,8">
                                 <AutoCompleteBox.ItemTemplate>
                                     <DataTemplate x:DataType="models:DatabaseObject">
-                                        <TextBlock Text="{Binding Name}" Foreground="White" Padding="0,8"/>
+                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextMain}" Padding="0,6"/>
                                     </DataTemplate>
                                 </AutoCompleteBox.ItemTemplate>
                             </AutoCompleteBox>
                         </StackPanel>
 
-                        <Border Height="0.5" Background="#3e3e42" Margin="0,4,0,0"/>
+                        <Border Height="1" Background="{StaticResource BorderDark}" Margin="0,4,0,4"/>
 
-                        <!-- Columns header + Add button -->
                         <Grid ColumnDefinitions="*, Auto" VerticalAlignment="Center">
-                            <TextBlock Grid.Column="0"
-                                       Text="COLUMNS"
-                                       Foreground="#1D9E75"
-                                       FontSize="11"
-                                       FontFamily="Monospace"
-                                       FontWeight="SemiBold"
-                                       LetterSpacing="2"
-                                       VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                <material:MaterialIcon Kind="TableColumn" Foreground="{StaticResource CyberTeal}" Width="12" Height="12" VerticalAlignment="Center"/>
+                                <TextBlock Text="COLUMNS" Classes="TechHeader" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            
                             <Button Grid.Column="1"
                                     Command="{Binding AddColumnCommand}"
-                                    Background="Transparent"
-                                    BorderBrush="#3e3e42"
-                                    BorderThickness="0.5"
-                                    CornerRadius="8"
-                                    Foreground="#1D9E75"
-                                    Padding="10,4">
-                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    Classes="CyberSecondary"
+                                    Padding="12,6">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
                                     <material:MaterialIcon Kind="Plus" Width="12" Height="12" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Add" FontSize="12" FontFamily="Monospace" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Add Field" FontSize="12" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                         </Grid>
 
-                        <!-- Column rows -->
                         <ItemsControl ItemsSource="{Binding Columns}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -184,19 +153,15 @@
                     </StackPanel>
                 </ScrollViewer>
 
-                <!-- Generate button -->
-                <Grid Grid.Row="2" Margin="0,14,0,0">
+                <Grid Grid.Row="2" Margin="0,16,0,0">
                     <Button Command="{Binding GenerateSqlCommand}"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
-                            Background="#1D9E75"
-                            BorderThickness="0"
-                            CornerRadius="8"
-                            Foreground="White"
-                            Padding="14,10">
-                        <StackPanel Orientation="Horizontal" Spacing="7">
-                            <material:MaterialIcon Kind="CodeBraces" Width="14" Height="14" VerticalAlignment="Center"/>
-                            <TextBlock Text="Generate SQL" FontSize="13" FontWeight="Medium" FontFamily="Monospace" VerticalAlignment="Center"/>
+                            Classes="CyberPrimary"
+                            Padding="14,12">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <material:MaterialIcon Kind="LightningBolt" Width="14" Height="14" VerticalAlignment="Center"/>
+                            <TextBlock Text="Generate SQL" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </Grid>
@@ -204,144 +169,144 @@
             </Grid>
         </Border>
 
-        <!-- ══════════════════════════════════════════════════════════
-             RIGHT PANEL — Output (Generated SQL / Template Editor)
-             ══════════════════════════════════════════════════════════ -->
         <Border Grid.Column="2"
-                Background="#1e1e1e"
-                BorderThickness="0.5"
-                BorderBrush="#3e3e42"
-                CornerRadius="12"
-                Padding="0"
+                Background="#070a11"
+                BorderThickness="1"
+                BorderBrush="{StaticResource BorderDark}"
                 ClipToBounds="True">
             <Grid RowDefinitions="Auto, *">
 
-                <!-- Tab bar -->
-                <Grid Grid.Row="0"
-                      ColumnDefinitions="Auto, Auto, *, Auto"
-                      Background="#161616"
-                      Height="44">
-                    <Border Grid.Column="0">
-                        <Grid>
-                            <Border Height="2"
-                                    Background="#1D9E75"
-                                    VerticalAlignment="Bottom"
-                                    IsVisible="{Binding ShowGeneratedSql}"/>
-                        <Button Command="{Binding ShowGeneratedSqlCommand}"
+                <Panel Grid.Row="0" Background="#090d15" Height="46">
+                    <Grid ColumnDefinitions="Auto, Auto, *, Auto">
+                        <Border Grid.Column="0">
+                            <Grid>
+                                <Border Height="2"
+                                        Background="{StaticResource CyberTeal}"
+                                        VerticalAlignment="Bottom"
+                                        ZIndex="1"
+                                        IsVisible="{Binding ShowGeneratedSql}"/>
+                                <Button Command="{Binding ShowGeneratedSqlCommand}"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Foreground="{StaticResource TextBright}"
+                                        Padding="20,0"
+                                        Height="46">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <material:MaterialIcon Kind="FileCodeOutline" Width="14" Height="14" VerticalAlignment="Center" Foreground="{StaticResource TextMuted}"/>
+                                        <TextBlock Text="Generated SQL" FontFamily="{StaticResource AppFontFamily}" FontSize="13" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </Border>
+                        
+                        <Border Grid.Column="1">
+                            <Grid>
+                                <Border Height="2"
+                                        Background="{StaticResource CyberTeal}"
+                                        VerticalAlignment="Bottom"
+                                        ZIndex="1"
+                                        IsVisible="{Binding ShowTemplateEditor}"/>
+                                <Button Command="{Binding ShowTemplateEditorCommand}"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Foreground="{StaticResource TextMain}"
+                                        Padding="20,0"
+                                        Height="46">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <material:MaterialIcon Kind="SquareEditOutline" Width="14" Height="14" VerticalAlignment="Center" Foreground="{StaticResource TextMuted}"/>
+                                        <TextBlock Text="Template Editor" FontFamily="{StaticResource AppFontFamily}" FontSize="13" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </Border>
+                        
+                        <Button Grid.Column="3"
+                                Command="{Binding CopySqlCommand}"
                                 Background="Transparent"
                                 BorderThickness="0"
-                                Foreground="White"
+                                Foreground="{StaticResource TextMuted}"
                                 Padding="16,0"
-                                Height="44">
-                            <TextBlock Text="Generated SQL" FontFamily="Monospace" FontSize="13" VerticalAlignment="Center"/>
+                                Height="46"
+                                ToolTip.Tip="Copy to clipboard">
+                            <material:MaterialIcon Kind="ContentCopy" Width="16" Height="16"/>
                         </Button>
-                        </Grid>
-                    </Border>
-                    <Border Grid.Column="1">
-                        <Grid>
-                            <Border Height="2"
-                                    Background="#1D9E75"
-                                    VerticalAlignment="Bottom"
-                                    IsVisible="{Binding ShowTemplateEditor}"/>
-                            <Button Command="{Binding ShowTemplateEditorCommand}"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Foreground="#D4D4D4"
-                                    Padding="16,0"
-                                    Height="44">
-                                <TextBlock Text="Template Editor" FontFamily="Monospace" FontSize="13" VerticalAlignment="Center"/>
-                            </Button>
-                        </Grid>
-                    </Border>
-                    <Button Grid.Column="3"
-                            Command="{Binding CopySqlCommand}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Foreground="#888780"
-                            Padding="12,0"
-                            Height="44"
-                            ToolTip.Tip="Copy to clipboard">
-                        <material:MaterialIcon Kind="ContentCopy" Width="16" Height="16"/>
-                    </Button>
-                </Grid>
+                    </Grid>
+                    
+                    <Border Height="1" Background="{StaticResource BorderDark}" VerticalAlignment="Bottom"/>
+                </Panel>
 
-                <Border Grid.Row="0" Height="0.5" Background="#3e3e42" VerticalAlignment="Bottom"/>
-
-                <!-- Output area -->
                 <Panel Grid.Row="1">
 
-                    <!-- Generated SQL viewer -->
                     <TextBox IsVisible="{Binding ShowGeneratedSql}"
                              Text="{Binding GeneratedSql}"
                              IsReadOnly="True"
                              AcceptsReturn="True"
                              TextWrapping="NoWrap"
-                             FontFamily="{DynamicResource AppFontFamily}"
+                             FontFamily="{StaticResource AppFontFamily}"
                              FontSize="{DynamicResource AppFontSize}"
-                             Foreground="#D4D4D4"
-                             Background="Transparent"
+                             Foreground="{StaticResource TextMain}"
+                             Background="#05070c"
                              BorderThickness="0"
-                             Padding="20,16"
+                             Padding="24,20"
                              ScrollViewer.VerticalScrollBarVisibility="Auto"
                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                             CaretBrush="#1D9E75"/>
+                             CaretBrush="{StaticResource CyberTeal}"/>
 
-                    <!-- Template editor -->
                     <Grid IsVisible="{Binding ShowTemplateEditor}"
                           RowDefinitions="*, Auto">
                         <TextBox Grid.Row="0"
                                  Text="{Binding TemplateContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  AcceptsReturn="True"
                                  TextWrapping="NoWrap"
-                                 FontFamily="{DynamicResource AppFontFamily}"
+                                 FontFamily="{StaticResource AppFontFamily}"
                                  FontSize="{DynamicResource AppFontSize}"
-                                 Foreground="#D4D4D4"
-                                 Background="Transparent"
+                                 Foreground="{StaticResource TextMain}"
+                                 Background="#05070c"
                                  BorderThickness="0"
-                                 Padding="20,16"
+                                 Padding="24,20"
                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                 CaretBrush="#1D9E75"/>
-                        <Grid Grid.Row="1"
-                              ColumnDefinitions="*, Auto, 8, Auto"
-                              Background="#161616"
-                              MinHeight="42">
-                            <TextBlock Grid.Column="0"
-                                       Text="{Binding TemplateStatusText}"
-                                       Foreground="#888780"
-                                       FontSize="11"
-                                       FontFamily="Monospace"
-                                       VerticalAlignment="Center"
-                                       Margin="16,0"/>
-                            <Button Grid.Column="1"
-                                    Command="{Binding ReloadTemplateCommand}"
-                                    Background="Transparent"
-                                    BorderBrush="#3e3e42"
-                                    BorderThickness="0.5"
-                                    CornerRadius="6"
-                                    Foreground="#888780"
-                                    Padding="10,5"
-                                    VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" Spacing="5">
-                                    <material:MaterialIcon Kind="Refresh" Width="13" Height="13" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Reload" FontSize="12" FontFamily="Monospace" VerticalAlignment="Center"/>
+                                 CaretBrush="{StaticResource CyberTeal}"/>
+                                 
+                        <Border Grid.Row="1" 
+                                Background="#090d15" 
+                                MinHeight="46" 
+                                BorderThickness="0,1,0,0" 
+                                BorderBrush="{StaticResource BorderDark}">
+                            <Grid ColumnDefinitions="*, Auto, 12, Auto">
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6" Margin="16,0">
+                                    <material:MaterialIcon Kind="InformationOutline" Foreground="{StaticResource TextMuted}" Width="14" Height="14" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding TemplateStatusText}"
+                                               Foreground="{StaticResource TextMuted}"
+                                               FontSize="11"
+                                               FontFamily="{StaticResource AppFontFamily}"
+                                               VerticalAlignment="Center"/>
                                 </StackPanel>
-                            </Button>
-                            <Button Grid.Column="3"
-                                    Command="{Binding SaveTemplateCommand}"
-                                    Background="#1D9E75"
-                                    BorderThickness="0"
-                                    CornerRadius="6"
-                                    Foreground="White"
-                                    Padding="10,5"
-                                    Margin="0,0,12,0"
-                                    VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" Spacing="5">
-                                    <material:MaterialIcon Kind="ContentSave" Width="13" Height="13" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Save" FontSize="12" FontFamily="Monospace" FontWeight="Medium" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                        </Grid>
+                                
+                                <Button Grid.Column="1"
+                                        Command="{Binding ReloadTemplateCommand}"
+                                        Classes="CyberSecondary"
+                                        Padding="14,6"
+                                        VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <material:MaterialIcon Kind="Refresh" Width="13" Height="13" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Reload" FontSize="12" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                
+                                <Button Grid.Column="3"
+                                        Command="{Binding SaveTemplateCommand}"
+                                        Classes="CyberPrimary"
+                                        Padding="16,6"
+                                        Margin="0,0,16,0"
+                                        VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <material:MaterialIcon Kind="ContentSaveOutline" Width="13" Height="13" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Save Template" FontSize="12" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </Border>
                     </Grid>
 
                 </Panel>
@@ -349,5 +314,4 @@
         </Border>
 
     </Grid>
-
 </UserControl>

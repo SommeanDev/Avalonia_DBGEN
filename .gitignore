@@ -29,6 +29,7 @@ releases/
 
 # Avalonia / XAML generated caches
 Avalonia.Designer.HostApp/
+.air/
 
 # Logs and diagnostics
 *.log

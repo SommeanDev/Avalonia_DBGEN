@@ -1,25 +1,98 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Styles.Resources>
+        <!-- ══════════════════════════════════════════ -->
+        <!--        CYBERPUNK SCI-FI COLOR PALETTE       -->
+        <!-- ══════════════════════════════════════════ -->
+        <SolidColorBrush x:Key="BgGlowDark" Color="#05070c"/>
+        <SolidColorBrush x:Key="BgMain" Color="#070a11"/>
+        <SolidColorBrush x:Key="BgSidebar" Color="#090d15"/>
+        <SolidColorBrush x:Key="BorderDark" Color="#18202e"/>
+        <SolidColorBrush x:Key="CyberTeal" Color="#22d3ee"/>
+        <SolidColorBrush x:Key="CyberPink" Color="#ff3d8b"/>
+        <SolidColorBrush x:Key="CyberAmber" Color="#ffb020"/>
+        <SolidColorBrush x:Key="TextMuted" Color="#5d7088"/>
+        <SolidColorBrush x:Key="TextMain" Color="#cdd9e8"/>
+        <SolidColorBrush x:Key="TextBright" Color="#eaf3fb"/>
+    </Styles.Resources>
 
-    <!-- Sidebar nav item sizing -->
-    <Style Selector="ListBoxItem">
-        <Setter Property="Padding" Value="10,0" />
-        <Setter Property="Height" Value="50" />
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <!-- ══════════════════════════════════════════ -->
+    <!--               TEXT STYLES                  -->
+    <!-- ══════════════════════════════════════════ -->
+    
+    <!-- For data telemetry/section tags (e.g., ▚ NAVIGATION, ◤ SYSTEM) -->
+    <Style Selector="TextBlock.TechHeader">
+        <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource CyberTeal}"/>
+        <Setter Property="LetterSpacing" Value="0.15"/>
     </Style>
 
-    <!-- Force sidebar items to stay dark regardless of system theme -->
-    <Style Selector="ListBoxItem /template/ ContentPresenter">
+    <!-- For subtle commentary tags or code paths (e.g., // enter credentials) -->
+    <Style Selector="TextBlock.TechComment">
+        <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
+    </Style>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!--             INPUTS & TEXTBOXES             -->
+    <!-- ══════════════════════════════════════════ -->
+    <Style Selector="TextBox.CyberInput">
+        <Setter Property="Background" Value="#070b12"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderDark}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    
+    <!-- Focus State Glow -->
+    <Style Selector="TextBox.CyberInput:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{StaticResource CyberTeal}"/>
+        <Setter Property="Background" Value="#070b12"/>
+    </Style>
+    
+    <!-- Hover State -->
+    <Style Selector="TextBox.CyberInput:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="#2a3c4f"/>
+    </Style>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!--                BUTTON STYLES               -->
+    <!-- ══════════════════════════════════════════ -->
+    
+    <!-- Primary Sci-Fi Solid Button (Teal action item) -->
+    <Style Selector="Button.CyberPrimary">
+        <Setter Property="Background" Value="{StaticResource CyberTeal}"/>
+        <Setter Property="Foreground" Value="#04141a"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        <Setter Property="Padding" Value="24,11"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style Selector="Button.CyberPrimary:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#38bdf8"/>
+        <Setter Property="Foreground" Value="#04141a"/>
+    </Style>
+
+    <!-- Secondary Outline Tech Button -->
+    <Style Selector="Button.CyberSecondary">
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="#2a3c4f"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="#bcd0e4"/>
+        <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        <Setter Property="Padding" Value="18,11"/>
+        <Setter Property="CornerRadius" Value="0"/>
     </Style>
-    <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
-        <Setter Property="Background" Value="#2d2d2d"/>
-    </Style>
-    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="#2a2a2a"/>
-    </Style>
-    <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="#2d2d2d"/>
+    <Style Selector="Button.CyberSecondary:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#111823"/>
+        <Setter Property="BorderBrush" Value="{StaticResource TextMuted}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBright}"/>
     </Style>
 
 </Styles>

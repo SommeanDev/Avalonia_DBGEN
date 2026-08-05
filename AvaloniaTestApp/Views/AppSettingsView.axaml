@@ -1,70 +1,514 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+﻿<!-- <UserControl xmlns="https://github.com/avaloniaui" -->
+<!--              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" -->
+<!--              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" -->
+<!--              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" -->
+<!--              xmlns:vm="clr-namespace:AvaloniaTestApp.ViewModels" -->
+<!--              xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia" -->
+<!--              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800" -->
+<!--              x:Class="AvaloniaTestApp.Views.AppSettingsView" -->
+<!--              x:DataType="vm:AppSettingsViewModel"> -->
+<!-- -->
+<!--     <ScrollViewer> -->
+<!--         <StackPanel Spacing="20" Margin="10"> -->
+<!-- -->
+<!--             ~1~ ── Page Header ── @1@ -->
+<!--             <StackPanel Spacing="4"> -->
+<!--                 <StackPanel Orientation="Horizontal" Spacing="8"> -->
+<!--                     <material:MaterialIcon Kind="Cog" Foreground="#1D9E75" Width="18" Height="18" VerticalAlignment="Center"/> -->
+<!--                     <TextBlock Text="SETTINGS" -->
+<!--                                Foreground="#1D9E75" -->
+<!--                                FontFamily="Monospace" -->
+<!--                                FontSize="11" -->
+<!--                                FontWeight="SemiBold" -->
+<!--                                LetterSpacing="2" -->
+<!--                                VerticalAlignment="Center"/> -->
+<!--                 </StackPanel> -->
+<!--                 <TextBlock Text="Application Settings" -->
+<!--                            Foreground="White" -->
+<!--                            FontSize="22" -->
+<!--                            FontWeight="Medium"/> -->
+<!--                 <TextBlock Text="Customize appearance, preferences, and export behaviour." -->
+<!--                            Foreground="#888780" -->
+<!--                            FontSize="13"/> -->
+<!--             </StackPanel> -->
+<!-- -->
+<!--             ~1~ ── Theme & Appearance ── @1@ -->
+<!--             <Border Background="#1e1e1e" -->
+<!--                     BorderThickness="0.5" -->
+<!--                     BorderBrush="#3e3e42" -->
+<!--                     CornerRadius="12" -->
+<!--                     Padding="20"> -->
+<!--                 <StackPanel Spacing="14"> -->
+<!-- -->
+<!--                     <StackPanel Orientation="Horizontal" Spacing="8"> -->
+<!--                         <material:MaterialIcon Kind="Palette" Foreground="#1D9E75" Width="14" Height="14" VerticalAlignment="Center"/> -->
+<!--                         <TextBlock Text="THEME &amp; APPEARANCE" -->
+<!--                                    Foreground="#1D9E75" -->
+<!--                                    FontFamily="Monospace" -->
+<!--                                    FontSize="11" -->
+<!--                                    FontWeight="SemiBold" -->
+<!--                                    LetterSpacing="2" -->
+<!--                                    VerticalAlignment="Center"/> -->
+<!--                     </StackPanel> -->
+<!--                     <Border Height="0.5" Background="#3e3e42"/> -->
+<!-- -->
+<!--                     <Grid ColumnDefinitions="*, 16, *, 16, *"> -->
+<!-- -->
+<!--                         <StackPanel Grid.Column="0" Spacing="6"> -->
+<!--                             <TextBlock Text="Application Theme" -->
+<!--                                        Foreground="#1D9E75" FontSize="12" -->
+<!--                                        FontFamily="Monospace" FontWeight="Medium"/> -->
+<!--                             <ComboBox SelectedItem="{Binding SelectedTheme}" -->
+<!--                                       HorizontalAlignment="Stretch" -->
+<!--                                       Background="#252526" -->
+<!--                                       BorderBrush="#3e3e42" -->
+<!--                                       BorderThickness="0.5" -->
+<!--                                       CornerRadius="8" -->
+<!--                                       Foreground="White"> -->
+<!--                                 <ComboBoxItem>Light</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>Dark</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>System Default</ComboBoxItem> -->
+<!--                             </ComboBox> -->
+<!--                         </StackPanel> -->
+<!-- -->
+<!--                         <StackPanel Grid.Column="2" Spacing="6"> -->
+<!--                             <TextBlock Text="Editor Font" -->
+<!--                                        Foreground="#1D9E75" FontSize="12" -->
+<!--                                        FontFamily="Monospace" FontWeight="Medium"/> -->
+<!--                             <ComboBox SelectedItem="{Binding EditorFont}" -->
+<!--                                       HorizontalAlignment="Stretch" -->
+<!--                                       Background="#252526" -->
+<!--                                       BorderBrush="#3e3e42" -->
+<!--                                       BorderThickness="0.5" -->
+<!--                                       CornerRadius="8" -->
+<!--                                       Foreground="White"> -->
+<!--                                 <ComboBoxItem>Cascadia Code</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>JetBrains Mono</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>Consolas</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>Fira Code</ComboBoxItem> -->
+<!--                             </ComboBox> -->
+<!--                         </StackPanel> -->
+<!-- -->
+<!--                         <StackPanel Grid.Column="4" Spacing="6"> -->
+<!--                             <TextBlock Text="{Binding FontSize, StringFormat='Font Size: {0}px'}" -->
+<!--                                        Foreground="#1D9E75" FontSize="12" -->
+<!--                                        FontFamily="Monospace" FontWeight="Medium"/> -->
+<!--                             <Slider Minimum="10" Maximum="24" -->
+<!--                                     Value="{Binding FontSize}" -->
+<!--                                     TickFrequency="1" -->
+<!--                                     IsSnapToTickEnabled="True" -->
+<!--                                     VerticalAlignment="Center" -->
+<!--                                     Margin="0,6,0,0"/> -->
+<!--                         </StackPanel> -->
+<!-- -->
+<!--                     </Grid> -->
+<!--                 </StackPanel> -->
+<!--             </Border> -->
+<!-- -->
+<!--             ~1~ ── User Preferences ── @1@ -->
+<!--             <Border Background="#1e1e1e" -->
+<!--                     BorderThickness="0.5" -->
+<!--                     BorderBrush="#3e3e42" -->
+<!--                     CornerRadius="12" -->
+<!--                     Padding="20"> -->
+<!--                 <StackPanel Spacing="14"> -->
+<!-- -->
+<!--                     <StackPanel Orientation="Horizontal" Spacing="8"> -->
+<!--                         <material:MaterialIcon Kind="TuneVariant" Foreground="#1D9E75" Width="14" Height="14" VerticalAlignment="Center"/> -->
+<!--                         <TextBlock Text="USER PREFERENCES" -->
+<!--                                    Foreground="#1D9E75" -->
+<!--                                    FontFamily="Monospace" -->
+<!--                                    FontSize="11" -->
+<!--                                    FontWeight="SemiBold" -->
+<!--                                    LetterSpacing="2" -->
+<!--                                    VerticalAlignment="Center"/> -->
+<!--                     </StackPanel> -->
+<!--                     <Border Height="0.5" Background="#3e3e42"/> -->
+<!-- -->
+<!--                     <Grid ColumnDefinitions="*, 16, *"> -->
+<!--                         <StackPanel Grid.Column="0" Spacing="10"> -->
+<!--                             <CheckBox IsChecked="{Binding AutoSaveEnabled}" -->
+<!--                                       Content="Auto-save queries on run" -->
+<!--                                       Foreground="#D4D4D4" -->
+<!--                                       FontFamily="Monospace" -->
+<!--                                       FontSize="13"/> -->
+<!--                             <CheckBox IsChecked="{Binding ConfirmOnDelete}" -->
+<!--                                       Content="Confirm before deleting records" -->
+<!--                                       Foreground="#D4D4D4" -->
+<!--                                       FontFamily="Monospace" -->
+<!--                                       FontSize="13"/> -->
+<!--                             <CheckBox IsChecked="{Binding ShowRowNumbers}" -->
+<!--                                       Content="Show row numbers in results grid" -->
+<!--                                       Foreground="#D4D4D4" -->
+<!--                                       FontFamily="Monospace" -->
+<!--                                       FontSize="13"/> -->
+<!--                             <CheckBox IsChecked="{Binding WrapLongLines}" -->
+<!--                                       Content="Wrap long lines in editor" -->
+<!--                                       Foreground="#D4D4D4" -->
+<!--                                       FontFamily="Monospace" -->
+<!--                                       FontSize="13"/> -->
+<!--                         </StackPanel> -->
+<!-- -->
+<!--                         <StackPanel Grid.Column="2" Spacing="6"> -->
+<!--                             <TextBlock Text="Query Result Limit" -->
+<!--                                        Foreground="#1D9E75" FontSize="12" -->
+<!--                                        FontFamily="Monospace" FontWeight="Medium"/> -->
+<!--                             <NumericUpDown Value="{Binding QueryResultLimit}" -->
+<!--                                            Minimum="100" Maximum="100000" Increment="100" -->
+<!--                                            Width="180" HorizontalAlignment="Left" -->
+<!--                                            Background="#252526" -->
+<!--                                            BorderBrush="#3e3e42" -->
+<!--                                            BorderThickness="0.5" -->
+<!--                                            CornerRadius="8" -->
+<!--                                            Foreground="White"/> -->
+<!--                         </StackPanel> -->
+<!--                     </Grid> -->
+<!--                 </StackPanel> -->
+<!--             </Border> -->
+<!-- -->
+<!--             ~1~ ── Export & File Paths ── @1@ -->
+<!--             <Border Background="#1e1e1e" -->
+<!--                     BorderThickness="0.5" -->
+<!--                     BorderBrush="#3e3e42" -->
+<!--                     CornerRadius="12" -->
+<!--                     Padding="20"> -->
+<!--                 <StackPanel Spacing="14"> -->
+<!-- -->
+<!--                     <StackPanel Orientation="Horizontal" Spacing="8"> -->
+<!--                         <material:MaterialIcon Kind="FolderOpen" Foreground="#1D9E75" Width="14" Height="14" VerticalAlignment="Center"/> -->
+<!--                         <TextBlock Text="EXPORT &amp; FILE PATHS" -->
+<!--                                    Foreground="#1D9E75" -->
+<!--                                    FontFamily="Monospace" -->
+<!--                                    FontSize="11" -->
+<!--                                    FontWeight="SemiBold" -->
+<!--                                    LetterSpacing="2" -->
+<!--                                    VerticalAlignment="Center"/> -->
+<!--                     </StackPanel> -->
+<!--                     <Border Height="0.5" Background="#3e3e42"/> -->
+<!-- -->
+<!--                     <Grid ColumnDefinitions="*, 16, *"> -->
+<!-- -->
+<!--                         <StackPanel Grid.Column="0" Spacing="6"> -->
+<!--                             <TextBlock Text="Default Export Folder" -->
+<!--                                        Foreground="#1D9E75" FontSize="12" -->
+<!--                                        FontFamily="Monospace" FontWeight="Medium"/> -->
+<!--                             <Grid ColumnDefinitions="*, Auto"> -->
+<!--                                 <TextBox Grid.Column="0" -->
+<!--                                          Text="{Binding ExportFolderPath}" -->
+<!--                                          Watermark="e.g. C:\Exports" -->
+<!--                                          IsReadOnly="True" -->
+<!--                                          Background="#252526" -->
+<!--                                          BorderBrush="#3e3e42" -->
+<!--                                          BorderThickness="0.5" -->
+<!--                                          CornerRadius="8" -->
+<!--                                          Foreground="White" -->
+<!--                                          Padding="12,0" -->
+<!--                                          VerticalContentAlignment="Center"/> -->
+<!--                                 <Button Grid.Column="1" -->
+<!--                                         Command="{Binding BrowseExportFolderCommand}" -->
+<!--                                         Background="Transparent" -->
+<!--                                         BorderBrush="#3e3e42" -->
+<!--                                         BorderThickness="0.5" -->
+<!--                                         CornerRadius="8" -->
+<!--                                         Foreground="#888780" -->
+<!--                                         Padding="10,8" -->
+<!--                                         Margin="6,0,0,0"> -->
+<!--                                     <material:MaterialIcon Kind="FolderSearch" Width="14" Height="14"/> -->
+<!--                                 </Button> -->
+<!--                             </Grid> -->
+<!--                         </StackPanel> -->
+<!-- -->
+<!--                         <StackPanel Grid.Column="2" Spacing="6"> -->
+<!--                             <TextBlock Text="Query Save Location" -->
+<!--                                        Foreground="#1D9E75" FontSize="12" -->
+<!--                                        FontFamily="Monospace" FontWeight="Medium"/> -->
+<!--                             <Grid ColumnDefinitions="*, Auto"> -->
+<!--                                 <TextBox Grid.Column="0" -->
+<!--                                          Text="{Binding QuerySavePath}" -->
+<!--                                          Watermark="e.g. C:\Queries" -->
+<!--                                          IsReadOnly="True" -->
+<!--                                          Background="#252526" -->
+<!--                                          BorderBrush="#3e3e42" -->
+<!--                                          BorderThickness="0.5" -->
+<!--                                          CornerRadius="8" -->
+<!--                                          Foreground="White" -->
+<!--                                          Padding="12,0" -->
+<!--                                          VerticalContentAlignment="Center"/> -->
+<!--                                 <Button Grid.Column="1" -->
+<!--                                         Command="{Binding BrowseQuerySavePathCommand}" -->
+<!--                                         Background="Transparent" -->
+<!--                                         BorderBrush="#3e3e42" -->
+<!--                                         BorderThickness="0.5" -->
+<!--                                         CornerRadius="8" -->
+<!--                                         Foreground="#888780" -->
+<!--                                         Padding="10,8" -->
+<!--                                         Margin="6,0,0,0"> -->
+<!--                                     <material:MaterialIcon Kind="FolderSearch" Width="14" Height="14"/> -->
+<!--                                 </Button> -->
+<!--                             </Grid> -->
+<!--                         </StackPanel> -->
+<!-- -->
+<!--                     </Grid> -->
+<!-- -->
+<!--                     <StackPanel Spacing="6"> -->
+<!--                         <TextBlock Text="Default Export Format" -->
+<!--                                    Foreground="#1D9E75" FontSize="12" -->
+<!--                                    FontFamily="Monospace" FontWeight="Medium"/> -->
+<!--                         <ComboBox SelectedItem="{Binding DefaultExportFormat}" -->
+<!--                                   Width="220" HorizontalAlignment="Left" -->
+<!--                                   Background="#252526" -->
+<!--                                   BorderBrush="#3e3e42" -->
+<!--                                   BorderThickness="0.5" -->
+<!--                                   CornerRadius="8" -->
+<!--                                   Foreground="White"> -->
+<!--                             <ComboBoxItem>CSV</ComboBoxItem> -->
+<!--                             <ComboBoxItem>Excel (.xlsx)</ComboBoxItem> -->
+<!--                             <ComboBoxItem>JSON</ComboBoxItem> -->
+<!--                             <ComboBoxItem>SQL INSERT script</ComboBoxItem> -->
+<!--                         </ComboBox> -->
+<!--                     </StackPanel> -->
+<!-- -->
+<!--                 </StackPanel> -->
+<!--             </Border> -->
+<!-- -->
+<!--             ~1~ ── Language & Locale ── @1@ -->
+<!--             <Border Background="#1e1e1e" -->
+<!--                     BorderThickness="0.5" -->
+<!--                     BorderBrush="#3e3e42" -->
+<!--                     CornerRadius="12" -->
+<!--                     Padding="20"> -->
+<!--                 <StackPanel Spacing="14"> -->
+<!-- -->
+<!--                     <StackPanel Orientation="Horizontal" Spacing="8"> -->
+<!--                         <material:MaterialIcon Kind="Web" Foreground="#1D9E75" Width="14" Height="14" VerticalAlignment="Center"/> -->
+<!--                         <TextBlock Text="LANGUAGE &amp; LOCALE" -->
+<!--                                    Foreground="#1D9E75" -->
+<!--                                    FontFamily="Monospace" -->
+<!--                                    FontSize="11" -->
+<!--                                    FontWeight="SemiBold" -->
+<!--                                    LetterSpacing="2" -->
+<!--                                    VerticalAlignment="Center"/> -->
+<!--                     </StackPanel> -->
+<!--                     <Border Height="0.5" Background="#3e3e42"/> -->
+<!-- -->
+<!--                     <Grid ColumnDefinitions="*, 16, *, 16, *"> -->
+<!--                         <StackPanel Grid.Column="0" Spacing="6"> -->
+<!--                             <TextBlock Text="Display Language" -->
+<!--                                        Foreground="#1D9E75" FontSize="12" -->
+<!--                                        FontFamily="Monospace" FontWeight="Medium"/> -->
+<!--                             <ComboBox SelectedItem="{Binding SelectedLanguage}" -->
+<!--                                       HorizontalAlignment="Stretch" -->
+<!--                                       Background="#252526" -->
+<!--                                       BorderBrush="#3e3e42" -->
+<!--                                       BorderThickness="0.5" -->
+<!--                                       CornerRadius="8" -->
+<!--                                       Foreground="White"> -->
+<!--                                 <ComboBoxItem>English</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>German</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>French</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>Japanese</ComboBoxItem> -->
+<!--                             </ComboBox> -->
+<!--                         </StackPanel> -->
+<!--                         <StackPanel Grid.Column="2" Spacing="6"> -->
+<!--                             <TextBlock Text="Date Format" -->
+<!--                                        Foreground="#1D9E75" FontSize="12" -->
+<!--                                        FontFamily="Monospace" FontWeight="Medium"/> -->
+<!--                             <ComboBox SelectedItem="{Binding DateFormat}" -->
+<!--                                       HorizontalAlignment="Stretch" -->
+<!--                                       Background="#252526" -->
+<!--                                       BorderBrush="#3e3e42" -->
+<!--                                       BorderThickness="0.5" -->
+<!--                                       CornerRadius="8" -->
+<!--                                       Foreground="White"> -->
+<!--                                 <ComboBoxItem>DD/MM/YYYY</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>MM/DD/YYYY</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>YYYY-MM-DD (ISO)</ComboBoxItem> -->
+<!--                             </ComboBox> -->
+<!--                         </StackPanel> -->
+<!--                         <StackPanel Grid.Column="4" Spacing="6"> -->
+<!--                             <TextBlock Text="Decimal Separator" -->
+<!--                                        Foreground="#1D9E75" FontSize="12" -->
+<!--                                        FontFamily="Monospace" FontWeight="Medium"/> -->
+<!--                             <ComboBox SelectedItem="{Binding DecimalSeparator}" -->
+<!--                                       HorizontalAlignment="Stretch" -->
+<!--                                       Background="#252526" -->
+<!--                                       BorderBrush="#3e3e42" -->
+<!--                                       BorderThickness="0.5" -->
+<!--                                       CornerRadius="8" -->
+<!--                                       Foreground="White"> -->
+<!--                                 <ComboBoxItem>Period ( 1,000.00 )</ComboBoxItem> -->
+<!--                                 <ComboBoxItem>Comma  ( 1.000,00 )</ComboBoxItem> -->
+<!--                             </ComboBox> -->
+<!--                         </StackPanel> -->
+<!--                     </Grid> -->
+<!--                 </StackPanel> -->
+<!--             </Border> -->
+<!-- -->
+<!--             ~1~ ── Updates ── @1@ -->
+<!--             <Border Background="#1e1e1e" -->
+<!--                     BorderThickness="0.5" -->
+<!--                     BorderBrush="#3e3e42" -->
+<!--                     CornerRadius="12" -->
+<!--                     Padding="20"> -->
+<!--                 <StackPanel Spacing="14"> -->
+<!-- -->
+<!--                     <StackPanel Orientation="Horizontal" Spacing="8"> -->
+<!--                         <material:MaterialIcon Kind="CloudSync" Foreground="#1D9E75" Width="14" Height="14" VerticalAlignment="Center"/> -->
+<!--                         <TextBlock Text="UPDATES" -->
+<!--                                    Foreground="#1D9E75" -->
+<!--                                    FontFamily="Monospace" -->
+<!--                                    FontSize="11" -->
+<!--                                    FontWeight="SemiBold" -->
+<!--                                    LetterSpacing="2" -->
+<!--                                    VerticalAlignment="Center"/> -->
+<!--                     </StackPanel> -->
+<!--                     <Border Height="0.5" Background="#3e3e42"/> -->
+<!-- -->
+<!--                     <CheckBox IsChecked="{Binding AutoCheckUpdates}" -->
+<!--                               Content="Automatically check for updates on startup" -->
+<!--                               Foreground="#D4D4D4" -->
+<!--                               FontFamily="Monospace" -->
+<!--                               FontSize="13"/> -->
+<!-- -->
+<!--                     <Grid ColumnDefinitions="Auto, 12, *, 12, Auto" VerticalAlignment="Center"> -->
+<!--                         <Button Grid.Column="0" -->
+<!--                                 Command="{Binding CheckForUpdatesCommand}" -->
+<!--                                 Background="Transparent" -->
+<!--                                 BorderBrush="#3e3e42" -->
+<!--                                 BorderThickness="0.5" -->
+<!--                                 CornerRadius="8" -->
+<!--                                 Foreground="#888780" -->
+<!--                                 Padding="14,8"> -->
+<!--                             <StackPanel Orientation="Horizontal" Spacing="7"> -->
+<!--                                 <material:MaterialIcon Kind="CloudSearch" Width="14" Height="14" VerticalAlignment="Center"/> -->
+<!--                                 <TextBlock Text="Check Now" FontSize="13" FontFamily="Monospace" VerticalAlignment="Center"/> -->
+<!--                             </StackPanel> -->
+<!--                         </Button> -->
+<!--                         <TextBlock Grid.Column="2" -->
+<!--                                    Text="{Binding UpdateStatusMessage}" -->
+<!--                                    Foreground="#888780" -->
+<!--                                    FontFamily="Monospace" -->
+<!--                                    FontSize="12" -->
+<!--                                    VerticalAlignment="Center"/> -->
+<!--                         <TextBlock Grid.Column="4" -->
+<!--                                    Text="{Binding CurrentVersion, StringFormat='v{0}'}" -->
+<!--                                    Foreground="#5F5E5A" -->
+<!--                                    FontFamily="Monospace" -->
+<!--                                    FontSize="11" -->
+<!--                                    VerticalAlignment="Center"/> -->
+<!--                     </Grid> -->
+<!--                 </StackPanel> -->
+<!--             </Border> -->
+<!-- -->
+<!--             ~1~ ── Status + Actions bar (mirrors DB tab bottom row) ── @1@ -->
+<!--             <Grid ColumnDefinitions="*, Auto"> -->
+<!--                 <StackPanel Grid.Column="0" -->
+<!--                             Orientation="Horizontal" -->
+<!--                             Spacing="8" -->
+<!--                             VerticalAlignment="Center"> -->
+<!--                     <Ellipse Width="7" Height="7" VerticalAlignment="Center"> -->
+<!--                         <Ellipse.Fill> -->
+<!--                             <SolidColorBrush Color="{Binding StatusColor}"/> -->
+<!--                         </Ellipse.Fill> -->
+<!--                     </Ellipse> -->
+<!--                     <TextBlock Text="{Binding StatusText}" -->
+<!--                                Foreground="#888780" -->
+<!--                                FontSize="12" -->
+<!--                                FontFamily="Monospace" -->
+<!--                                VerticalAlignment="Center"/> -->
+<!--                 </StackPanel> -->
+<!-- -->
+<!--                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8"> -->
+<!--                     <Button Command="{Binding ResetCommand}" -->
+<!--                             Background="Transparent" -->
+<!--                             BorderBrush="#3e3e42" -->
+<!--                             BorderThickness="0.5" -->
+<!--                             CornerRadius="8" -->
+<!--                             Foreground="#888780" -->
+<!--                             Padding="14,8"> -->
+<!--                         <StackPanel Orientation="Horizontal" Spacing="7"> -->
+<!--                             <material:MaterialIcon Kind="Restore" Width="14" Height="14" VerticalAlignment="Center"/> -->
+<!--                             <TextBlock Text="Reset to Defaults" FontSize="13" VerticalAlignment="Center"/> -->
+<!--                         </StackPanel> -->
+<!--                     </Button> -->
+<!--                     <Button Command="{Binding SaveCommand}" -->
+<!--                             Background="#1D9E75" -->
+<!--                             BorderThickness="0" -->
+<!--                             CornerRadius="8" -->
+<!--                             Foreground="White" -->
+<!--                             Padding="14,8"> -->
+<!--                         <StackPanel Orientation="Horizontal" Spacing="7"> -->
+<!--                             <material:MaterialIcon Kind="ContentSave" Width="14" Height="14" VerticalAlignment="Center"/> -->
+<!--                             <TextBlock Text="Save Settings" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/> -->
+<!--                         </StackPanel> -->
+<!--                     </Button> -->
+<!--                 </StackPanel> -->
+<!--             </Grid> -->
+<!-- -->
+<!--             <TextBlock Text="settings are stored locally · never transmitted" -->
+<!--                        Foreground="#5F5E5A" -->
+<!--                        FontFamily="Monospace" -->
+<!--                        FontSize="11" -->
+<!--                        HorizontalAlignment="Right"/> -->
+<!-- -->
+<!--         </StackPanel> -->
+<!--     </ScrollViewer> -->
+<!-- </UserControl> -->
+
+
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:AvaloniaTestApp.ViewModels"
              xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="900"
              x:Class="AvaloniaTestApp.Views.AppSettingsView"
              x:DataType="vm:AppSettingsViewModel">
 
-    <ScrollViewer>
-        <StackPanel Spacing="20" Margin="10">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="24" Margin="20">
 
-            <!-- ── Page Header ── -->
-            <StackPanel Spacing="4">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <material:MaterialIcon Kind="Cog" Foreground="#1D9E75" Width="18" Height="18" VerticalAlignment="Center"/>
-                    <TextBlock Text="SETTINGS"
-                               Foreground="#1D9E75"
-                               FontFamily="Monospace"
-                               FontSize="11"
-                               FontWeight="SemiBold"
-                               LetterSpacing="2"
-                               VerticalAlignment="Center"/>
+            <StackPanel Spacing="6">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <material:MaterialIcon Kind="Cog" Foreground="{StaticResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
+                    <TextBlock Text="SYSTEM REGISTRY" Classes="TechHeader" VerticalAlignment="Center"/>
                 </StackPanel>
                 <TextBlock Text="Application Settings"
-                           Foreground="White"
-                           FontSize="22"
-                           FontWeight="Medium"/>
-                <TextBlock Text="Customize appearance, preferences, and export behaviour."
-                           Foreground="#888780"
+                           Foreground="{StaticResource TextBright}"
+                           FontSize="24"
+                           FontWeight="SemiBold"/>
+                <TextBlock Text="Configure user environment parameters, schema workspaces, and export pipelines."
+                           Foreground="{StaticResource TextMuted}"
                            FontSize="13"/>
             </StackPanel>
 
-            <!-- ── Theme & Appearance ── -->
-            <Border Background="#1e1e1e"
-                    BorderThickness="0.5"
-                    BorderBrush="#3e3e42"
-                    CornerRadius="12"
+            <Border Background="#090d15"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource BorderDark}"
+                    CornerRadius="0"
                     Padding="20">
-                <StackPanel Spacing="14">
+                <StackPanel Spacing="16">
 
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <material:MaterialIcon Kind="Palette" Foreground="#1D9E75" Width="14" Height="14" VerticalAlignment="Center"/>
-                        <TextBlock Text="THEME &amp; APPEARANCE"
-                                   Foreground="#1D9E75"
-                                   FontFamily="Monospace"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"
-                                   LetterSpacing="2"
-                                   VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <material:MaterialIcon Kind="Palette" Foreground="{StaticResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="INTERFACE RENDER INTERACTIVE OPTIONS" Classes="TechHeader" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <Border Height="0.5" Background="#3e3e42"/>
+                    
+                    <Border Height="1" Background="{StaticResource BorderDark}"/>
 
-                    <Grid ColumnDefinitions="*, 16, *, 16, *">
+                    <Grid ColumnDefinitions="*, 20, *, 20, *">
 
                         <StackPanel Grid.Column="0" Spacing="6">
-                            <TextBlock Text="Application Theme"
-                                       Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="Application Theme" Classes="TechHeader" FontSize="11"/>
                             <ComboBox SelectedItem="{Binding SelectedTheme}"
                                       HorizontalAlignment="Stretch"
-                                      Background="#252526"
-                                      BorderBrush="#3e3e42"
-                                      BorderThickness="0.5"
-                                      CornerRadius="8"
-                                      Foreground="White">
+                                      Height="34"
+                                      Background="#070b12"
+                                      BorderBrush="{StaticResource BorderDark}"
+                                      BorderThickness="1"
+                                      CornerRadius="0"
+                                      Foreground="{StaticResource TextMain}">
                                 <ComboBoxItem>Light</ComboBoxItem>
                                 <ComboBoxItem>Dark</ComboBoxItem>
                                 <ComboBoxItem>System Default</ComboBoxItem>
@@ -72,16 +516,15 @@
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" Spacing="6">
-                            <TextBlock Text="Editor Font"
-                                       Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="Editor Typeface" Classes="TechHeader" FontSize="11"/>
                             <ComboBox SelectedItem="{Binding EditorFont}"
                                       HorizontalAlignment="Stretch"
-                                      Background="#252526"
-                                      BorderBrush="#3e3e42"
-                                      BorderThickness="0.5"
-                                      CornerRadius="8"
-                                      Foreground="White">
+                                      Height="34"
+                                      Background="#070b12"
+                                      BorderBrush="{StaticResource BorderDark}"
+                                      BorderThickness="1"
+                                      CornerRadius="0"
+                                      Foreground="{StaticResource TextMain}">
                                 <ComboBoxItem>Cascadia Code</ComboBoxItem>
                                 <ComboBoxItem>JetBrains Mono</ComboBoxItem>
                                 <ComboBoxItem>Consolas</ComboBoxItem>
@@ -90,128 +533,104 @@
                         </StackPanel>
 
                         <StackPanel Grid.Column="4" Spacing="6">
-                            <TextBlock Text="{Binding FontSize, StringFormat='Font Size: {0}px'}"
-                                       Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="{Binding FontSize, StringFormat='Font Scale: {0}px'}" Classes="TechHeader" FontSize="11"/>
                             <Slider Minimum="10" Maximum="24"
                                     Value="{Binding FontSize}"
                                     TickFrequency="1"
                                     IsSnapToTickEnabled="True"
                                     VerticalAlignment="Center"
-                                    Margin="0,6,0,0"/>
+                                    Margin="0,4,0,0"/>
                         </StackPanel>
 
                     </Grid>
                 </StackPanel>
             </Border>
 
-            <!-- ── User Preferences ── -->
-            <Border Background="#1e1e1e"
-                    BorderThickness="0.5"
-                    BorderBrush="#3e3e42"
-                    CornerRadius="12"
+            <Border Background="#090d15"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource BorderDark}"
+                    CornerRadius="0"
                     Padding="20">
-                <StackPanel Spacing="14">
+                <StackPanel Spacing="16">
 
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <material:MaterialIcon Kind="TuneVariant" Foreground="#1D9E75" Width="14" Height="14" VerticalAlignment="Center"/>
-                        <TextBlock Text="USER PREFERENCES"
-                                   Foreground="#1D9E75"
-                                   FontFamily="Monospace"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"
-                                   LetterSpacing="2"
-                                   VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <material:MaterialIcon Kind="TuneVariant" Foreground="{StaticResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="WORKSPACE CONSOLE CONFIGURATION" Classes="TechHeader" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <Border Height="0.5" Background="#3e3e42"/>
+                    
+                    <Border Height="1" Background="{StaticResource BorderDark}"/>
 
-                    <Grid ColumnDefinitions="*, 16, *">
-                        <StackPanel Grid.Column="0" Spacing="10">
+                    <Grid ColumnDefinitions="*, 20, *">
+                        <StackPanel Grid.Column="0" Spacing="12">
                             <CheckBox IsChecked="{Binding AutoSaveEnabled}"
-                                      Content="Auto-save queries on run"
-                                      Foreground="#D4D4D4"
-                                      FontFamily="Monospace"
+                                      Content="Auto-save queries on runtime execute"
+                                      Foreground="{StaticResource TextMain}"
+                                      FontFamily="{DynamicResource AppFontFamily}"
                                       FontSize="13"/>
                             <CheckBox IsChecked="{Binding ConfirmOnDelete}"
-                                      Content="Confirm before deleting records"
-                                      Foreground="#D4D4D4"
-                                      FontFamily="Monospace"
+                                      Content="Confirm batch updates before dropping records"
+                                      Foreground="{StaticResource TextMain}"
+                                      FontFamily="{DynamicResource AppFontFamily}"
                                       FontSize="13"/>
                             <CheckBox IsChecked="{Binding ShowRowNumbers}"
-                                      Content="Show row numbers in results grid"
-                                      Foreground="#D4D4D4"
-                                      FontFamily="Monospace"
+                                      Content="Show continuous row indices in data matrix"
+                                      Foreground="{StaticResource TextMain}"
+                                      FontFamily="{DynamicResource AppFontFamily}"
                                       FontSize="13"/>
                             <CheckBox IsChecked="{Binding WrapLongLines}"
-                                      Content="Wrap long lines in editor"
-                                      Foreground="#D4D4D4"
-                                      FontFamily="Monospace"
+                                      Content="Wrap trailing lines in terminal viewports"
+                                      Foreground="{StaticResource TextMain}"
+                                      FontFamily="{DynamicResource AppFontFamily}"
                                       FontSize="13"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" Spacing="6">
-                            <TextBlock Text="Query Result Limit"
-                                       Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="Data Fetch Limit Block" Classes="TechHeader" FontSize="11"/>
                             <NumericUpDown Value="{Binding QueryResultLimit}"
                                            Minimum="100" Maximum="100000" Increment="100"
-                                           Width="180" HorizontalAlignment="Left"
-                                           Background="#252526"
-                                           BorderBrush="#3e3e42"
-                                           BorderThickness="0.5"
-                                           CornerRadius="8"
-                                           Foreground="White"/>
+                                           Width="200" HorizontalAlignment="Left"
+                                           Height="34"
+                                           Background="#070b12"
+                                           BorderBrush="{StaticResource BorderDark}"
+                                           BorderThickness="1"
+                                           CornerRadius="0"
+                                           Foreground="{StaticResource TextMain}"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
             </Border>
 
-            <!-- ── Export & File Paths ── -->
-            <Border Background="#1e1e1e"
-                    BorderThickness="0.5"
-                    BorderBrush="#3e3e42"
-                    CornerRadius="12"
+            <Border Background="#090d15"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource BorderDark}"
+                    CornerRadius="0"
                     Padding="20">
-                <StackPanel Spacing="14">
+                <StackPanel Spacing="16">
 
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <material:MaterialIcon Kind="FolderOpen" Foreground="#1D9E75" Width="14" Height="14" VerticalAlignment="Center"/>
-                        <TextBlock Text="EXPORT &amp; FILE PATHS"
-                                   Foreground="#1D9E75"
-                                   FontFamily="Monospace"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"
-                                   LetterSpacing="2"
-                                   VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <material:MaterialIcon Kind="FolderOpen" Foreground="{StaticResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="EXPORT DRIVER &amp; LOCAL FILE TRAFFIC" Classes="TechHeader" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <Border Height="0.5" Background="#3e3e42"/>
+                    
+                    <Border Height="1" Background="{StaticResource BorderDark}"/>
 
-                    <Grid ColumnDefinitions="*, 16, *">
+                    <Grid ColumnDefinitions="*, 20, *">
 
                         <StackPanel Grid.Column="0" Spacing="6">
-                            <TextBlock Text="Default Export Folder"
-                                       Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="Default Storage Export Workspace" Classes="TechHeader" FontSize="11"/>
                             <Grid ColumnDefinitions="*, Auto">
                                 <TextBox Grid.Column="0"
                                          Text="{Binding ExportFolderPath}"
-                                         Watermark="e.g. C:\Exports"
+                                         Watermark="e.g. C:\SchemaExports"
                                          IsReadOnly="True"
-                                         Background="#252526"
-                                         BorderBrush="#3e3e42"
-                                         BorderThickness="0.5"
-                                         CornerRadius="8"
-                                         Foreground="White"
-                                         Padding="12,0"
+                                         Classes="CyberInput"
+                                         Height="34"
                                          VerticalContentAlignment="Center"/>
                                 <Button Grid.Column="1"
                                         Command="{Binding BrowseExportFolderCommand}"
-                                        Background="Transparent"
-                                        BorderBrush="#3e3e42"
-                                        BorderThickness="0.5"
-                                        CornerRadius="8"
-                                        Foreground="#888780"
-                                        Padding="10,8"
+                                        Classes="CyberSecondary"
+                                        Height="34" Width="36"
+                                        Padding="0"
                                         Margin="6,0,0,0">
                                     <material:MaterialIcon Kind="FolderSearch" Width="14" Height="14"/>
                                 </Button>
@@ -219,29 +638,20 @@
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" Spacing="6">
-                            <TextBlock Text="Query Save Location"
-                                       Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="Default Query Script Cache Path" Classes="TechHeader" FontSize="11"/>
                             <Grid ColumnDefinitions="*, Auto">
                                 <TextBox Grid.Column="0"
                                          Text="{Binding QuerySavePath}"
-                                         Watermark="e.g. C:\Queries"
+                                         Watermark="e.g. C:\QueryVault"
                                          IsReadOnly="True"
-                                         Background="#252526"
-                                         BorderBrush="#3e3e42"
-                                         BorderThickness="0.5"
-                                         CornerRadius="8"
-                                         Foreground="White"
-                                         Padding="12,0"
+                                         Classes="CyberInput"
+                                         Height="34"
                                          VerticalContentAlignment="Center"/>
                                 <Button Grid.Column="1"
                                         Command="{Binding BrowseQuerySavePathCommand}"
-                                        Background="Transparent"
-                                        BorderBrush="#3e3e42"
-                                        BorderThickness="0.5"
-                                        CornerRadius="8"
-                                        Foreground="#888780"
-                                        Padding="10,8"
+                                        Classes="CyberSecondary"
+                                        Height="34" Width="36"
+                                        Padding="0"
                                         Margin="6,0,0,0">
                                     <material:MaterialIcon Kind="FolderSearch" Width="14" Height="14"/>
                                 </Button>
@@ -251,58 +661,50 @@
                     </Grid>
 
                     <StackPanel Spacing="6">
-                        <TextBlock Text="Default Export Format"
-                                   Foreground="#1D9E75" FontSize="12"
-                                   FontFamily="Monospace" FontWeight="Medium"/>
+                        <TextBlock Text="File Document Export Array Format" Classes="TechHeader" FontSize="11"/>
                         <ComboBox SelectedItem="{Binding DefaultExportFormat}"
-                                  Width="220" HorizontalAlignment="Left"
-                                  Background="#252526"
-                                  BorderBrush="#3e3e42"
-                                  BorderThickness="0.5"
-                                  CornerRadius="8"
-                                  Foreground="White">
+                                  Width="240" HorizontalAlignment="Left"
+                                  Height="34"
+                                  Background="#070b12"
+                                  BorderBrush="{StaticResource BorderDark}"
+                                  BorderThickness="1"
+                                  CornerRadius="0"
+                                  Foreground="{StaticResource TextMain}">
                             <ComboBoxItem>CSV</ComboBoxItem>
-                            <ComboBoxItem>Excel (.xlsx)</ComboBoxItem>
-                            <ComboBoxItem>JSON</ComboBoxItem>
-                            <ComboBoxItem>SQL INSERT script</ComboBoxItem>
+                            <ComboBoxItem>Excel Spreadsheet (.xlsx)</ComboBoxItem>
+                            <ComboBoxItem>JSON Document Stream</ComboBoxItem>
+                            <ComboBoxItem>SQL INSERT Data Scripts</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
 
                 </StackPanel>
             </Border>
 
-            <!-- ── Language & Locale ── -->
-            <Border Background="#1e1e1e"
-                    BorderThickness="0.5"
-                    BorderBrush="#3e3e42"
-                    CornerRadius="12"
+            <Border Background="#090d15"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource BorderDark}"
+                    CornerRadius="0"
                     Padding="20">
-                <StackPanel Spacing="14">
+                <StackPanel Spacing="16">
 
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <material:MaterialIcon Kind="Web" Foreground="#1D9E75" Width="14" Height="14" VerticalAlignment="Center"/>
-                        <TextBlock Text="LANGUAGE &amp; LOCALE"
-                                   Foreground="#1D9E75"
-                                   FontFamily="Monospace"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"
-                                   LetterSpacing="2"
-                                   VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <material:MaterialIcon Kind="Web" Foreground="{StaticResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="REGIONAL TRANSLATION PROTOCOLS" Classes="TechHeader" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <Border Height="0.5" Background="#3e3e42"/>
+                    
+                    <Border Height="1" Background="{StaticResource BorderDark}"/>
 
-                    <Grid ColumnDefinitions="*, 16, *, 16, *">
+                    <Grid ColumnDefinitions="*, 20, *, 20, *">
                         <StackPanel Grid.Column="0" Spacing="6">
-                            <TextBlock Text="Display Language"
-                                       Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="Locale Display Language" Classes="TechHeader" FontSize="11"/>
                             <ComboBox SelectedItem="{Binding SelectedLanguage}"
                                       HorizontalAlignment="Stretch"
-                                      Background="#252526"
-                                      BorderBrush="#3e3e42"
-                                      BorderThickness="0.5"
-                                      CornerRadius="8"
-                                      Foreground="White">
+                                      Height="34"
+                                      Background="#070b12"
+                                      BorderBrush="{StaticResource BorderDark}"
+                                      BorderThickness="1"
+                                      CornerRadius="0"
+                                      Foreground="{StaticResource TextMain}">
                                 <ComboBoxItem>English</ComboBoxItem>
                                 <ComboBoxItem>German</ComboBoxItem>
                                 <ComboBoxItem>French</ComboBoxItem>
@@ -310,32 +712,30 @@
                             </ComboBox>
                         </StackPanel>
                         <StackPanel Grid.Column="2" Spacing="6">
-                            <TextBlock Text="Date Format"
-                                       Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="System Date Layout" Classes="TechHeader" FontSize="11"/>
                             <ComboBox SelectedItem="{Binding DateFormat}"
                                       HorizontalAlignment="Stretch"
-                                      Background="#252526"
-                                      BorderBrush="#3e3e42"
-                                      BorderThickness="0.5"
-                                      CornerRadius="8"
-                                      Foreground="White">
+                                      Height="34"
+                                      Background="#070b12"
+                                      BorderBrush="{StaticResource BorderDark}"
+                                      BorderThickness="1"
+                                      CornerRadius="0"
+                                      Foreground="{StaticResource TextMain}">
                                 <ComboBoxItem>DD/MM/YYYY</ComboBoxItem>
                                 <ComboBoxItem>MM/DD/YYYY</ComboBoxItem>
-                                <ComboBoxItem>YYYY-MM-DD (ISO)</ComboBoxItem>
+                                <ComboBoxItem>YYYY-MM-DD (ISO 8601)</ComboBoxItem>
                             </ComboBox>
                         </StackPanel>
                         <StackPanel Grid.Column="4" Spacing="6">
-                            <TextBlock Text="Decimal Separator"
-                                       Foreground="#1D9E75" FontSize="12"
-                                       FontFamily="Monospace" FontWeight="Medium"/>
+                            <TextBlock Text="Decimal Separator Type" Classes="TechHeader" FontSize="11"/>
                             <ComboBox SelectedItem="{Binding DecimalSeparator}"
                                       HorizontalAlignment="Stretch"
-                                      Background="#252526"
-                                      BorderBrush="#3e3e42"
-                                      BorderThickness="0.5"
-                                      CornerRadius="8"
-                                      Foreground="White">
+                                      Height="34"
+                                      Background="#070b12"
+                                      BorderBrush="{StaticResource BorderDark}"
+                                      BorderThickness="1"
+                                      CornerRadius="0"
+                                      Foreground="{StaticResource TextMain}">
                                 <ComboBoxItem>Period ( 1,000.00 )</ComboBoxItem>
                                 <ComboBoxItem>Comma  ( 1.000,00 )</ComboBoxItem>
                             </ComboBox>
@@ -344,111 +744,95 @@
                 </StackPanel>
             </Border>
 
-            <!-- ── Updates ── -->
-            <Border Background="#1e1e1e"
-                    BorderThickness="0.5"
-                    BorderBrush="#3e3e42"
-                    CornerRadius="12"
+            <Border Background="#090d15"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource BorderDark}"
+                    CornerRadius="0"
                     Padding="20">
-                <StackPanel Spacing="14">
+                <StackPanel Spacing="16">
 
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <material:MaterialIcon Kind="CloudSync" Foreground="#1D9E75" Width="14" Height="14" VerticalAlignment="Center"/>
-                        <TextBlock Text="UPDATES"
-                                   Foreground="#1D9E75"
-                                   FontFamily="Monospace"
-                                   FontSize="11"
-                                   FontWeight="SemiBold"
-                                   LetterSpacing="2"
-                                   VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <material:MaterialIcon Kind="CloudSync" Foreground="{StaticResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="DISTRIBUTION VERSION CHANNELS" Classes="TechHeader" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <Border Height="0.5" Background="#3e3e42"/>
+                    
+                    <Border Height="1" Background="{StaticResource BorderDark}"/>
 
                     <CheckBox IsChecked="{Binding AutoCheckUpdates}"
-                              Content="Automatically check for updates on startup"
-                              Foreground="#D4D4D4"
-                              FontFamily="Monospace"
+                              Content="Automatically scan patch notes and update arrays on runtime boot"
+                              Foreground="{StaticResource TextMain}"
+                              FontFamily="{DynamicResource AppFontFamily}"
                               FontSize="13"/>
 
                     <Grid ColumnDefinitions="Auto, 12, *, 12, Auto" VerticalAlignment="Center">
                         <Button Grid.Column="0"
                                 Command="{Binding CheckForUpdatesCommand}"
-                                Background="Transparent"
-                                BorderBrush="#3e3e42"
-                                BorderThickness="0.5"
-                                CornerRadius="8"
-                                Foreground="#888780"
-                                Padding="14,8">
-                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                Classes="CyberSecondary"
+                                Height="34"
+                                Padding="14,0">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
                                 <material:MaterialIcon Kind="CloudSearch" Width="14" Height="14" VerticalAlignment="Center"/>
-                                <TextBlock Text="Check Now" FontSize="13" FontFamily="Monospace" VerticalAlignment="Center"/>
+                                <TextBlock Text="Scan Package Status" FontSize="12" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
+                        
                         <TextBlock Grid.Column="2"
                                    Text="{Binding UpdateStatusMessage}"
-                                   Foreground="#888780"
-                                   FontFamily="Monospace"
+                                   Classes="TechComment"
                                    FontSize="12"
                                    VerticalAlignment="Center"/>
+                                   
                         <TextBlock Grid.Column="4"
-                                   Text="{Binding CurrentVersion, StringFormat='v{0}'}"
-                                   Foreground="#5F5E5A"
-                                   FontFamily="Monospace"
+                                   Text="{Binding CurrentVersion, StringFormat='SYSTEM CORE: v{0}'}"
+                                   Classes="TechComment"
                                    FontSize="11"
+                                   FontWeight="SemiBold"
                                    VerticalAlignment="Center"/>
                     </Grid>
                 </StackPanel>
             </Border>
 
-            <!-- ── Status + Actions bar (mirrors DB tab bottom row) ── -->
-            <Grid ColumnDefinitions="*, Auto">
+            <Grid ColumnDefinitions="*, Auto" Margin="0,10,0,0">
                 <StackPanel Grid.Column="0"
                             Orientation="Horizontal"
                             Spacing="8"
                             VerticalAlignment="Center">
-                    <Ellipse Width="7" Height="7" VerticalAlignment="Center">
+                    <Ellipse Width="8" Height="8" VerticalAlignment="Center">
                         <Ellipse.Fill>
                             <SolidColorBrush Color="{Binding StatusColor}"/>
                         </Ellipse.Fill>
                     </Ellipse>
                     <TextBlock Text="{Binding StatusText}"
-                               Foreground="#888780"
+                               Classes="TechComment"
                                FontSize="12"
-                               FontFamily="Monospace"
                                VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
                     <Button Command="{Binding ResetCommand}"
-                            Background="Transparent"
-                            BorderBrush="#3e3e42"
-                            BorderThickness="0.5"
-                            CornerRadius="8"
-                            Foreground="#888780"
-                            Padding="14,8">
-                        <StackPanel Orientation="Horizontal" Spacing="7">
+                            Classes="CyberSecondary"
+                            Height="36"
+                            Padding="16,0">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
                             <material:MaterialIcon Kind="Restore" Width="14" Height="14" VerticalAlignment="Center"/>
-                            <TextBlock Text="Reset to Defaults" FontSize="13" VerticalAlignment="Center"/>
+                            <TextBlock Text="Rollback Defaults" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button Command="{Binding SaveCommand}"
-                            Background="#1D9E75"
-                            BorderThickness="0"
-                            CornerRadius="8"
-                            Foreground="White"
-                            Padding="14,8">
-                        <StackPanel Orientation="Horizontal" Spacing="7">
+                            Classes="CyberPrimary"
+                            Height="36"
+                            Padding="16,0">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
                             <material:MaterialIcon Kind="ContentSave" Width="14" Height="14" VerticalAlignment="Center"/>
-                            <TextBlock Text="Save Settings" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                            <TextBlock Text="Commit Config" FontSize="13" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
             </Grid>
 
-            <TextBlock Text="settings are stored locally · never transmitted"
-                       Foreground="#5F5E5A"
-                       FontFamily="Monospace"
-                       FontSize="11"
+            <TextBlock Text="ENVIRONMENT PARAMS ARE RUN LOCAL — ENCRYPTED ON INSTANCE DISK"
+                       Classes="TechComment"
+                       FontSize="10"
                        HorizontalAlignment="Right"/>
 
         </StackPanel>

@@ -8,149 +8,97 @@
              x:Class="AvaloniaTestApp.Views.DatabaseConfigView"
              x:DataType="vm:MainWindowViewModel">
 
-    <StackPanel Spacing="20" Margin="10">
+    <StackPanel Spacing="24" Margin="0">
 
-        <!-- ── Page Header ── -->
-        <StackPanel Spacing="4">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <material:MaterialIcon Kind="Database" Foreground="#1D9E75" Width="18" Height="18" VerticalAlignment="Center"/>
-                <TextBlock Text="DATABASE CONFIG"
-                           Foreground="#1D9E75"
-                           FontFamily="Monospace"
-                           FontSize="11"
-                           FontWeight="SemiBold"
-                           LetterSpacing="2"
-                           VerticalAlignment="Center"/>
+        <StackPanel Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <material:MaterialIcon Kind="Database" Foreground="{StaticResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
+                <TextBlock Text="DATABASE CONFIG" Classes="TechHeader" VerticalAlignment="Center"/>
             </StackPanel>
+            
             <TextBlock Text="PostgreSQL Connection"
-                       Foreground="White"
-                       FontSize="22"
-                       FontWeight="Medium"/>
-            <TextBlock Text="Enter your credentials to connect to a database instance."
-                       Foreground="#888780"
-                       FontSize="13"/>
+                       Foreground="{StaticResource TextBright}"
+                       FontSize="24"
+                       FontWeight="SemiBold"/>
+                       
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <material:MaterialIcon Kind="CodeString" Foreground="{StaticResource TextMuted}" Width="14" Height="14" VerticalAlignment="Center"/>
+                <TextBlock Text="Enter your credentials to connect to a database instance." Classes="TechComment" VerticalAlignment="Center"/>
+            </StackPanel>
         </StackPanel>
 
-        <!-- ── Credentials Card ── -->
-        <Border Background="#1e1e1e"
-                BorderThickness="0.5"
-                BorderBrush="#3e3e42"
-                CornerRadius="12"
-                Padding="20">
+        <Border Background="#090d15"
+                BorderThickness="1"
+                BorderBrush="{StaticResource BorderDark}"
+                Padding="24">
             <StackPanel Spacing="0">
 
-                <!-- Host + Port -->
-                <Grid ColumnDefinitions="*, 12, 100" Margin="0,0,0,14">
+                <Grid ColumnDefinitions="*, 16, 120" Margin="0,0,0,16">
                     <StackPanel Grid.Column="0" Spacing="6">
-                        <TextBlock Text="Host" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                        <TextBlock Text="Host" Classes="TechHeader"/>
                         <TextBox Text="{Binding Host}"
                                  Watermark="localhost"
-                                 Background="#252526"
-                                 BorderBrush="#3e3e42"
-                                 BorderThickness="0.5"
-                                 CornerRadius="8"
-                                 Foreground="White"
-                                 Padding="12,0"
-                                 VerticalContentAlignment="Center"/>
+                                 Classes="CyberInput"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Spacing="6">
-                        <TextBlock Text="Port" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                        <TextBlock Text="Port" Classes="TechHeader"/>
                         <TextBox Text="{Binding Port}"
-                                 Background="#252526"
-                                 BorderBrush="#3e3e42"
-                                 BorderThickness="0.5"
-                                 CornerRadius="8"
-                                 Foreground="White"
-                                 Padding="12,0"
-                                 VerticalContentAlignment="Center"/>
+                                 Classes="CyberInput"/>
                     </StackPanel>
                 </Grid>
 
-                <!-- Database Name -->
-                <StackPanel Spacing="6" Margin="0,0,0,14">
-                    <TextBlock Text="Database Name" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                <StackPanel Spacing="6" Margin="0,0,0,16">
+                    <TextBlock Text="Database Name" Classes="TechHeader"/>
                     <TextBox Text="{Binding DatabaseName}"
                              Watermark="postgres"
-                             Background="#252526"
-                             BorderBrush="#3e3e42"
-                             BorderThickness="0.5"
-                             CornerRadius="8"
-                             Foreground="White"
-                             Padding="12,0"
-                             VerticalContentAlignment="Center"/>
+                             Classes="CyberInput"/>
                 </StackPanel>
 
-                <!-- Username + Password -->
-                <Grid ColumnDefinitions="*, 12, *">
+                <Grid ColumnDefinitions="*, 16, *">
                     <StackPanel Grid.Column="0" Spacing="6">
-                        <TextBlock Text="Username" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                        <TextBlock Text="Username" Classes="TechHeader"/>
                         <TextBox Text="{Binding Username}"
                                  Watermark="postgres"
-                                 Background="#252526"
-                                 BorderBrush="#3e3e42"
-                                 BorderThickness="0.5"
-                                 CornerRadius="8"
-                                 Foreground="White"
-                                 Padding="12,0"
-                                 VerticalContentAlignment="Center"/>
+                                 Classes="CyberInput"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Spacing="6">
-                        <TextBlock Text="Password" Foreground="#1D9E75" FontSize="12" FontFamily="Monospace" FontWeight="Medium"/>
+                        <TextBlock Text="Password" Classes="TechHeader"/>
                         <TextBox Text="{Binding Password}"
                                  PasswordChar="●"
                                  Watermark="••••••••"
-                                 Background="#252526"
-                                 BorderBrush="#3e3e42"
-                                 BorderThickness="0.5"
-                                 CornerRadius="8"
-                                 Foreground="White"
-                                 Padding="12,0"
-                                 VerticalContentAlignment="Center"/>
+                                 Classes="CyberInput"/>
                     </StackPanel>
                 </Grid>
 
-                <!-- Divider -->
-                <Border Height="0.5" Background="#3e3e42" Margin="0,18,0,14"/>
+                <Border Height="1" Background="{StaticResource BorderDark}" Margin="0,20,0,16"/>
 
-                <!-- Status + Actions -->
                 <Grid ColumnDefinitions="*, Auto">
-                    <StackPanel Grid.Column="0"
-                                Orientation="Horizontal"
-                                Spacing="8"
-                                VerticalAlignment="Center">
-                        <Ellipse Width="7" Height="7" VerticalAlignment="Center">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <Ellipse Width="8" Height="8" VerticalAlignment="Center">
                             <Ellipse.Fill>
                                 <SolidColorBrush Color="{Binding ConnectionStatusColor}"/>
                             </Ellipse.Fill>
                         </Ellipse>
                         <TextBlock Text="{Binding ConnectionStatusText}"
-                                   Foreground="#888780"
+                                   Foreground="{StaticResource TextMuted}"
                                    FontSize="12"
-                                   FontFamily="Monospace"
+                                   FontFamily="{StaticResource AppFontFamily}"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
                         <Button Command="{Binding TestConnectionCommand}"
-                                Background="Transparent"
-                                BorderBrush="#3e3e42"
-                                BorderThickness="0.5"
-                                CornerRadius="8"
-                                Foreground="#888780"
-                                Padding="14,8">
-                            <StackPanel Orientation="Horizontal" Spacing="7">
-                                <material:MaterialIcon Kind="Plug" Width="14" Height="14" VerticalAlignment="Center"/>
+                                Classes="CyberSecondary">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <material:MaterialIcon Kind="Connection" Width="14" Height="14" VerticalAlignment="Center"/>
                                 <TextBlock Text="Test connection" FontSize="13" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <Button Command="{Binding SaveCredentialsCommand}"
-                                Background="#1D9E75"
-                                BorderThickness="0"
-                                CornerRadius="8"
-                                Foreground="White"
-                                Padding="14,8">
-                            <StackPanel Orientation="Horizontal" Spacing="7">
-                                <material:MaterialIcon Kind="ContentSave" Width="14" Height="14" VerticalAlignment="Center"/>
-                                <TextBlock Text="Save" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                                Classes="CyberPrimary">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <material:MaterialIcon Kind="ContentSaveOutline" Width="14" Height="14" VerticalAlignment="Center"/>
+                                <TextBlock Text="Save" FontSize="13" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -159,67 +107,62 @@
             </StackPanel>
         </Border>
 
-        <!-- ── Schema + Context Col row (visible after connection) ── -->
-        <StackPanel Margin="10 0" IsVisible="{Binding ConnectionSuccess}">
-            <Grid ColumnDefinitions="Auto, 12, *, 12, Auto, 12, Auto, 12, Auto" VerticalAlignment="Center">
+        <StackPanel IsVisible="{Binding ConnectionSuccess}">
+            <Grid ColumnDefinitions="Auto, 12, *, 20, Auto, 12, Auto, 20, Auto" VerticalAlignment="Center">
                 <TextBlock Grid.Column="0"
                            Text="Select Schema"
-                           Foreground="#1D9E75"
-                           FontSize="12"
-                           FontFamily="Monospace"
-                           FontWeight="Medium"
+                           Classes="TechHeader"
                            VerticalAlignment="Center"/>
+                
                 <ComboBox Grid.Column="2"
                           ItemsSource="{Binding Schemas}"
                           SelectedItem="{Binding SelectedSchema}"
                           HorizontalAlignment="Stretch"
-                          Background="#252526"
-                          BorderBrush="#3e3e42"
-                          BorderThickness="0.5"
-                          CornerRadius="8"
-                          Foreground="White">
+                          Background="#070b12"
+                          BorderBrush="{StaticResource BorderDark}"
+                          BorderThickness="1"
+                          CornerRadius="0"
+                          Foreground="{StaticResource TextMain}"
+                          Height="38">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" Foreground="White" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding}" Foreground="{StaticResource TextMain}" VerticalAlignment="Center"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <TextBlock Grid.Column="4" Text="Context Col"
-                           Foreground="#1D9E75" FontSize="12"
-                           FontFamily="Monospace" FontWeight="Medium"
+                
+                <TextBlock Grid.Column="4" 
+                           Text="Context Col"
+                           Classes="TechHeader"
                            VerticalAlignment="Center"/>
+                
                 <TextBox Grid.Column="6"
                          Text="{Binding ContextCol}"
                          Watermark="branch_mst_id"
-                         Width="160"
-                         Background="#252526"
-                         BorderBrush="#3e3e42"
-                         BorderThickness="0.5"
-                         CornerRadius="8"
-                         Foreground="White"
-                         Padding="12,0"
+                         Width="180"
+                         Classes="CyberInput"
+                         Height="38"
                          VerticalContentAlignment="Center"/>
+                         
                 <Button Grid.Column="8"
                         Command="{Binding LoadTablesCommand}"
-                        Background="#1D9E75"
-                        BorderThickness="0"
-                        CornerRadius="8"
-                        Foreground="White"
-                        Padding="14,8">
-                    <StackPanel Orientation="Horizontal" Spacing="7">
-                        <material:MaterialIcon Kind="Table" Width="14" Height="14" VerticalAlignment="Center"/>
-                        <TextBlock Text="Load Tables &amp; Views" FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
+                        Classes="CyberPrimary"
+                        Height="38"
+                        Padding="16,0">
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <material:MaterialIcon Kind="Refresh" Width="14" Height="14" VerticalAlignment="Center"/>
+                        <TextBlock Text="Load Tables &amp; Views" FontSize="13" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </Grid>
         </StackPanel>
 
-        <!-- ── Footer note ── -->
-        <TextBlock Text="credentials are stored locally · never transmitted"
-                   Foreground="#5F5E5A"
-                   FontFamily="Monospace"
-                   FontSize="11"
-                   HorizontalAlignment="Right"/>
+        <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
+            <material:MaterialIcon Kind="ShieldCheckOutline" Foreground="{StaticResource TextMuted}" Width="12" Height="12" VerticalAlignment="Center"/>
+            <TextBlock Text="credentials are stored locally · never transmitted"
+                       Classes="TechComment"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
 
     </StackPanel>
 

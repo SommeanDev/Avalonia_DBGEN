@@ -59,8 +59,21 @@ public class SqlEditorViewModel : ReactiveObject
     public Color StatusColor
     {
         get => _statusColor;
-        set => this.RaiseAndSetIfChanged(ref _statusColor, value);
+        set
+        {
+            // Set the backing color field
+            this.RaiseAndSetIfChanged(ref _statusColor, value);
+            
+            // Explicitly notify ReactiveUI that StatusBrush has also updated
+            this.RaisePropertyChanged(nameof(StatusBrush));
+        }
     }
+
+    /// <summary>
+    /// Exposes an explicit IBrush object to bypass native color type conversion 
+    /// limitations encountered by strict XAML compilers during CompiledBinding.
+    /// </summary>
+    public IBrush StatusBrush => new SolidColorBrush(StatusColor);
 
     private string _executionTime = "";
     public string ExecutionTime
@@ -94,11 +107,9 @@ public class SqlEditorViewModel : ReactiveObject
     public ReactiveCommand<Unit, Unit> ExecuteQueryCommand { get; }
     public ReactiveCommand<Unit, Unit> ClearQueryCommand { get; }
 
-    public SqlEditorViewModel SqlEditor { get; }
-    
     public SqlEditorViewModel()
     {
-        ExecuteQueryCommand = ReactiveCommand.CreateFromTask(ExecuteAsync); // ← remove outputScheduler
+        ExecuteQueryCommand = ReactiveCommand.CreateFromTask(ExecuteAsync);
 
         ClearQueryCommand = ReactiveCommand.Create(() =>
         {

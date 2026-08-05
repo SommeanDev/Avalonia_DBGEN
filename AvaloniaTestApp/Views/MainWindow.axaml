@@ -6,14 +6,15 @@
         xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         xmlns:conv="clr-namespace:AvaloniaTestApp.Converters"
         xmlns:views="clr-namespace:AvaloniaTestApp.Views"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="700"
         x:Class="AvaloniaTestApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="SimpleToDoList"
+        Title="PG Studio - Terminal Management"
         RequestedThemeVariant="Dark"
         WindowState="Maximized" WindowStartupLocation="CenterScreen"
-        Padding="4">
+        Padding="0"
+        Background="{StaticResource BgGlowDark}">
 
     <Window.Resources>
         <conv:IntToBoolConverter x:Key="IntToBoolConverter" />
@@ -21,102 +22,129 @@
 
     <SplitView IsPaneOpen="{Binding IsPaneOpen}"
                DisplayMode="CompactInline"
-               OpenPaneLength="200"
-               CompactPaneLength="50"
-               Background="#1e1e1e">
+               OpenPaneLength="240"
+               CompactPaneLength="54"
+               Background="{StaticResource BgMain}">
 
-        <!-- ══ Sidebar nav ══ -->
         <SplitView.Pane>
-            <Grid RowDefinitions="Auto, *" HorizontalAlignment="Stretch">
-
-                <!-- Menu toggle -->
+            <Grid RowDefinitions="Auto, Auto, *, Auto" Background="{StaticResource BgSidebar}">
+                
                 <Button Grid.Row="0"
                         Command="{Binding TogglePane}"
                         Background="Transparent"
-                        Foreground="White"
+                        BorderThickness="0,0,0,1"
+                        BorderBrush="{StaticResource BorderDark}"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Left"
-                        Padding="10,0">
-                    <Grid ColumnDefinitions="30, *" Height="50">
-                        <material:MaterialIcon Grid.Column="0" Kind="Menu" Foreground="Teal" Width="24" Height="24" />
-                        <TextBlock Grid.Column="1" Text="Menu"
-                                   VerticalAlignment="Center"
-                                   Margin="15,0,0,0"
-                                   IsVisible="{Binding IsPaneOpen}" />
+                        Padding="0" Height="50">
+                    <Grid ColumnDefinitions="54, *">
+                        <material:MaterialIcon Grid.Column="0" Kind="Menu" Foreground="{StaticResource CyberTeal}" Width="20" Height="20" HorizontalAlignment="Center"/>
+                        
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" IsVisible="{Binding IsPaneOpen}">
+                            <material:MaterialIcon Kind="Terminal" Foreground="{StaticResource CyberTeal}" Width="16" Height="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="PG // STUDIO" FontWeight="Bold" Foreground="{StaticResource TextBright}" LetterSpacing="0.1" VerticalAlignment="Center"/>
+                            <TextBlock Text="v1.0.6" FontSize="10" Foreground="{StaticResource TextMuted}" VerticalAlignment="Center" Margin="2,2,0,0"/>
+                        </StackPanel>
                     </Grid>
                 </Button>
 
-                <!-- Nav items — add a new ListBoxItem here for each new tab -->
-                <ListBox Grid.Row="1" Background="Transparent" Foreground="White" SelectedIndex="{Binding SelectedTabIndex}">
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" Margin="16,18,16,6" IsVisible="{Binding IsPaneOpen}">
+                    <material:MaterialIcon Kind="ViewGridOutline" Foreground="{StaticResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
+                    <TextBlock Text="NAVIGATION" Classes="TechHeader" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <ListBox Grid.Row="2" Background="Transparent" Foreground="{StaticResource TextMain}" SelectedIndex="{Binding SelectedTabIndex}">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Height" Value="44"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </Style>
+                        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#0922d3ee"/>
+                            <Setter Property="Foreground" Value="{StaticResource CyberTeal}"/>
+                        </Style>
+                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#1422d3ee"/>
+                            <Setter Property="Foreground" Value="{StaticResource CyberTeal}"/>
+                        </Style>
+                    </ListBox.Styles>
+
                     <ListBoxItem>
-                        <Grid ColumnDefinitions="Auto, *">
-                            <material:MaterialIcon Grid.Column="0" Kind="DatabaseOutline" Foreground="Teal" Width="30" Height="30"/>
-                            <TextBlock Grid.Column="1" Text="Database"
-                                       VerticalAlignment="Center" Margin="15,0,0,0"
-                                       IsVisible="{Binding IsPaneOpen}" FontFamily="Monospace"/>
+                        <Grid ColumnDefinitions="54, *, Auto">
+                            <material:MaterialIcon Grid.Column="0" Kind="DatabaseOutline" Width="18" Height="18" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="Database" VerticalAlignment="Center" IsVisible="{Binding IsPaneOpen}"/>
+                            <TextBlock Grid.Column="2" Text="01" Classes="TechHeader" Opacity="0.4" IsVisible="{Binding IsPaneOpen}" Margin="0,0,16,0"/>
                         </Grid>
                     </ListBoxItem>
+
                     <ListBoxItem>
-                        <Grid ColumnDefinitions="Auto, *">
-                            <material:MaterialIcon Grid.Column="0" Kind="FileDocument" Foreground="Teal" Width="30" Height="30"/>
-                            <TextBlock Grid.Column="1" Text="Script Generator"
-                                       VerticalAlignment="Center" Margin="15,0,0,0"
-                                       IsVisible="{Binding IsPaneOpen}" FontFamily="Monospace"/>
+                        <Grid ColumnDefinitions="54, *, Auto">
+                            <material:MaterialIcon Grid.Column="0" Kind="FileDocumentOutline" Width="18" Height="18" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="Script Generator" VerticalAlignment="Center" IsVisible="{Binding IsPaneOpen}"/>
+                            <TextBlock Grid.Column="2" Text="02" Classes="TechHeader" Opacity="0.4" IsVisible="{Binding IsPaneOpen}" Margin="0,0,16,0"/>
                         </Grid>
                     </ListBoxItem>
+
                     <ListBoxItem>
-                        <Grid ColumnDefinitions="Auto, *">
-                            <material:MaterialIcon Grid.Column="0" Kind="WindowOpen" Foreground="Teal" Width="30" Height="30"/>
-                            <TextBlock Grid.Column="1" Text="View Generator"
-                                       VerticalAlignment="Center" Margin="15,0,0,0"
-                                       IsVisible="{Binding IsPaneOpen}" FontFamily="Monospace"/>
+                        <Grid ColumnDefinitions="54, *, Auto">
+                            <material:MaterialIcon Grid.Column="0" Kind="WindowOpen" Width="18" Height="18" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="View Generator" VerticalAlignment="Center" IsVisible="{Binding IsPaneOpen}"/>
+                            <TextBlock Grid.Column="2" Text="03" Classes="TechHeader" Opacity="0.4" IsVisible="{Binding IsPaneOpen}" Margin="0,0,16,0"/>
                         </Grid>
                     </ListBoxItem>
+
                     <ListBoxItem>
-                        <Grid ColumnDefinitions="Auto, *">
-                            <material:MaterialIcon Grid.Column="0" Kind="Cog" Foreground="Teal" Width="30" Height="30"/>
-                            <TextBlock Grid.Column="1" Text="Settings"
-                                       VerticalAlignment="Center" Margin="15,0,0,0"
-                                       IsVisible="{Binding IsPaneOpen}" FontFamily="Monospace"/>
+                        <Grid ColumnDefinitions="54, *, Auto">
+                            <material:MaterialIcon Grid.Column="0" Kind="CogOutline" Width="18" Height="18" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="Settings" VerticalAlignment="Center" IsVisible="{Binding IsPaneOpen}"/>
+                            <TextBlock Grid.Column="2" Text="04" Classes="TechHeader" Opacity="0.4" IsVisible="{Binding IsPaneOpen}" Margin="0,0,16,0"/>
                         </Grid>
                     </ListBoxItem>
+
                     <ListBoxItem>
-                        <Grid ColumnDefinitions="Auto, *">
-                            <material:MaterialIcon Grid.Column="0" Kind="DatabaseCogOutline" Foreground="Teal" Width="30" Height="30"/>
-                            <TextBlock Grid.Column="1" Text="SQL Editor"
-                                       VerticalAlignment="Center" Margin="15,0,0,0"
-                                       IsVisible="{Binding IsPaneOpen}" FontFamily="Monospace"/>
+                        <Grid ColumnDefinitions="54, *, Auto">
+                            <material:MaterialIcon Grid.Column="0" Kind="DatabaseCogOutline" Width="18" Height="18" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="SQL Editor" VerticalAlignment="Center" IsVisible="{Binding IsPaneOpen}"/>
+                            <TextBlock Grid.Column="2" Text="05" Classes="TechHeader" Opacity="0.4" IsVisible="{Binding IsPaneOpen}" Margin="0,0,16,0"/>
                         </Grid>
                     </ListBoxItem>
                 </ListBox>
 
+                <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderDark}" Padding="16" IsVisible="{Binding IsPaneOpen}">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <material:MaterialIcon Kind="Cpu64Bit" Foreground="{StaticResource TextMuted}" Width="12" Height="12" VerticalAlignment="Center"/>
+                            <TextBlock Text="ENGINE STATUS" Classes="TechHeader" Foreground="{StaticResource TextMuted}" FontSize="9" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="2,0,0,0">
+                            <Ellipse Width="6" Height="6" Fill="{StaticResource CyberTeal}" VerticalAlignment="Center"/>
+                            <TextBlock Text="PostgreSQL 16.2" FontSize="11" Foreground="#8fa3ba" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
             </Grid>
         </SplitView.Pane>
 
-        <!-- ══ Main content area — one Panel per tab ══ -->
-        <Panel Margin="20">
+        <Panel Margin="36,24">
 
-            <!-- TAB 0 · Database Config -->
             <Panel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=0}">
                 <views:DatabaseConfigView DataContext="{Binding}"/>
             </Panel>
 
-            <!-- TAB 1 · Script Generator -->
             <Panel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=1}">
                 <views:ScriptGeneratorView DataContext="{Binding}"/>
             </Panel>
 
-            <!-- TAB 2 · View Builder -->
             <Panel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=2}">
                 <views:ViewBuilderView DataContext="{Binding ViewBuilder}"/>
             </Panel>
 
-            <!-- TAB 3 · Settings -->
             <Panel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=3}">
                 <views:AppSettingsView DataContext="{Binding AppSettings}"/>
             </Panel>
 
-            <!-- TAB 4 · SQL Editor -->
             <Panel IsVisible="{Binding SelectedTabIndex, Converter={StaticResource IntToBoolConverter}, ConverterParameter=4}">
                 <views:SqlEditorView DataContext="{Binding SqlEditor}"/>
             </Panel>
