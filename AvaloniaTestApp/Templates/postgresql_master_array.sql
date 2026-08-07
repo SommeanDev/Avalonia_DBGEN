@@ -160,7 +160,7 @@ FOR rec IN (SELECT * FROM g_{{table_name}})
                            k.primary_key_name, t.data_type
                     FROM information_schema.columns t
                     INNER JOIN table_key_master k ON t.table_name = k.table_name
-                    WHERE t.table_schema = current_schema
+                    WHERE t.table_schema = current_schema()
                       AND t.table_name = '{{table_name}}'
                       AND t.column_name IN (
                           SELECT c.field_name

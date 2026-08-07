@@ -182,7 +182,7 @@ BEGIN
             'M'::VARCHAR,
             'N'::VARCHAR,
             '{{head_table_upper}}'::VARCHAR,
-            '/* TODO: short code e.g. SAH */'::VARCHAR,
+            'SAH'::VARCHAR,
             NULL::INTEGER,
             'N'::VARCHAR,
             pi_enter_user_id::INTEGER,
@@ -200,7 +200,7 @@ BEGIN
                        t.data_type
                 FROM   information_schema.columns t
                 INNER JOIN table_key_master k ON t.table_name = k.table_name
-                WHERE  t.table_schema = current_schema
+                WHERE  t.table_schema = current_schema()
                   AND  t.table_name   = '{{headTable}}'
                   AND  t.column_name IN (
                       SELECT c.field_name 
@@ -312,7 +312,7 @@ BEGIN
             'M'::VARCHAR,
             'N'::VARCHAR,
             '{{line_table_upper}}'::VARCHAR,
-            '/* TODO: short code e.g. SAL */'::VARCHAR,
+            'SAL'::VARCHAR,
             NULL::INTEGER,
             'N'::VARCHAR,
             pi_enter_user_id::INTEGER,
@@ -334,7 +334,7 @@ BEGIN
                                t.data_type
                         FROM   information_schema.columns t
                         INNER JOIN table_key_master k ON t.table_name = k.table_name
-                        WHERE  t.table_schema = current_schema
+                        WHERE  t.table_schema = current_schema()
                           AND  t.table_name   = '{{lineTable}}'
                           AND  t.column_name IN (
                               SELECT c.field_name 
