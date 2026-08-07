@@ -5,29 +5,28 @@
 
 CREATE OR REPLACE PROCEDURE {{procName}}(
     -- ── transaction control ────────────────────────────────────────────────
-    INOUT pio_trno              integer,
-    IN    pi_opflag             character varying,
-    INOUT pio_line_no           integer[],
+    INOUT pio_trno                 INTEGER,
+    IN    pi_opflag                VARCHAR,
+    INOUT pio_line_no              INTEGER[],
 
     -- ── audit / context ────────────────────────────────────────────────────
-    IN    pi_operation_date     timestamp without time zone,
-    IN    pi_{{context_col}}    integer,
-    IN    pi_enter_user_id      integer,
-    IN    pi_enter_desc         character varying,
+    IN    pi_operation_date        TIMESTAMP WITHOUT TIME ZONE,
+    IN    pi_{{context_col}}       INTEGER,
+    IN    pi_enter_user_id         INTEGER,
+    IN    pi_enter_desc            VARCHAR,
 
     -- ── head business columns ──────────────────────────────────────────────
-{{business_parameters}}
+    {{business_parameters}}
 
     -- ── line business columns (parallel arrays) ────────────────────────────
-{{line_array_parameters}},
+    {{line_array_parameters}},
 
     -- ── outputs ────────────────────────────────────────────────────────────
-    INOUT pi_opid               character varying,
-    INOUT pi_error              character varying
+    INOUT pi_opid                  VARCHAR,
+    INOUT pi_error                 VARCHAR
 )
 LANGUAGE plpgsql
 AS $procedure$
-
 DECLARE
     lv_trno         INTEGER;
     lv_opid         VARCHAR(10);
@@ -35,7 +34,7 @@ DECLARE
     lv_newval       VARCHAR(4000);
     lv_oldval       VARCHAR(4000);
     lv_cnt          INTEGER;
-    lv_opdate       DATE    := COALESCE(pi_operation_date, CURRENT_DATE)::DATE;
+    lv_opdate       DATE := COALESCE(pi_operation_date, CURRENT_DATE)::DATE;
     cnt             RECORD;
     rec             RECORD;
     lv_err_no       VARCHAR(4000);
@@ -45,7 +44,6 @@ DECLARE
     lv_del_cnt      INTEGER := 0;
 
 BEGIN
-
     lv_opid := fn_getopid(pi_opflag);
 
     /* ================================================================
@@ -146,8 +144,11 @@ BEGIN
 
         -- ── Head: snapshot for change detection ───────────────────────────
         DISCARD TEMP;
+
         CREATE TEMP TABLE g_{{headTable}} AS
-        SELECT * FROM {{headTable}} WHERE 1 = 2;
+        SELECT * 
+        FROM   {{headTable}} 
+        WHERE  1 = 2;
 
         INSERT INTO g_{{headTable}} (
             {{pk_col}},
@@ -192,28 +193,34 @@ BEGIN
 
         IF lv_error = 'success' THEN
             FOR cnt IN (
-                SELECT t.column_name, t.table_name, k.temp_table,
-                       k.primary_key_name, t.data_type
+                SELECT t.column_name, 
+                       t.table_name, 
+                       k.temp_table,
+                       k.primary_key_name, 
+                       t.data_type
                 FROM   information_schema.columns t
-                INNER  JOIN table_key_master k ON t.table_name = k.table_name
+                INNER JOIN table_key_master k ON t.table_name = k.table_name
                 WHERE  t.table_schema = current_schema
                   AND  t.table_name   = '{{headTable}}'
                   AND  t.column_name IN (
-                    SELECT c.field_name FROM caption_details c
-                    WHERE  c.table_name   = t.table_name
-                      AND  c.modify_allow = 'Y'
-                      AND  c.block_modify = 'N'
+                      SELECT c.field_name 
+                      FROM   caption_details c
+                      WHERE  c.table_name   = t.table_name
+                        AND  c.modify_allow = 'Y'
+                        AND  c.block_modify = 'N'
                   )
             ) LOOP
                 IF cnt.data_type NOT IN ('bytea', 'text') THEN
                     EXECUTE 'SELECT ' || cnt.column_name || '::VARCHAR FROM '
-                                || cnt.temp_table
-                                || ' WHERE {{pk_col}} = ' || pio_trno
+                            || cnt.temp_table
+                            || ' WHERE {{pk_col}} = ' || pio_trno
                         INTO lv_newval;
+
                     EXECUTE 'SELECT ' || cnt.column_name || '::VARCHAR FROM '
-                                || cnt.table_name
-                                || ' WHERE {{pk_col}} = ' || pio_trno
+                            || cnt.table_name
+                            || ' WHERE {{pk_col}} = ' || pio_trno
                         INTO lv_oldval;
+
                     IF COALESCE(TRIM(lv_newval), ' ') <> COALESCE(TRIM(lv_oldval), ' ') THEN
                         INSERT INTO modification_log (
                             mod_log_det_id, transaction_date, branch_mst_id,
@@ -230,7 +237,8 @@ BEGIN
                 END IF;
             END LOOP;
 
-            SELECT COUNT(1) INTO lv_cnt
+            SELECT COUNT(1) 
+            INTO   lv_cnt
             FROM   modification_log
             WHERE  operation_id = lv_opid;
 
@@ -244,14 +252,14 @@ BEGIN
 
         -- ── Head: apply update ────────────────────────────────────────────
         UPDATE {{headTable}}
-        SET    operation_date       = lv_opdate,
-               {{context_col}}      = pi_{{context_col}},
+        SET    operation_date    = lv_opdate,
+               {{context_col}}   = pi_{{context_col}},
 {{update_business_assignments}}
-               operation_id         = lv_opid,
-               last_edit_user_id    = pi_enter_user_id,
-               last_edit_desc       = pi_enter_desc,
-               delete_flag          = 'N',
-               active_flag          = 'Y'
+               operation_id      = lv_opid,
+               last_edit_user_id = pi_enter_user_id,
+               last_edit_desc    = pi_enter_desc,
+               delete_flag       = 'N',
+               active_flag       = 'Y'
         WHERE  {{pk_col}} = pio_trno;
 
         pi_opid := lv_opid;
@@ -259,7 +267,9 @@ BEGIN
 
         -- ── Line: snapshot for change detection ───────────────────────────
         CREATE TEMP TABLE g_{{lineTable}} AS
-        SELECT * FROM {{lineTable}} WHERE 1 = 2;
+        SELECT * 
+        FROM   {{lineTable}} 
+        WHERE  1 = 2;
 
         INSERT INTO g_{{lineTable}} (
             {{line_pk_col}},
@@ -317,28 +327,34 @@ BEGIN
                 IF COALESCE(rec.{{line_pk_col}}, 0) > 0 THEN
                     -- ── existing line: change detection ───────────────────
                     FOR cnt IN (
-                        SELECT t.column_name, t.table_name, k.temp_table,
-                               k.primary_key_name, t.data_type
+                        SELECT t.column_name, 
+                               t.table_name, 
+                               k.temp_table,
+                               k.primary_key_name, 
+                               t.data_type
                         FROM   information_schema.columns t
-                        INNER  JOIN table_key_master k ON t.table_name = k.table_name
+                        INNER JOIN table_key_master k ON t.table_name = k.table_name
                         WHERE  t.table_schema = current_schema
                           AND  t.table_name   = '{{lineTable}}'
                           AND  t.column_name IN (
-                            SELECT c.field_name FROM caption_details c
-                            WHERE  c.table_name   = t.table_name
-                              AND  c.modify_allow = 'Y'
-                              AND  c.block_modify = 'N'
+                              SELECT c.field_name 
+                              FROM   caption_details c
+                              WHERE  c.table_name   = t.table_name
+                                AND  c.modify_allow = 'Y'
+                                AND  c.block_modify = 'N'
                           )
                     ) LOOP
                         IF cnt.data_type NOT IN ('bytea', 'text') THEN
                             EXECUTE 'SELECT ' || cnt.column_name || '::VARCHAR FROM '
-                                        || cnt.temp_table
-                                        || ' WHERE {{line_pk_col}} = ' || rec.{{line_pk_col}}
+                                    || cnt.temp_table
+                                    || ' WHERE {{line_pk_col}} = ' || rec.{{line_pk_col}}
                                 INTO lv_newval;
+
                             EXECUTE 'SELECT ' || cnt.column_name || '::VARCHAR FROM '
-                                        || cnt.table_name
-                                        || ' WHERE {{line_pk_col}} = ' || rec.{{line_pk_col}}
+                                    || cnt.table_name
+                                    || ' WHERE {{line_pk_col}} = ' || rec.{{line_pk_col}}
                                 INTO lv_oldval;
+
                             IF COALESCE(TRIM(lv_newval), ' ') <> COALESCE(TRIM(lv_oldval), ' ') THEN
                                 INSERT INTO modification_log (
                                     mod_log_det_id, transaction_date, branch_mst_id,
@@ -357,15 +373,15 @@ BEGIN
 
                     -- ── existing line: update ─────────────────────────────
                     UPDATE {{lineTable}}
-                    SET    operation_date       = lv_opdate,
-                           {{context_col}}      = pi_{{context_col}},
-                           {{pk_col}}           = pio_trno,
+                    SET    operation_date    = lv_opdate,
+                           {{context_col}}   = pi_{{context_col}},
+                           {{pk_col}}        = pio_trno,
 {{line_update_assignments}},
-                           operation_id         = lv_opid,
-                           last_edit_user_id    = pi_enter_user_id,
-                           last_edit_desc       = pi_enter_desc,
-                           delete_flag          = rec.delete_flag,
-                           active_flag          = rec.active_flag
+                           operation_id      = lv_opid,
+                           last_edit_user_id = pi_enter_user_id,
+                           last_edit_desc    = pi_enter_desc,
+                           delete_flag       = rec.delete_flag,
+                           active_flag       = rec.active_flag
                     WHERE  {{line_pk_col}} = rec.{{line_pk_col}};
 
                 ELSIF COALESCE(rec.{{line_pk_col}}, 0) = 0 THEN
@@ -413,30 +429,30 @@ BEGIN
 
         FOR j IN 1..array_length(pio_line_no, 1) LOOP
             UPDATE {{lineTable}}
-            SET    operation_date   = lv_opdate,
-                   delete_flag      = 'Y',
-                   active_flag      = 'N',
-                   operation_id     = lv_opid,
-                   delete_user_id   = pi_enter_user_id,
-                   delete_desc      = pi_enter_desc
-            WHERE  {{pk_col}}       = pio_trno
-              AND  {{line_pk_col}}  = pio_line_no[j];
+            SET    operation_date = lv_opdate,
+                   delete_flag    = 'Y',
+                   active_flag    = 'N',
+                   operation_id   = lv_opid,
+                   delete_user_id = pi_enter_user_id,
+                   delete_desc    = pi_enter_desc
+            WHERE  {{pk_col}}      = pio_trno
+              AND  {{line_pk_col}} = pio_line_no[j];
         END LOOP;
 
         SELECT COUNT(*)
         INTO   lv_del_cnt
         FROM   {{lineTable}}
-        WHERE  active_flag  = 'Y'
-          AND  {{pk_col}}   = pio_trno;
+        WHERE  active_flag = 'Y'
+          AND  {{pk_col}}  = pio_trno;
 
         IF COALESCE(lv_del_cnt, 0) = 0 THEN
             UPDATE {{headTable}}
-            SET    operation_date   = lv_opdate,
-                   delete_flag      = 'Y',
-                   active_flag      = 'N',
-                   operation_id     = lv_opid,
-                   delete_user_id   = pi_enter_user_id,
-                   delete_desc      = pi_enter_desc
+            SET    operation_date = lv_opdate,
+                   delete_flag    = 'Y',
+                   active_flag    = 'N',
+                   operation_id   = lv_opid,
+                   delete_user_id = pi_enter_user_id,
+                   delete_desc    = pi_enter_desc
             WHERE  {{pk_col}} = pio_trno;
         END IF;
 
@@ -448,6 +464,7 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         DISCARD TEMP;
+        
         GET STACKED DIAGNOSTICS
             lv_err_no      = RETURNED_SQLSTATE,
             lv_err_desc    = PG_EXCEPTION_DETAIL,

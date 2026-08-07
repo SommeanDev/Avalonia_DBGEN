@@ -1,4 +1,4 @@
-﻿<!-- <UserControl xmlns="https://github.com/avaloniaui" -->
+<!-- <UserControl xmlns="https://github.com/avaloniaui" -->
 <!--              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" -->
 <!--              xmlns:vm="using:AvaloniaTestApp.ViewModels" -->
 <!--              xmlns:models="using:AvaloniaTestApp.Models" -->
@@ -1113,12 +1113,15 @@
                         Command="{Binding CopySqlCommand}"
                         Background="Transparent"
                         BorderThickness="0"
-                        Foreground="{StaticResource TextMuted}"
+                        Foreground="{DynamicResource TextMuted}"
                         Height="34"
-                        Width="34"
-                        Padding="0"
+                        Padding="8,0"
                         ToolTip.Tip="Copy SQL to clipboard">
-                    <material:MaterialIcon Kind="ContentCopy" Width="15" Height="15"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                        <material:MaterialIcon Kind="Check" Foreground="{DynamicResource CyberTeal}" Width="15" Height="15" IsVisible="{Binding IsCopied}" VerticalAlignment="Center"/>
+                        <TextBlock Text="Copied!" Foreground="{DynamicResource CyberTeal}" FontSize="12" FontWeight="SemiBold" IsVisible="{Binding IsCopied}" VerticalAlignment="Center"/>
+                        <material:MaterialIcon Kind="ContentCopy" Width="15" Height="15" IsVisible="{Binding !IsCopied}" VerticalAlignment="Center"/>
+                    </StackPanel>
                 </Button>
 
             </Grid>

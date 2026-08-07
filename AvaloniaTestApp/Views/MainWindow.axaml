@@ -11,10 +11,9 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="PG Studio - Terminal Management"
-        RequestedThemeVariant="Dark"
         WindowState="Maximized" WindowStartupLocation="CenterScreen"
         Padding="0"
-        Background="{StaticResource BgGlowDark}">
+        Background="{DynamicResource BgGlowDark}">
 
     <Window.Resources>
         <conv:IntToBoolConverter x:Key="IntToBoolConverter" />
@@ -24,36 +23,36 @@
                DisplayMode="CompactInline"
                OpenPaneLength="240"
                CompactPaneLength="54"
-               Background="{StaticResource BgMain}">
+               Background="{DynamicResource BgMain}">
 
         <SplitView.Pane>
-            <Grid RowDefinitions="Auto, Auto, *, Auto" Background="{StaticResource BgSidebar}">
+            <Grid RowDefinitions="Auto, Auto, *, Auto" Background="{DynamicResource BgSidebar}">
                 
                 <Button Grid.Row="0"
                         Command="{Binding TogglePane}"
                         Background="Transparent"
                         BorderThickness="0,0,0,1"
-                        BorderBrush="{StaticResource BorderDark}"
+                        BorderBrush="{DynamicResource BorderDark}"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Left"
                         Padding="0" Height="50">
                     <Grid ColumnDefinitions="54, *">
-                        <material:MaterialIcon Grid.Column="0" Kind="Menu" Foreground="{StaticResource CyberTeal}" Width="20" Height="20" HorizontalAlignment="Center"/>
+                        <material:MaterialIcon Grid.Column="0" Kind="Menu" Foreground="{DynamicResource CyberTeal}" Width="20" Height="20" HorizontalAlignment="Center"/>
                         
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" IsVisible="{Binding IsPaneOpen}">
-                            <material:MaterialIcon Kind="Terminal" Foreground="{StaticResource CyberTeal}" Width="16" Height="16" VerticalAlignment="Center"/>
-                            <TextBlock Text="PG // STUDIO" FontWeight="Bold" Foreground="{StaticResource TextBright}" LetterSpacing="0.1" VerticalAlignment="Center"/>
-                            <TextBlock Text="v1.0.6" FontSize="10" Foreground="{StaticResource TextMuted}" VerticalAlignment="Center" Margin="2,2,0,0"/>
+                            <material:MaterialIcon Kind="Terminal" Foreground="{DynamicResource CyberTeal}" Width="16" Height="16" VerticalAlignment="Center"/>
+                            <TextBlock Text="PG // STUDIO" FontWeight="Bold" Foreground="{DynamicResource TextBright}" LetterSpacing="0.1" VerticalAlignment="Center"/>
+                            <TextBlock Text="v1.0.6" FontSize="10" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center" Margin="2,2,0,0"/>
                         </StackPanel>
                     </Grid>
                 </Button>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" Margin="16,18,16,6" IsVisible="{Binding IsPaneOpen}">
-                    <material:MaterialIcon Kind="ViewGridOutline" Foreground="{StaticResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
+                    <material:MaterialIcon Kind="ViewGridOutline" Foreground="{DynamicResource CyberTeal}" Width="14" Height="14" VerticalAlignment="Center"/>
                     <TextBlock Text="NAVIGATION" Classes="TechHeader" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <ListBox Grid.Row="2" Background="Transparent" Foreground="{StaticResource TextMain}" SelectedIndex="{Binding SelectedTabIndex}">
+                <ListBox Grid.Row="2" Background="Transparent" Foreground="{DynamicResource TextMain}" SelectedIndex="{Binding SelectedTabIndex}">
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
                             <Setter Property="Padding" Value="0"/>
@@ -63,11 +62,11 @@
                         </Style>
                         <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
                             <Setter Property="Background" Value="#0922d3ee"/>
-                            <Setter Property="Foreground" Value="{StaticResource CyberTeal}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource CyberTeal}"/>
                         </Style>
                         <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
                             <Setter Property="Background" Value="#1422d3ee"/>
-                            <Setter Property="Foreground" Value="{StaticResource CyberTeal}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource CyberTeal}"/>
                         </Style>
                     </ListBox.Styles>
 
@@ -112,15 +111,15 @@
                     </ListBoxItem>
                 </ListBox>
 
-                <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderDark}" Padding="16" IsVisible="{Binding IsPaneOpen}">
+                <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderDark}" Padding="16" IsVisible="{Binding IsPaneOpen}">
                     <StackPanel Spacing="6">
                         <StackPanel Orientation="Horizontal" Spacing="6">
-                            <material:MaterialIcon Kind="Cpu64Bit" Foreground="{StaticResource TextMuted}" Width="12" Height="12" VerticalAlignment="Center"/>
-                            <TextBlock Text="ENGINE STATUS" Classes="TechHeader" Foreground="{StaticResource TextMuted}" FontSize="9" VerticalAlignment="Center"/>
+                            <material:MaterialIcon Kind="Cpu64Bit" Foreground="{DynamicResource TextMuted}" Width="12" Height="12" VerticalAlignment="Center"/>
+                            <TextBlock Text="ENGINE STATUS" Classes="TechHeader" Foreground="{DynamicResource TextMuted}" FontSize="9" VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Spacing="8" Margin="2,0,0,0">
-                            <Ellipse Width="6" Height="6" Fill="{StaticResource CyberTeal}" VerticalAlignment="Center"/>
-                            <TextBlock Text="PostgreSQL 16.2" FontSize="11" Foreground="#8fa3ba" VerticalAlignment="Center"/>
+                            <Ellipse Width="6" Height="6" Fill="{DynamicResource CyberTeal}" VerticalAlignment="Center"/>
+                            <TextBlock Text="PostgreSQL 16.2" FontSize="11" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>

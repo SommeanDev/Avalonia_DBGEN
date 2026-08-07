@@ -102,7 +102,7 @@
                             </AutoCompleteBox>
                         </StackPanel>
 
-                        <StackPanel Spacing="6" IsVisible="{Binding TemplateRequiresLineTable}">
+                        <StackPanel Spacing="6" IsVisible="{Binding RequiresLineTable}">
                             <TextBlock Text="Line Table" Classes="TechHeader"/>
                             <AutoCompleteBox MinHeight="38"
                                              ItemsSource="{Binding DatabaseObjects}"
@@ -224,15 +224,19 @@
                                 Command="{Binding CopySqlCommand}"
                                 Background="Transparent"
                                 BorderThickness="0"
-                                Foreground="{StaticResource TextMuted}"
+                                Foreground="{DynamicResource TextMuted}"
                                 Padding="16,0"
                                 Height="46"
                                 ToolTip.Tip="Copy to clipboard">
-                            <material:MaterialIcon Kind="ContentCopy" Width="16" Height="16"/>
+                            <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                <material:MaterialIcon Kind="Check" Foreground="{DynamicResource CyberTeal}" Width="16" Height="16" IsVisible="{Binding IsCopied}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Copied!" Foreground="{DynamicResource CyberTeal}" FontSize="12" FontWeight="SemiBold" IsVisible="{Binding IsCopied}" VerticalAlignment="Center"/>
+                                <material:MaterialIcon Kind="ContentCopy" Width="16" Height="16" IsVisible="{Binding !IsCopied}" VerticalAlignment="Center"/>
+                            </StackPanel>
                         </Button>
                     </Grid>
                     
-                    <Border Height="1" Background="{StaticResource BorderDark}" VerticalAlignment="Bottom"/>
+                    <Border Height="1" Background="{DynamicResource BorderDark}" VerticalAlignment="Bottom"/>
                 </Panel>
 
                 <Panel Grid.Row="1">

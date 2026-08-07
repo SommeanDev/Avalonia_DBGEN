@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -137,24 +137,8 @@ public partial class MainWindowViewModel : ReactiveObject
         GenerateSqlCommand = ReactiveCommand.Create(GenerateSqlFromTemplate,
             outputScheduler: Avalonia.ReactiveUI.AvaloniaScheduler.Instance);
 
-        CopySqlCommand = ReactiveCommand.Create(() =>
-        {
-            if (string.IsNullOrEmpty(GeneratedSql)) return;
-
-            var desktop = Avalonia.Application.Current?.ApplicationLifetime 
-                as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
-    
-            var mainWindow = desktop?.MainWindow;
-            if (mainWindow is null) return;
-
-            var clipboard = Avalonia.Controls.TopLevel.GetTopLevel(mainWindow)?.Clipboard;
-
-            if (clipboard is not null)
-            {
-                // Fire-and-forget the async task directly on the UI main loop safely
-                _ = clipboard.SetTextAsync(GeneratedSql);
-            }
-        }, outputScheduler: Avalonia.ReactiveUI.AvaloniaScheduler.Instance); // <-- CRITICAL
+        CopySqlCommand = ReactiveCommand.CreateFromTask(CopySqlAsync,
+            outputScheduler: Avalonia.ReactiveUI.AvaloniaScheduler.Instance); // <-- CRITICAL
         
         ExecuteCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -375,13 +359,39 @@ public partial class MainWindowViewModel : ReactiveObject
     
 // =========================== TAB 2 - Script Gen ============================
 
-    public ObservableCollection<string> ScriptTypes { get; } = new() { "Master procedure", "Detail procedure", "Select procedure" };
+    public ObservableCollection<string> ScriptTypes { get; } = new() { "Master procedure", "Head/Line procedure", "Detail procedure", "Select procedure" };
     public ObservableCollection<string> Templates { get; } = new();
     public ObservableCollection<ColumnViewModel> Columns { get; } = new();
     public ObservableCollection<ColumnViewModel> LineColumns { get; } = new();
 
     private string _selectedScriptType = "Master procedure";
-    public string SelectedScriptType { get => _selectedScriptType; set => this.RaiseAndSetIfChanged(ref _selectedScriptType, value); }
+    public string SelectedScriptType
+    {
+        get => _selectedScriptType;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _selectedScriptType, value);
+            this.RaisePropertyChanged(nameof(RequiresLineTable));
+            this.RaisePropertyChanged(nameof(TemplateRequiresLineTable));
+            OnScriptTypeChanged(value);
+        }
+    }
+
+    private void OnScriptTypeChanged(string scriptType)
+    {
+        if (scriptType.Contains("Head", StringComparison.OrdinalIgnoreCase) || scriptType.Contains("Line", StringComparison.OrdinalIgnoreCase))
+        {
+            var headLineTemplate = Templates.FirstOrDefault(t => t.Contains("head_line", StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrEmpty(headLineTemplate))
+                SelectedTemplate = headLineTemplate;
+        }
+        else if (scriptType.Contains("Master", StringComparison.OrdinalIgnoreCase))
+        {
+            var masterTemplate = Templates.FirstOrDefault(t => t.Equals("postgresql_master.sql", StringComparison.OrdinalIgnoreCase) || (t.Contains("master", StringComparison.OrdinalIgnoreCase) && !t.Contains("array", StringComparison.OrdinalIgnoreCase)));
+            if (!string.IsNullOrEmpty(masterTemplate))
+                SelectedTemplate = masterTemplate;
+        }
+    }
 
     private string _selectedTemplate = "postgresql_master.sql";
     public string SelectedTemplate
@@ -428,13 +438,16 @@ public partial class MainWindowViewModel : ReactiveObject
         set
         {
             this.RaiseAndSetIfChanged(ref _templateContent, value);
+            this.RaisePropertyChanged(nameof(RequiresLineTable));
             this.RaisePropertyChanged(nameof(TemplateRequiresLineTable));
         }
     }
 
-    public bool TemplateRequiresLineTable
-        => TemplateContent.Contains("{{lineTable}}", StringComparison.OrdinalIgnoreCase)
-           || TemplateContent.Contains("{{line_", StringComparison.OrdinalIgnoreCase);
+    public bool RequiresLineTable
+        => SelectedScriptType.Contains("Head", StringComparison.OrdinalIgnoreCase)
+           || SelectedScriptType.Contains("Line", StringComparison.OrdinalIgnoreCase);
+
+    public bool TemplateRequiresLineTable => RequiresLineTable;
 
     private bool IsArrayTemplateSelected
         => SelectedTemplate.Contains("array", StringComparison.OrdinalIgnoreCase)
@@ -450,6 +463,41 @@ public partial class MainWindowViewModel : ReactiveObject
 
     private string _templateStatusText = "";
     public string TemplateStatusText { get => _templateStatusText; set => this.RaiseAndSetIfChanged(ref _templateStatusText, value); }
+
+    private bool _isCopied;
+    public bool IsCopied
+    {
+        get => _isCopied;
+        set => this.RaiseAndSetIfChanged(ref _isCopied, value);
+    }
+
+    private int _copyFeedbackCount = 0;
+
+    private async Task CopySqlAsync()
+    {
+        if (string.IsNullOrEmpty(GeneratedSql)) return;
+
+        var desktop = Avalonia.Application.Current?.ApplicationLifetime 
+            as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
+
+        var mainWindow = desktop?.MainWindow;
+        if (mainWindow is null) return;
+
+        var clipboard = Avalonia.Controls.TopLevel.GetTopLevel(mainWindow)?.Clipboard;
+
+        if (clipboard is not null)
+        {
+            await clipboard.SetTextAsync(GeneratedSql);
+            IsCopied = true;
+
+            int currentCount = ++_copyFeedbackCount;
+            await Task.Delay(2000);
+            if (currentCount == _copyFeedbackCount)
+            {
+                IsCopied = false;
+            }
+        }
+    }
 
     public IClipboard? Clipboard { get; set; }
 
@@ -562,7 +610,7 @@ public partial class MainWindowViewModel : ReactiveObject
             return;
         }
 
-        GeneratedSql = TemplateRequiresLineTable
+        GeneratedSql = RequiresLineTable
             ? SqlBuilder.GenerateScript(
                 templateContent,
                 SelectedSchema,

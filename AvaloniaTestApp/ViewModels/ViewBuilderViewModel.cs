@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -89,9 +89,12 @@ public class ViewBuilderViewModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _statusText, value);
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // Commands
-    // ═══════════════════════════════════════════════════════════════════════
+    private bool _isCopied;
+    public bool IsCopied
+    {
+        get => _isCopied;
+        set => this.RaiseAndSetIfChanged(ref _isCopied, value);
+    }
 
     public ReactiveCommand<Unit, Unit> AddTableCommand { get; }
     public ReactiveCommand<ViewBuilderTable, Unit> RemoveTableCommand { get; }
@@ -152,8 +155,8 @@ public class ViewBuilderViewModel : ReactiveObject
             () => { IsSqlPanelOpen = false; },
             outputScheduler: Avalonia.ReactiveUI.AvaloniaScheduler.Instance);
 
-        CopySqlCommand = ReactiveCommand.Create(
-            CopySql,
+        CopySqlCommand = ReactiveCommand.CreateFromTask(
+            CopySqlAsync,
             outputScheduler: Avalonia.ReactiveUI.AvaloniaScheduler.Instance);
 
         SendToScriptGeneratorCommand = ReactiveCommand.Create(
@@ -652,7 +655,9 @@ public class ViewBuilderViewModel : ReactiveObject
     // Copy SQL  — FIX 3: use TopLevel.Clipboard property, not SetTextAsync
     // ═══════════════════════════════════════════════════════════════════════
 
-    private void CopySql()
+    private int _copyFeedbackCount = 0;
+
+    private async Task CopySqlAsync()
     {
         if (string.IsNullOrEmpty(GeneratedSql)) return;
 
@@ -663,6 +668,16 @@ public class ViewBuilderViewModel : ReactiveObject
 
         var clipboard = Avalonia.Controls.TopLevel.GetTopLevel(mainWindow)?.Clipboard;
         if (clipboard is not null)
-            _ = clipboard.SetTextAsync(GeneratedSql);
+        {
+            await clipboard.SetTextAsync(GeneratedSql);
+            IsCopied = true;
+
+            int currentCount = ++_copyFeedbackCount;
+            await Task.Delay(2000);
+            if (currentCount == _copyFeedbackCount)
+            {
+                IsCopied = false;
+            }
+        }
     }
 }

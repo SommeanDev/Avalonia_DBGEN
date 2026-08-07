@@ -32,7 +32,7 @@ public partial class App : Application
             };
 
             if (AppSettingsViewModel.Current.AutoCheckUpdates)
-                _ = CheckForUpdatesAsync();
+                _ = AppSettingsViewModel.Current.CheckForUpdatesCommand.Execute();
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -47,7 +47,7 @@ public partial class App : Application
                 null, // null = public repo, no token needed
                 false // false = use latest stable release, not pre-release
             ));
-            
+
             if (!mgr.IsInstalled) return; // skip when running in dev/debug
 
             var update = await mgr.CheckForUpdatesAsync();
@@ -64,31 +64,24 @@ public partial class App : Application
             // Never crash the app over a failed update check
         }
     }
-    
-    // public static void ApplyTheme(string theme)
-    // {
-    //     var themeVariant = theme switch
-    //     {
-    //         "Light"          => Avalonia.Styling.ThemeVariant.Light,
-    //         "Dark"           => Avalonia.Styling.ThemeVariant.Dark,
-    //         _                => Avalonia.Styling.ThemeVariant.Default  // System Default
-    //     };
-    //
-    //     if (Current is not null)
-    //         Current.RequestedThemeVariant = themeVariant;
-    // }
-    
+
     public static void ApplyTheme(string theme)
     {
-        // Always force dark — UI is hardcoded dark, light/system breaks it
+        var themeVariant = theme switch
+        {
+            "Light" => Avalonia.Styling.ThemeVariant.Light,
+            "Dark"  => Avalonia.Styling.ThemeVariant.Dark,
+            _       => Avalonia.Styling.ThemeVariant.Default
+        };
+
         if (Current is not null)
-            Current.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
+            Current.RequestedThemeVariant = themeVariant;
     }
-    
+
     public static void ApplyFontSettings(string fontFamily, int fontSize)
     {
         if (Current is null) return;
         Current.Resources["AppFontFamily"] = new Avalonia.Media.FontFamily(fontFamily);
-        Current.Resources["AppFontSize"]   = (double)fontSize;
+        Current.Resources["AppFontSize"] = (double)fontSize;
     }
 }
