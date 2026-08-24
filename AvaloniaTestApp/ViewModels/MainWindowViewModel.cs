@@ -459,6 +459,9 @@ public partial class MainWindowViewModel : ReactiveObject
 
         foreach (var column in Columns)
             column.IsArray = true;
+
+        foreach (var lineColumn in LineColumns)
+            lineColumn.IsArray = true;
     }
 
     private string _templateStatusText = "";
@@ -707,7 +710,7 @@ public partial class MainWindowViewModel : ReactiveObject
                     IsNull       = col.IsNull,
                     IsPK         = col.IsPK,
                     IsID         = col.IsID,
-                    IsArray      = col.IsArray,
+                    IsArray      = IsArrayTemplateSelected || col.IsArray,
                     DefaultValue = col.DefaultValue ?? string.Empty
                 });
             }

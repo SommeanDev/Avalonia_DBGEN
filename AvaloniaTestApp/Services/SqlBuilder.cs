@@ -119,7 +119,7 @@ public static class SqlBuilder
         result["unnest_alias_columns"] = string.Join(",\n",
             arrayBusinessCols.Select(c => $"            {c.ColumnName}"));
         result["update_array_assignments"] = JoinWithTrailingComma(
-            businessCols.Select(c => $"    {c.ColumnName} = rec.{c.ColumnName}"));
+            arrayBusinessCols.Select(c => $"    {c.ColumnName} = rec.{c.ColumnName}"));
         result["rec_business_values"] = JoinWithTrailingComma(
             businessCols.Select(c => $"                    rec.{c.ColumnName}"));
         return result;
@@ -157,12 +157,12 @@ public static class SqlBuilder
         result["procName"] = procedureName;
         result["line_pk_col"] = linePk;
         result["line_table_upper"] = lineTable.ToUpperInvariant();
-        result["line_array_parameters"] = string.Join(",\n", lineBusinessCols.Select(SqlArrayParameter));
+        result["line_array_parameters"] = string.Join(",\n", lineBusinessCols.Select(SqlArrayTemplateParameter));
         result["line_insert_cols_full"] = string.Join(",\n", lineBusinessCols.Select(c => $"            {c.ColumnName}"));
-        result["line_insert_vals_new"] = string.Join(",\n", lineBusinessCols.Select(c => $"            u.{c.ColumnName}"));
+        result["line_insert_vals_new"] = string.Join(",\n", lineBusinessCols.Select(c => (c.IsArray) ? $"            u.{c.ColumnName}" : $"            pi_{c.ColumnName}"));
         result["line_insert_vals_rec"] = string.Join(",\n", lineBusinessCols.Select(c => $"                        rec.{c.ColumnName}"));
-        result["line_unnest_params"] = string.Join(",\n", lineBusinessCols.Select(c => $"            pi_{c.ColumnName}"));
-        result["line_unnest_aliases"] = string.Join(",\n", lineBusinessCols.Select(c => $"            {c.ColumnName}"));
+        result["line_unnest_params"] = string.Join(",\n", lineBusinessCols.Where(c => c.IsArray).Select(c => $"            pi_{c.ColumnName}"));
+        result["line_unnest_aliases"] = string.Join(",\n", lineBusinessCols.Where(c => c.IsArray).Select(c => $"            {c.ColumnName}"));
         result["line_update_assignments"] = string.Join(",\n", lineBusinessCols.Select(c => $"                           {c.ColumnName} = rec.{c.ColumnName}"));
 
         return result;
