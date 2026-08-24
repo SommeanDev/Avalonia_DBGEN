@@ -141,7 +141,9 @@
                                 </StackPanel>
                             </Button>
                         </Grid>
-
+                        
+                        <!-- Head columns -->
+                        <TextBlock Text="HEAD COLUMNS" Classes="TechSubHeader" VerticalAlignment="Center" IsVisible="{Binding RequiresLineTable}"/>
                         <ItemsControl ItemsSource="{Binding Columns}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -150,6 +152,15 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
+                        <!-- Line columns -->
+                        <TextBlock Text="LINE COLUMNS" Classes="TechSubHeader" VerticalAlignment="Center" IsVisible="{Binding RequiresLineTable}"/>
+                        <ItemsControl ItemsSource="{Binding LineColumns}" IsVisible="{Binding RequiresLineTable}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <controls:ColumnRowControl/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </ScrollViewer>
 

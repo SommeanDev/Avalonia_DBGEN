@@ -65,8 +65,16 @@
     <!-- For data telemetry/section tags (e.g., ▚ NAVIGATION, ◤ SYSTEM) -->
     <Style Selector="TextBlock.TechHeader">
         <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
-        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource CyberTeal}"/>
+        <Setter Property="LetterSpacing" Value="0.15"/>
+    </Style>
+    
+    <Style Selector="TextBlock.TechSubHeader">
+        <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Regular"/>
         <Setter Property="Foreground" Value="{DynamicResource CyberTeal}"/>
         <Setter Property="LetterSpacing" Value="0.15"/>
     </Style>
